@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Users, Headphones, Sparkles, ArrowRight, Shield, Zap, Sun, Moon } from 'lucide-react'
+import AgentLogin from '../components/AgentLogin'
 import './Landing.css'
 
 function Landing() {
   const [selectedRole, setSelectedRole] = useState('customer') // Default to customer
   const [isToggling, setIsToggling] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(true) // Default to dark theme
+  const [showAgentLogin, setShowAgentLogin] = useState(false)
 
   const handleToggle = () => {
     setIsToggling(true)
@@ -16,12 +18,27 @@ function Landing() {
   const handleThemeToggle = () => {
     setIsDarkTheme(!isDarkTheme)
   }
-
   const handleRoleSelect = (role) => {
-    // Here you would typically navigate to the appropriate portal
-    setTimeout(() => {
-      alert(`Redirecting to ${role} portal...`)
-    }, 500)
+    // If agent role is selected, show login modal
+    if (role === 'agent') {
+      setShowAgentLogin(true)
+    } else {
+      // For customer portal, navigate directly
+      setTimeout(() => {
+        alert(`Redirecting to ${role} portal...`)
+      }, 500)
+    }
+  }
+
+  const handleAgentLoginSuccess = (user) => {
+    // Handle successful agent login
+    console.log('Agent logged in:', user)
+    alert(`Welcome back! Redirecting to agent portal...`)
+    // Here you would typically navigate to the agent dashboard
+  }
+
+  const handleCloseAgentLogin = () => {
+    setShowAgentLogin(false)
   }
   return (
     <div className={`landing-container ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}>
@@ -142,10 +159,16 @@ function Landing() {
                   <span className="stat-label">Response Time</span>
                 </div>
               </div>
-            </div>
-          </div>
+            </div>          </div>
         </main>
       </div>
+
+      {/* Agent Login Modal */}
+      <AgentLogin 
+        isOpen={showAgentLogin}
+        onClose={handleCloseAgentLogin}
+        onLoginSuccess={handleAgentLoginSuccess}
+      />
     </div>
   )
 }

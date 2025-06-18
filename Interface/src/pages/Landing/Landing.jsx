@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Users, Headphones, Sparkles, ArrowRight, Shield, Zap, Sun, Moon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { useTheme } from '../contexts/ThemeContext'
-import AgentLogin from '../components/AgentLogin'
-import Navbar from '../components/Navbar/Navbar'
+import { useTheme } from '../../contexts/ThemeContext'
+import AgentLogin from '../../components/AgentLogin/AgentLogin'
+import Navbar from '../../components/Navbar/Navbar'
 import './Landing.css'
 
 function Landing() {
@@ -12,6 +12,7 @@ function Landing() {
   const [selectedRole, setSelectedRole] = useState('customer') // Default to customer
   const [isToggling, setIsToggling] = useState(false)
   const [showAgentLogin, setShowAgentLogin] = useState(false)
+  
   const handleToggle = () => {
     setIsToggling(true)
     setSelectedRole(selectedRole === 'customer' ? 'agent' : 'customer')
@@ -34,6 +35,7 @@ function Landing() {
     alert(`Welcome back! Redirecting to agent portal...`)
     // Here you would typically navigate to the agent dashboard
   }
+
   const handleCloseAgentLogin = () => {
     setShowAgentLogin(false)
   }
@@ -49,7 +51,8 @@ function Landing() {
             <h1 className="hero-title">
               Welcome to the
               <span className="gradient-text"> Future of Support</span>
-            </h1>            <p className="hero-subtitle">
+            </h1>            
+            <p className="hero-subtitle">
               Choose your role and experience support like never before
             </p>
 
@@ -137,7 +140,8 @@ function Landing() {
                   <span className="stat-label">Response Time</span>
                 </div>
               </div>
-            </div>          </div>
+            </div>          
+          </div>
         </main>
       </div>
 

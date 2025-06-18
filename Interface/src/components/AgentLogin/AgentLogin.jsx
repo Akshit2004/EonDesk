@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { X, Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react'
-import { signIn } from '../firebase/auth'
+import { signIn } from '../../firebase/auth'
 import './AgentLogin.css'
 
 function AgentLogin({ isOpen, onClose, onLoginSuccess }) {

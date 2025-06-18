@@ -1,0 +1,645 @@
+/* Support.css */
+.support-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Light Theme Styles */
+.light-theme .support-container {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  color: #1e293b;
+}
+
+.light-theme .back-button {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #1e293b;
+}
+
+.light-theme .back-button:hover {
+  background: rgba(34, 197, 94, 0.15);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+}
+
+.light-theme .support-subtitle {
+  color: rgba(30, 41, 59, 0.7);
+}
+
+.light-theme .support-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(30, 41, 59, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.light-theme .support-card::before {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(21, 128, 61, 0.05) 100%);
+}
+
+.light-theme .support-card:hover {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 20px 40px rgba(34, 197, 94, 0.15);
+}
+
+.light-theme .card-description {
+  color: rgba(30, 41, 59, 0.6);
+}
+
+.light-theme .feature {
+  background: rgba(30, 41, 59, 0.1);
+  border: 1px solid rgba(30, 41, 59, 0.2);
+  color: rgba(30, 41, 59, 0.8);
+}
+
+.light-theme .card-action {
+  color: #1e40af;
+}
+
+.light-theme .stat-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(30, 41, 59, 0.1);
+}
+
+.light-theme .stat-number {
+  color: #1e293b;
+}
+
+.light-theme .stat-label {
+  color: rgba(30, 41, 59, 0.6);
+}
+
+/* Light Theme Form Styles */
+.light-theme .ticket-form-container {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(30, 41, 59, 0.1);
+}
+
+.light-theme .form-header {
+  border-bottom: 1px solid rgba(30, 41, 59, 0.1);
+}
+
+.light-theme .back-btn {
+  background: rgba(30, 41, 59, 0.1);
+  border: 1px solid rgba(30, 41, 59, 0.2);
+  color: #1e293b;
+}
+
+.light-theme .back-btn:hover {
+  background: rgba(30, 41, 59, 0.15);
+}
+
+.light-theme .form-title {
+  color: #1e293b;
+}
+
+.light-theme .form-subtitle {
+  color: rgba(30, 41, 59, 0.7);
+}
+
+.light-theme .form-label {
+  color: rgba(30, 41, 59, 0.9);
+}
+
+.light-theme .form-input,
+.light-theme .form-select,
+.light-theme .form-textarea {
+  background: rgba(248, 250, 252, 0.95);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #1e293b;
+}
+
+.light-theme .form-select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+.light-theme .form-select option {
+  background: #ffffff !important;
+  color: #1e293b !important;
+}
+
+.light-theme .form-select option:hover,
+.light-theme .form-select option:focus,
+.light-theme .form-select option:checked {
+  background: #22c55e !important;
+  color: #ffffff !important;
+}
+
+.light-theme .form-input::placeholder,
+.light-theme .form-textarea::placeholder {
+  color: rgba(30, 41, 59, 0.5);
+}
+
+/* Light theme scrollbar styling */
+.light-theme .form-select::-webkit-scrollbar-track {
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.light-theme .form-select::-webkit-scrollbar-thumb {
+  background: #22c55e;
+}
+
+.light-theme .form-select::-webkit-scrollbar-thumb:hover {
+  background: #15803d;
+}
+
+/* Support.css */
+.support-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.support-header {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.back-button:hover {
+  background: rgba(34, 197, 94, 0.15);
+  transform: translateX(-2px);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+}
+
+.back-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.header-content {
+  text-align: center;
+}
+
+.support-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.support-subtitle {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.support-options {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.support-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2.5rem;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.support-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.support-card:hover::before {
+  opacity: 1;
+}
+
+.support-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 20px 40px rgba(34, 197, 94, 0.2);
+}
+
+.card-icon {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon .icon {
+  width: 40px;
+  height: 40px;
+  z-index: 2;
+  position: relative;
+}
+
+.track-ticket .icon {
+  color: #22c55e;
+}
+
+.create-ticket .icon {
+  color: #22c55e;
+}
+
+.icon-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.track-ticket .icon-glow {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 70%);
+}
+
+.create-ticket .icon-glow {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 70%);
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  text-align: center;
+}
+
+.card-description {
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  margin: 0 0 2rem;
+  line-height: 1.6;
+}
+
+.card-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.feature {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.card-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #667eea;
+}
+
+.arrow-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.support-card:hover .arrow-icon {
+  transform: translateX(4px);
+}
+
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.stat-icon {
+  width: 24px;
+  height: 24px;
+  color: #22c55e;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Form Styles */
+.ticket-form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  max-height: calc(100vh - 140px); /* Account for navbar and some padding */
+  overflow-y: auto;
+  position: relative;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.form-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+}
+
+.form-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0.5rem 0 0;
+}
+
+.ticket-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  /* Remove height constraints to allow natural flow */
+  padding-right: 0.5rem; /* Space for scrollbar */
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  position: relative; /* Enable z-index for dropdowns */
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.label-icon {
+  width: 16px;
+  height: 16px;
+  color: #22c55e;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  background: rgba(40, 40, 40, 0.95);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+/* Special handling for select dropdowns */
+.form-select {
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+  appearance: none;
+  background: rgba(40, 40, 40, 0.95);
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px;
+  padding-right: 3rem;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  background-position: right 1rem center;
+  background-size: 16px;
+  padding-right: 3rem;
+}
+
+/* Custom dropdown styling for better visibility */
+.form-select option {
+  background: #2a2a2a !important;
+  color: #ffffff !important;
+  padding: 0.75rem 1rem !important;
+  border: none !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+.form-select option:hover,
+.form-select option:focus,
+.form-select option:checked {
+  background: #22c55e !important;
+  color: #000000 !important;
+}
+
+/* Enhanced dropdown styling for better browser compatibility */
+.form-select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.form-select::-webkit-scrollbar-track {
+  background: rgba(40, 40, 40, 0.9);
+  border-radius: 4px;
+}
+
+.form-select::-webkit-scrollbar-thumb {
+  background: #22c55e;
+  border-radius: 4px;
+}
+
+.form-select::-webkit-scrollbar-thumb:hover {
+  background: #15803d;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  max-height: 150px;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 0.875rem 2rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  /* Remove sticky positioning for better form flow */
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+}
+
+.btn-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.track-btn {
+  background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+}
+
+.track-btn:hover {
+  box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+}
+
+.create-btn {
+  background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+}
+
+.create-btn:hover {
+  box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+}
+
+.support-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 80px); /* Account for navbar height */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .support-container {
+    padding: 1rem;
+  }
+
+  .support-title {
+    font-size: 2rem;
+  }
+
+  .options-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .support-card {
+    padding: 2rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-form-container {
+    padding: 1.5rem;
+  }
+
+  .quick-stats {
+    grid-template-columns: 1fr;
+  }
+}

@@ -289,10 +289,6 @@
   position: relative;
 }
 
-.track-ticket .icon {
-  color: #3b82f6;
-}
-
 .create-ticket .icon {
   color: #3b82f6;
 }
@@ -307,17 +303,13 @@
   border-radius: 50%;
 }
 
-.track-ticket .icon-glow {
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
-}
-
 .create-ticket .icon-glow {
   background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
 }
 
 .card-title {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 600; 
   margin: 0 0 1rem;
   text-align: center;
 }
@@ -622,14 +614,6 @@
 .btn-icon {
   width: 18px;
   height: 18px;
-}
-
-.track-btn {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-}
-
-.track-btn:hover {
-  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
 }
 
 .create-btn {

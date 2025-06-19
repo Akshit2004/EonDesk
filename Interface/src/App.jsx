@@ -7,7 +7,6 @@ import { initializeEmailJS } from './services/emailService'
 import { onAuthStateChanged } from './firebase/auth'
 import Landing from './pages/Landing/Landing'
 import Support from './pages/Support/Support'
-import AgentDashboard from './pages/AgentDashboard/AgentDashboard'
 import AgentLogin from './components/AgentLogin/AgentLogin'
 import './App.css'
 import 'react-toastify/dist/ReactToastify.css'
@@ -61,23 +60,6 @@ function App() {
           <div className="App">            <Routes>
               <Route path="/" element={<Landing onAgentLogin={handleLandingAgentLogin} />} />
               <Route path="/support" element={<Support />} />
-              <Route 
-                path="/agent" 
-                element={
-                  currentUser ? (
-                    <AgentDashboard 
-                      currentUser={currentUser} 
-                      userRole={userRole}
-                      onLogout={handleAgentLogout}
-                    />
-                  ) : (
-                    <div className="agent-auth-required">
-                      <h2>Agent Authentication Required</h2>
-                      <button onClick={() => setShowAgentLogin(true)}>Login as Agent</button>
-                    </div>
-                  )
-                } 
-              />
             </Routes>
 
             {/* Agent Login Modal */}

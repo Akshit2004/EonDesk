@@ -291,7 +291,6 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  z-index: 1;
 }
 
 .track-ticket .icon-glow {
@@ -368,6 +367,13 @@
   align-items: center;
   gap: 1rem;
   backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
 }
 
 .stat-icon {
@@ -395,15 +401,15 @@
 /* Form Styles */
 .ticket-form-container {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 0 auto 2rem auto; /* Add bottom margin for better spacing */
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 2rem;
   backdrop-filter: blur(10px);
-  max-height: calc(100vh - 140px); /* Account for navbar and some padding */
-  overflow-y: auto;
+  /* Remove height restrictions and internal scroll */
   position: relative;
+  min-height: auto;
 }
 
 .form-header {
@@ -449,7 +455,6 @@
   flex-direction: column;
   gap: 1.25rem;
   /* Remove height constraints to allow natural flow */
-  padding-right: 0.5rem; /* Space for scrollbar */
 }
 
 .form-row {
@@ -614,38 +619,623 @@
 .support-content {
   flex: 1;
   padding: 2rem;
-  overflow-y: auto;
-  max-height: calc(100vh - 80px); /* Account for navbar height */
+  /* Remove internal overflow and height restrictions */
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .support-container {
-    padding: 1rem;
-  }
+/* Progressive Form Styles */
+.progress-bar {
+  margin-bottom: 2rem;
+  position: relative;
+}
 
-  .support-title {
-    font-size: 2rem;
-  }
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 1rem;
+}
 
-  .options-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  position: relative;
+}
 
-  .support-card {
-    padding: 2rem;
-  }
+.step-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 3;
+}
 
-  .form-row {
-    grid-template-columns: 1fr;
-  }
+.progress-step.active .step-circle {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
 
-  .ticket-form-container {
-    padding: 1.5rem;
-  }
+.progress-step.completed .step-circle {
+  background: #22c55e;
+  border-color: #22c55e;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+}
 
-  .quick-stats {
-    grid-template-columns: 1fr;
+.step-number {
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.step-icon {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.step-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 60px; /* Reserve space for potential description */
+  justify-content: flex-start;
+}
+
+.step-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.step-description {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  opacity: 1;
+  animation: fadeInSlide 0.3s ease-out;
+  transform: translateY(0);
+}
+
+.step-type-icon {
+  width: 16px;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active .step-label {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.progress-step.active .step-description {
+  color: rgba(59, 130, 246, 0.7);
+}
+
+.progress-step.active .step-type-icon {
+  color: #3b82f6;
+}
+
+.progress-step.completed .step-label {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.progress-step.completed .step-description {
+  color: rgba(34, 197, 94, 0.7);
+}
+
+.progress-step.completed .step-type-icon {
+  color: #22c55e;
+}
+
+.progress-line {
+  position: absolute;
+  top: 25px;
+  left: 5%;
+  right: 5%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 1;
+  border-radius: 1px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6 0%, #22c55e 100%);
+  border-radius: 1px;
+  transition: width 0.5s ease;
+}
+
+.progressive-form {
+  display: flex;
+  flex-direction: column;
+  min-height: auto; /* Allow natural height */
+}
+
+.step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.step-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.step-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 0.5rem;
+}
+
+.step-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.form-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.prev-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.prev-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.next-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  margin-left: auto;
+}
+
+.next-btn:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.nav-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.form-summary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.summary-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.summary-value {
+  color: white;
+  font-weight: 500;
+  text-align: right;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Enhanced Header Styles */
+.header-icon-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-main-icon {
+  width: 48px;
+  height: 48px;
+  color: #3b82f6;
+  z-index: 2;
+  position: relative;
+}
+
+.header-icon-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 1;
+  }
+}
+
+/* Form Header Enhancements */
+.form-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-header-icon {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-form-icon {
+  width: 24px;
+  height: 24px;
+  color: #3b82f6;
+  z-index: 2;
+  position: relative;
+}
+
+.header-form-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+}
+
+/* Enhanced Stat Cards */
+.stat-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.stat-icon {
+  width: 24px;
+  height: 24px;
+  color: #3b82f6;
+  z-index: 2;
+  position: relative;
+}
+
+.stat-icon-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+/* Enhanced Summary Section */
+.summary-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-icon {
+  width: 20px;
+  height: 20px;
+  color: #3b82f6;
+}
+
+.summary-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-item-icon {
+  width: 16px;
+  height: 16px;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.summary-label {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  min-width: 80px;
+}
+
+.summary-value {
+  color: white;
+  font-weight: 600;
+}
+
+/* Textarea Helper */
+.textarea-helper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.helper-icon {
+  width: 16px;
+  height: 16px;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.helper-text {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
+/* Enhanced Select Options */
+.form-select option {
+  background: #1a1a1a;
+  color: white;
+  padding: 0.5rem;
+}
+
+/* Light Theme Enhancements */
+.light-theme .header-icon-glow {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+}
+
+.light-theme .header-form-glow {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+}
+
+.light-theme .stat-icon-bg {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.light-theme .summary-header {
+  border-bottom: 1px solid rgba(30, 41, 59, 0.1);
+}
+
+.light-theme .summary-item {
+  background: rgba(30, 41, 59, 0.05);
+  border: 1px solid rgba(30, 41, 59, 0.1);
+}
+
+.light-theme .summary-label {
+  color: rgba(30, 41, 59, 0.7);
+}
+
+.light-theme .summary-value {
+  color: #1e293b;
+}
+
+.light-theme .textarea-helper {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.light-theme .helper-text {
+  color: rgba(30, 41, 59, 0.6);
+}
+
+.light-theme .form-select option {
+  background: white;
+  color: #1e293b;
+}
+
+/* Light Theme Progress Steps */
+.light-theme .step-circle {
+  background: rgba(30, 41, 59, 0.1);
+  border: 2px solid rgba(30, 41, 59, 0.3);
+}
+
+.light-theme .step-number {
+  color: #1e293b;
+}
+
+.light-theme .step-label {
+  color: rgba(30, 41, 59, 0.7);
+}
+
+.light-theme .step-description {
+  color: rgba(30, 41, 59, 0.5);
+}
+
+.light-theme .step-type-icon {
+  color: rgba(30, 41, 59, 0.4);
+}
+
+.light-theme .progress-line {
+  background: rgba(30, 41, 59, 0.2);
+}
+
+.light-theme .progress-step.active .step-description {
+  color: rgba(59, 130, 246, 0.8);
+}
+
+.light-theme .progress-step.completed .step-description {
+  color: rgba(34, 197, 94, 0.8);
+}
+
+/* Form Validation Styles */
+.field-incomplete {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 1px #f97316, 0 1px 3px rgba(249, 115, 22, 0.1) !important;
+}
+
+.field-incomplete:focus {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1), 0 1px 3px rgba(249, 115, 22, 0.1) !important;
+}
+
+/* Required field indicator */
+.form-label {
+  position: relative;
+}
+
+.form-label:has(+ .field-incomplete)::after {
+  content: ' - Required';
+  color: #f97316;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Light theme validation styles */
+.light-theme .field-incomplete {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 1px #f97316, 0 1px 3px rgba(249, 115, 22, 0.15) !important;
+}
+
+.light-theme .field-incomplete:focus {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15), 0 1px 3px rgba(249, 115, 22, 0.15) !important;
+}
+
+/* Completed field styles */
+.form-input:not(.field-incomplete):not(:placeholder-shown),
+.form-select:not(.field-incomplete):not([value=""]),
+.form-textarea:not(.field-incomplete):not(:placeholder-shown) {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 1px #22c55e, 0 1px 3px rgba(34, 197, 94, 0.1);
+}
+
+.form-input:not(.field-incomplete):not(:placeholder-shown):focus,
+.form-select:not(.field-incomplete):not([value=""]):focus,
+.form-textarea:not(.field-incomplete):not(:placeholder-shown):focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1), 0 1px 3px rgba(34, 197, 94, 0.1);
+}
+
+/* Light theme completed field styles */
+.light-theme .form-input:not(.field-incomplete):not(:placeholder-shown),
+.light-theme .form-select:not(.field-incomplete):not([value=""]),
+.light-theme .form-textarea:not(.field-incomplete):not(:placeholder-shown) {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 1px #22c55e, 0 1px 3px rgba(34, 197, 94, 0.15);
+}
+
+.light-theme .form-input:not(.field-incomplete):not(:placeholder-shown):focus,
+.light-theme .form-select:not(.field-incomplete):not([value=""]):focus,
+.light-theme .form-textarea:not(.field-incomplete):not(:placeholder-shown):focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15), 0 1px 3px rgba(34, 197, 94, 0.15);
+}
+
+/* Progress step description animation */
+.step-description {
+  animation: fadeInSlide 0.3s ease-out;
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

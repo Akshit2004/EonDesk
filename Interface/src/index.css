@@ -13,10 +13,12 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  /* Custom scrollbar */
+    /* Custom scrollbar */
   scrollbar-width: thin;
-  scrollbar-color: #22c55e #1a1a1a;
+  scrollbar-color: #3b82f6 #1a1a1a;
+  
+  /* Smooth scrolling for all elements */
+  scroll-behavior: smooth;
 }
 
 /* Custom scrollbar for webkit browsers */
@@ -30,13 +32,37 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #22c55e;
+  background: #3b82f6;
   border-radius: 4px;
   transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #16a34a;
+  background: #2563eb;
+}
+
+/* Enhanced scrollbar styles for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Light theme scrollbar */
+@media (prefers-color-scheme: light) {
+  :root {
+    scrollbar-color: #1d4ed8 #f1f5f9;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #1d4ed8;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #1e40af;
+  }
 }
 
 * {
@@ -46,18 +72,20 @@
 body {
   margin: 0;
   min-width: 320px;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 #root {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 /* Selection styles */
 ::selection {
-  background: rgba(34, 197, 94, 0.3);
+  background: rgba(59, 130, 246, 0.3);
   color: #ffffff;
 }
 

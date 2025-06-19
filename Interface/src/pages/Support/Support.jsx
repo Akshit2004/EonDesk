@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { 
   ArrowLeft, Ticket, Search, Plus, FileText, Clock, User, Mail, Phone, ArrowRight, 
   CheckCircle, ChevronLeft, ChevronRight, Headphones, MessageSquare, Settings, 
-  CreditCard, Bug, Lightbulb, AlertCircle, Star, Shield, Zap, HelpCircle,
-  BookOpen, Target, Layers, Globe, Award, TrendingUp
+  AlertCircle, Shield,  HelpCircle,
+  BookOpen, Target, Layers
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
+import { createTicket, getTicketByIdAndEmail } from '../../firebase/tickets'
 import './Support.css'
 
 function Support() {
@@ -133,14 +134,53 @@ function Support() {
 function TrackTicket({ onBack }) {
   const [ticketId, setTicketId] = useState('')
   const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [ticketData, setTicketData] = useState(null)
+  const [error, setError] = useState('')
 
-  const handleTrack = (e) => {
+  const handleTrack = async (e) => {
     e.preventDefault()
-    // Handle ticket tracking logic here
-    alert(`Tracking ticket ${ticketId} for ${email}`)
+    setLoading(true)
+    setError('')
+    setTicketData(null)
+
+    try {
+      const result = await getTicketByIdAndEmail(ticketId.trim(), email.trim())
+      
+      if (result.success) {
+        setTicketData(result.ticket)
+      } else {
+        setError(result.error || 'Ticket not found')
+      }
+    } catch (error) {
+      setError('An error occurred while tracking the ticket')
+      console.error('Track ticket error:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  return (    <div className="ticket-form-container">
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'open': return '#3b82f6'
+      case 'inProgress': return '#f59e0b'
+      case 'resolved': return '#22c55e'
+      case 'closed': return '#6b7280'
+      default: return '#3b82f6'
+    }
+  }
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'low': return '#22c55e'
+      case 'medium': return '#f59e0b'
+      case 'high': return '#f97316'
+      case 'urgent': return '#ef4444'
+      default: return '#f59e0b'
+    }
+  }
+
+  return (
+    <div className="ticket-form-container">
       <div className="form-header">
         <button className="back-btn" onClick={onBack}>
           <ArrowLeft className="back-icon" />
@@ -155,52 +195,161 @@ function TrackTicket({ onBack }) {
             <p className="form-subtitle">Enter your ticket details to check status</p>
           </div>
         </div>
-      </div>
+      </div>      {!ticketData ? (
+        <form className="ticket-form" onSubmit={handleTrack}>
+          <div className="form-group">
+            <label htmlFor="ticketId" className="form-label">
+              <Ticket className="label-icon" />
+              Ticket ID
+            </label>
+            <input
+              type="text"
+              id="ticketId"
+              value={ticketId}
+              onChange={(e) => setTicketId(e.target.value)}
+              placeholder="Enter your ticket ID (e.g., TKT-12345)"
+              className="form-input"
+              required
+            />
+          </div>
 
-      <form className="ticket-form" onSubmit={handleTrack}>
-        <div className="form-group">
-          <label htmlFor="ticketId" className="form-label">
-            <Ticket className="label-icon" />
-            Ticket ID
-          </label>
-          <input
-            type="text"
-            id="ticketId"
-            value={ticketId}
-            onChange={(e) => setTicketId(e.target.value)}
-            placeholder="Enter your ticket ID (e.g., TKT-12345)"
-            className="form-input"
-            required
-          />
+          <div className="form-group">
+            <label htmlFor="email" className="form-label">
+              <Mail className="label-icon" />
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email address"
+              className="form-input"
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="error-message">
+              <AlertCircle className="error-icon" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <button type="submit" className="submit-btn track-btn" disabled={loading}>
+            <Search className="btn-icon" />
+            {loading ? 'Tracking...' : 'Track Ticket'}
+          </button>
+        </form>
+      ) : (
+        <div className="ticket-details">
+          <div className="ticket-header">
+            <div className="ticket-id-section">
+              <h3 className="ticket-id">{ticketData.ticketId}</h3>
+              <div className="ticket-meta">
+                <span 
+                  className="status-badge" 
+                  style={{ backgroundColor: getStatusColor(ticketData.status) }}
+                >
+                  {ticketData.status.charAt(0).toUpperCase() + ticketData.status.slice(1)}
+                </span>
+                <span 
+                  className="priority-badge"
+                  style={{ backgroundColor: getPriorityColor(ticketData.priority) }}
+                >
+                  {ticketData.priority.charAt(0).toUpperCase() + ticketData.priority.slice(1)} Priority
+                </span>
+              </div>
+            </div>
+            <button 
+              className="new-search-btn" 
+              onClick={() => {
+                setTicketData(null)
+                setTicketId('')
+                setEmail('')
+                setError('')
+              }}
+            >
+              <Search className="btn-icon" />
+              New Search
+            </button>
+          </div>
+
+          <div className="ticket-info">
+            <div className="info-section">
+              <h4 className="section-title">
+                <User className="section-icon" />
+                Contact Information
+              </h4>
+              <div className="info-grid">
+                <div className="info-item">
+                  <span className="info-label">Name:</span>
+                  <span className="info-value">{ticketData.name}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Email:</span>
+                  <span className="info-value">{ticketData.email}</span>
+                </div>
+                {ticketData.phone && (
+                  <div className="info-item">
+                    <span className="info-label">Phone:</span>
+                    <span className="info-value">{ticketData.phone}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="info-section">
+              <h4 className="section-title">
+                <FileText className="section-icon" />
+                Issue Details
+              </h4>
+              <div className="info-grid">
+                <div className="info-item">
+                  <span className="info-label">Subject:</span>
+                  <span className="info-value">{ticketData.subject}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Category:</span>
+                  <span className="info-value">{ticketData.category}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Created:</span>
+                  <span className="info-value">
+                    {ticketData.createdAt ? new Date(ticketData.createdAt).toLocaleString() : 'N/A'}
+                  </span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Last Updated:</span>
+                  <span className="info-value">
+                    {ticketData.updatedAt ? new Date(ticketData.updatedAt).toLocaleString() : 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="info-section">
+              <h4 className="section-title">
+                <MessageSquare className="section-icon" />
+                Description
+              </h4>
+              <div className="description-content">
+                {ticketData.description}
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div className="form-group">
-          <label htmlFor="email" className="form-label">
-            <Mail className="label-icon" />
-            Email Address
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email address"
-            className="form-input"
-            required
-          />
-        </div>
-
-        <button type="submit" className="submit-btn track-btn">
-          <Search className="btn-icon" />
-          Track Ticket
-        </button>
-      </form>
+      )}
     </div>
   )
 }
 
 function CreateTicket({ onBack }) {
   const [currentStep, setCurrentStep] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [createdTicketId, setCreatedTicketId] = useState('')
+  const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -232,11 +381,26 @@ function CreateTicket({ onBack }) {
       setCurrentStep(currentStep - 1)
     }
   }
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle ticket creation logic here
-    alert(`Ticket created successfully for ${formData.name}`)
+    setLoading(true)
+    setError('')
+
+    try {
+      const result = await createTicket(formData)
+      
+      if (result.success) {
+        setSuccess(true)
+        setCreatedTicketId(result.ticketId)
+      } else {
+        setError(result.error || 'Failed to create ticket')
+      }
+    } catch (error) {
+      setError('An error occurred while creating the ticket')
+      console.error('Create ticket error:', error)
+    } finally {
+      setLoading(false)
+    }
   }
   const isStepValid = (step) => {
     switch (step) {
@@ -464,10 +628,10 @@ function CreateTicket({ onBack }) {
 
       default:
         return null
-    }
-  }
+    }  }
 
-  return (    <div className="ticket-form-container">
+  return (
+    <div className="ticket-form-container">
       <div className="form-header">
         <button className="back-btn" onClick={onBack}>
           <ArrowLeft className="back-icon" />
@@ -480,9 +644,76 @@ function CreateTicket({ onBack }) {
           <div>
             <h2 className="form-title">Create New Ticket</h2>
             <p className="form-subtitle">Tell us about your issue and we'll help you resolve it</p>
+          </div>  
+          </div>
+      </div>
+
+      {success ? (
+        <div className="success-container">
+          <div className="success-icon-wrapper">
+            <CheckCircle className="success-icon" />
+          </div>
+          <h3 className="success-title">Ticket Created Successfully!</h3>
+          <p className="success-message">
+            Your support ticket has been created. Here are your ticket details:
+          </p>
+          <div className="success-details">
+            <div className="success-detail">
+              <strong>Ticket ID:</strong> {createdTicketId}
+            </div>
+            <div className="success-detail">
+              <strong>Email:</strong> {formData.email}
+            </div>
+            <div className="success-detail">
+              <strong>Subject:</strong> {formData.subject}
+            </div>
+          </div>
+          <p className="success-note">
+            Please save your ticket ID for future reference. You can track your ticket status using the ticket ID and your email address.
+          </p>
+          <div className="success-actions">
+            <button 
+              className="success-btn track-btn"
+              onClick={() => {
+                // Reset and go back to track with the new ticket ID
+                onBack()
+              }}
+            >
+              <Search className="btn-icon" />
+              Track This Ticket
+            </button>
+            <button 
+              className="success-btn new-btn"
+              onClick={() => {
+                setSuccess(false)
+                setCreatedTicketId('')
+                setCurrentStep(1)
+                setFormData({
+                  name: '',
+                  email: '',
+                  phone: '',
+                  subject: '',
+                  priority: '',
+                  category: '',
+                  description: ''
+                })
+              }}
+            >
+              <Plus className="btn-icon" />
+              Create Another Ticket
+            </button>
           </div>
         </div>
-      </div>      <div className="progress-bar">
+      ) : (
+        <>
+          {error && (
+            <div className="error-message">
+              <AlertCircle className="error-icon" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <div className="progress-bar">
         <div className="progress-steps">
           {[1, 2, 3].map((step) => (
             <div key={step} className={`progress-step ${currentStep >= step ? 'active' : ''} ${currentStep > step ? 'completed' : ''}`}>
@@ -541,19 +772,20 @@ function CreateTicket({ onBack }) {
             >
               Next
               <ChevronRight className="btn-icon" />
-            </button>
-          ) : (
+            </button>          ) : (
             <button 
               type="submit" 
-              className={`submit-btn create-btn ${!isStepValid(currentStep) ? 'disabled' : ''}`}
-              disabled={!isStepValid(currentStep)}
+              className={`submit-btn create-btn ${!isStepValid(currentStep) || loading ? 'disabled' : ''}`}
+              disabled={!isStepValid(currentStep) || loading}
             >
               <Plus className="btn-icon" />
-              Create Ticket
+              {loading ? 'Creating...' : 'Create Ticket'}
             </button>
           )}
         </div>
       </form>
+        </>
+      )}
     </div>
   )
 }

@@ -8,11 +8,14 @@ import {
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import { createTicket, getTicketByIdAndEmail } from '../../firebase/tickets'
+import { TicketThread, CreateTicketForm } from '../../components/TicketDashboard'
 import './Support.css'
 
 function Support() {
   const navigate = useNavigate()
   const [selectedOption, setSelectedOption] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null)
+  const [selectedTicketId, setSelectedTicketId] = useState(null)
 
   const handleGoBack = () => {
     navigate('/')
@@ -20,6 +23,16 @@ function Support() {
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option)
+  }
+
+  const handleTicketFound = (ticketData, userInfo) => {
+    setCurrentUser(userInfo)
+    setSelectedTicketId(ticketData.id)
+  }
+
+  const handleTicketCreated = (result) => {
+    console.log('Ticket created successfully:', result.ticketId)
+    // Optionally switch to track mode or show success message
   }
   return (
     <div className="support-container">
@@ -122,60 +135,60 @@ function Support() {
             </div>
           </div>
         </div>      ) : selectedOption === 'track' ? (
-        <TrackTicket onBack={() => setSelectedOption(null)} />
-      ) : (
-        <CreateTicket onBack={() => setSelectedOption(null)} />
-      )}
+        selectedTicketId ? (
+          <TicketThreadWrapper 
+            ticketId={selectedTicketId}
+            currentUser={currentUser}
+            onBack={() => {
+              setSelectedTicketId(null)
+              setSelectedOption(null)
+            }}
+          />
+        ) : (
+          <TicketFinder 
+            onBack={() => setSelectedOption(null)}
+            onTicketFound={handleTicketFound}
+          />
+        )
+      ) : selectedOption === 'create' ? (
+        <EnhancedCreateTicket 
+          onTicketCreated={handleTicketCreated}
+          onBack={() => setSelectedOption(null)}
+        />
+      ) : null}
       </div>
     </div>
   )
 }
 
-function TrackTicket({ onBack }) {
+function TicketFinder({ onBack, onTicketFound }) {
   const [ticketId, setTicketId] = useState('')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
-  const [ticketData, setTicketData] = useState(null)
   const [error, setError] = useState('')
 
-  const handleTrack = async (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
-    setTicketData(null)
 
     try {
       const result = await getTicketByIdAndEmail(ticketId.trim(), email.trim())
       
       if (result.success) {
-        setTicketData(result.ticket)
+        const userInfo = {
+          email: email.trim(),
+          name: result.ticket.customer_name || email.trim()
+        }
+        onTicketFound(result.ticket, userInfo)
       } else {
-        setError(result.error || 'Ticket not found')
+        setError(result.error || 'Ticket not found. Please check your ticket ID and email.')
       }
     } catch (error) {
-      setError('An error occurred while tracking the ticket')
-      console.error('Track ticket error:', error)
+      setError('An error occurred while searching for the ticket. Please try again.')
+      console.error('Search ticket error:', error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'open': return '#3b82f6'
-      case 'inProgress': return '#f59e0b'
-      case 'resolved': return '#22c55e'
-      case 'closed': return '#6b7280'
-      default: return '#3b82f6'
-    }
-  }
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'low': return '#22c55e'
-      case 'medium': return '#f59e0b'
-      case 'high': return '#f97316'
-      case 'urgent': return '#ef4444'
-      default: return '#f59e0b'
     }
   }
 
@@ -191,155 +204,79 @@ function TrackTicket({ onBack }) {
             <div className="header-form-glow" />
           </div>
           <div>
-            <h2 className="form-title">Track Your Ticket</h2>
-            <p className="form-subtitle">Enter your ticket details to check status</p>
+            <h2 className="form-title">Find Your Ticket</h2>
+            <p className="form-subtitle">Enter your ticket ID and email to access your support conversation</p>
           </div>
         </div>
-      </div>      {!ticketData ? (
-        <form className="ticket-form" onSubmit={handleTrack}>
-          <div className="form-group">
-            <label htmlFor="ticketId" className="form-label">
-              <Ticket className="label-icon" />
-              Ticket ID
-            </label>
-            <input
-              type="text"
-              id="ticketId"
-              value={ticketId}
-              onChange={(e) => setTicketId(e.target.value)}
-              placeholder="Enter your ticket ID (e.g., TKT-12345)"
-              className="form-input"
-              required
-            />
+      </div>
+
+      <form className="ticket-form" onSubmit={handleSearch}>
+        <div className="form-group">
+          <label htmlFor="ticketId" className="form-label">
+            <Ticket className="label-icon" />
+            Ticket ID
+          </label>
+          <input
+            type="text"
+            id="ticketId"
+            value={ticketId}
+            onChange={(e) => setTicketId(e.target.value)}
+            placeholder="Enter your ticket ID (e.g., TKT-12345-ABCDE)"
+            className="form-input"
+            required
+          />
+          <div className="input-helper">
+            <HelpCircle className="helper-icon" />
+            <span className="helper-text">
+              You can find your ticket ID in the confirmation email sent when you created the ticket
+            </span>
           </div>
+        </div>
 
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">
-              <Mail className="label-icon" />
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email address"
-              className="form-input"
-              required
-            />
+        <div className="form-group">
+          <label htmlFor="email" className="form-label">
+            <Mail className="label-icon" />
+            Email Address
+          </label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter the email address used to create the ticket"
+            className="form-input"
+            required
+          />
+        </div>
+
+        {error && (
+          <div className="error-message">
+            <AlertCircle className="error-icon" />
+            <span>{error}</span>
           </div>
+        )}
 
-          {error && (
-            <div className="error-message">
-              <AlertCircle className="error-icon" />
-              <span>{error}</span>
+        <button type="submit" className="submit-btn track-btn" disabled={loading}>
+          <Search className="btn-icon" />
+          {loading ? 'Searching...' : 'Find My Ticket'}
+        </button>
+
+        <div className="form-note">
+          <div className="note-content">
+            <div className="note-icon">
+              <HelpCircle />
             </div>
-          )}
-
-          <button type="submit" className="submit-btn track-btn" disabled={loading}>
-            <Search className="btn-icon" />
-            {loading ? 'Tracking...' : 'Track Ticket'}
-          </button>
-        </form>
-      ) : (
-        <div className="ticket-details">
-          <div className="ticket-header">
-            <div className="ticket-id-section">
-              <h3 className="ticket-id">{ticketData.ticketId}</h3>
-              <div className="ticket-meta">
-                <span 
-                  className="status-badge" 
-                  style={{ backgroundColor: getStatusColor(ticketData.status) }}
-                >
-                  {ticketData.status.charAt(0).toUpperCase() + ticketData.status.slice(1)}
-                </span>
-                <span 
-                  className="priority-badge"
-                  style={{ backgroundColor: getPriorityColor(ticketData.priority) }}
-                >
-                  {ticketData.priority.charAt(0).toUpperCase() + ticketData.priority.slice(1)} Priority
-                </span>
-              </div>
-            </div>
-            <button 
-              className="new-search-btn" 
-              onClick={() => {
-                setTicketData(null)
-                setTicketId('')
-                setEmail('')
-                setError('')
-              }}
-            >
-              <Search className="btn-icon" />
-              New Search
-            </button>
-          </div>
-
-          <div className="ticket-info">
-            <div className="info-section">
-              <h4 className="section-title">
-                <User className="section-icon" />
-                Contact Information
-              </h4>
-              <div className="info-grid">
-                <div className="info-item">
-                  <span className="info-label">Name:</span>
-                  <span className="info-value">{ticketData.name}</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Email:</span>
-                  <span className="info-value">{ticketData.email}</span>
-                </div>
-                {ticketData.phone && (
-                  <div className="info-item">
-                    <span className="info-label">Phone:</span>
-                    <span className="info-value">{ticketData.phone}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="info-section">
-              <h4 className="section-title">
-                <FileText className="section-icon" />
-                Issue Details
-              </h4>
-              <div className="info-grid">
-                <div className="info-item">
-                  <span className="info-label">Subject:</span>
-                  <span className="info-value">{ticketData.subject}</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Category:</span>
-                  <span className="info-value">{ticketData.category}</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Created:</span>
-                  <span className="info-value">
-                    {ticketData.createdAt ? new Date(ticketData.createdAt).toLocaleString() : 'N/A'}
-                  </span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Last Updated:</span>
-                  <span className="info-value">
-                    {ticketData.updatedAt ? new Date(ticketData.updatedAt).toLocaleString() : 'N/A'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="info-section">
-              <h4 className="section-title">
-                <MessageSquare className="section-icon" />
-                Description
-              </h4>
-              <div className="description-content">
-                {ticketData.description}
-              </div>
+            <div className="note-text">
+              <h4>Need help finding your ticket?</h4>
+              <ul>
+                <li>Check your email for the ticket confirmation</li>
+                <li>Ticket IDs start with "TKT-" followed by numbers and letters</li>
+                <li>Make sure to use the same email address you used when creating the ticket</li>
+              </ul>
             </div>
           </div>
         </div>
-      )}
+      </form>
     </div>
   )
 }
@@ -786,6 +723,136 @@ function CreateTicket({ onBack }) {
       </form>
         </>
       )}
+    </div>
+  )
+}
+
+// Enhanced CreateTicketForm wrapper that handles user setup
+function EnhancedCreateTicket({ onBack, onTicketCreated }) {
+  const [currentUser, setCurrentUser] = useState(null)
+  const [userEmail, setUserEmail] = useState('')
+  const [userName, setUserName] = useState('')
+
+  const handleUserSetup = (e) => {
+    e.preventDefault()
+    if (userEmail && userName) {
+      setCurrentUser({
+        email: userEmail,
+        name: userName
+      })
+    }
+  }
+
+  const handleTicketCreated = (result) => {
+    if (onTicketCreated) {
+      onTicketCreated(result)
+    }
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="ticket-form-container">
+        <div className="form-header">
+          <button className="back-btn" onClick={onBack}>
+            <ArrowLeft className="back-icon" />
+          </button>
+          <div className="form-header-content">
+            <div className="form-header-icon">
+              <Plus className="header-form-icon" />
+              <div className="header-form-glow" />
+            </div>
+            <div>
+              <h2 className="form-title">Create Support Ticket</h2>
+              <p className="form-subtitle">First, let's get your contact information</p>
+            </div>
+          </div>
+        </div>
+
+        <form className="ticket-form" onSubmit={handleUserSetup}>
+          <div className="form-group">
+            <label htmlFor="userName" className="form-label">
+              <User className="label-icon" />
+              Your Name
+            </label>
+            <input
+              type="text"
+              id="userName"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              placeholder="Enter your full name"
+              className="form-input"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="userEmail" className="form-label">
+              <Mail className="label-icon" />
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="userEmail"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              placeholder="Enter your email address"
+              className="form-input"
+              required
+            />
+          </div>
+
+          <button type="submit" className="submit-btn create-btn">
+            <Plus className="btn-icon" />
+            Continue to Create Ticket
+          </button>
+        </form>
+      </div>
+    )
+  }
+
+  return (
+    <div className="ticket-form-container">
+      <div className="form-header">
+        <button className="back-btn" onClick={onBack}>
+          <ArrowLeft className="back-icon" />
+        </button>
+      </div>
+      <CreateTicketForm 
+        currentUser={currentUser}
+        onTicketCreated={handleTicketCreated}
+      />
+    </div>
+  )
+}
+
+// Wrapper for TicketDashboard with back button
+// Wrapper for TicketThread with back button and header
+function TicketThreadWrapper({ ticketId, currentUser, onBack }) {
+  return (
+    <div className="ticket-form-container">
+      <div className="form-header">
+        <button className="back-btn" onClick={onBack}>
+          <ArrowLeft className="back-icon" />
+        </button>
+        <div className="form-header-content">
+          <div className="form-header-icon">
+            <MessageSquare className="header-form-icon" />
+            <div className="header-form-glow" />
+          </div>
+          <div>
+            <h2 className="form-title">Support Conversation</h2>
+            <p className="form-subtitle">Chat with our support team about your issue</p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="thread-wrapper">
+        <TicketThread
+          ticketId={ticketId}
+          currentUser={currentUser}
+          userType="customer"
+        />
+      </div>
     </div>
   )
 }

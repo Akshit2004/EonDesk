@@ -1,16 +1,12 @@
-import { Sun, Moon, Home, Headphones, LogOut, User, Menu, X, Settings } from 'lucide-react'
+import { Sun, Moon, Home, Headphones, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../../contexts/ThemeContext'
-import { useAuth } from '../../contexts/AuthContext'
 import './Navbar.css'
 
-function Navbar({ currentPage, showThemeToggle = true, showTagline = false }) {
-  const navigate = useNavigate()
+function Navbar({ currentPage, showThemeToggle = true, showTagline = false, hideUserInfo = false }) {  const navigate = useNavigate()
   const { isDarkTheme, toggleTheme } = useTheme()
-  const { user, logout } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
   const handleNavigation = (page) => {
     if (page === 'home') {
@@ -20,23 +16,8 @@ function Navbar({ currentPage, showThemeToggle = true, showTagline = false }) {
     }
     setIsMobileMenuOpen(false)
   }
-
-  const handleLogout = async () => {
-    try {
-      await logout()
-      navigate('/')
-    } catch (error) {
-      console.error('Logout failed:', error)
-    }
-    setIsUserMenuOpen(false)
-  }
-
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
-
-  const toggleUserMenu = () => {
-    setIsUserMenuOpen(!isUserMenuOpen)
   }
 
   return (
@@ -92,48 +73,7 @@ function Navbar({ currentPage, showThemeToggle = true, showTagline = false }) {
                 )}
                 <div className="theme-glow"></div>
               </div>
-            </button>
-          )}
-          
-          {/* Desktop User Menu */}
-          {user && (
-            <div className="user-menu-container">
-              <button 
-                className={`user-toggle ${isUserMenuOpen ? 'active' : ''}`}
-                onClick={toggleUserMenu}
-              >
-                <div className="user-avatar">
-                  <User className="user-icon" />
-                  <div className="user-status"></div>
-                </div>
-                <div className="user-info">
-                  <span className="user-email">{user.email}</span>
-                  <span className="user-status-text">Online</span>
-                </div>
-              </button>
-              
-              <div className={`user-dropdown ${isUserMenuOpen ? 'open' : ''}`}>
-                <div className="dropdown-header">
-                  <div className="user-avatar large">
-                    <User className="user-icon" />
-                  </div>
-                  <div className="user-details">
-                    <span className="user-name">{user.displayName || user.email}</span>
-                    <span className="user-email">{user.email}</span>
-                  </div>
-                </div>
-                <div className="dropdown-divider"></div>
-                <button className="dropdown-item">
-                  <Settings className="dropdown-icon" />
-                  <span>Settings</span>
-                </button>
-                <button className="dropdown-item logout" onClick={handleLogout}>
-                  <LogOut className="dropdown-icon" />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            </div>
-          )}
+            </button>          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -193,28 +133,11 @@ function Navbar({ currentPage, showThemeToggle = true, showTagline = false }) {
                   <Moon className="theme-icon" />
                 )}
                 <span>{isDarkTheme ? 'Light Mode' : 'Dark Mode'}</span>
-              </button>
-            )}
-            
-            {user && (
-              <div className="mobile-user-section">
-                <div className="mobile-user-info">
-                  <User className="user-icon" />
-                  <span>{user.email}</span>
-                </div>
-                <button className="mobile-logout" onClick={handleLogout}>
-                  <LogOut className="logout-icon" />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            )}
+              </button>            )}
           </div>
         </div>
-      </div>
-
-      {/* Overlay for mobile menu */}
+      </div>      {/* Overlay for mobile menu */}
       {isMobileMenuOpen && <div className="mobile-nav-overlay" onClick={toggleMobileMenu}></div>}
-      {isUserMenuOpen && <div className="user-menu-overlay" onClick={toggleUserMenu}></div>}
     </nav>
   )
 }

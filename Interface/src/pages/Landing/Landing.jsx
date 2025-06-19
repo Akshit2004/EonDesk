@@ -2,15 +2,13 @@ import { useState } from 'react'
 import { Users, Headphones, Sparkles, ArrowRight, Shield, Zap, Sun, Moon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../../contexts/ThemeContext'
-import { useAuth } from '../../contexts/AuthContext'
 import AgentLogin from '../../components/AgentLogin/AgentLogin'
 import Navbar from '../../components/Navbar/Navbar'
 import './Landing.css'
 
-function Landing() {
+function Landing({ onAgentLogin }) {
   const navigate = useNavigate()
   const { isDarkTheme } = useTheme()
-  const { user } = useAuth()
   const [selectedRole, setSelectedRole] = useState('customer') // Default to customer
   const [isToggling, setIsToggling] = useState(false)
   const [showAgentLogin, setShowAgentLogin] = useState(false)
@@ -30,13 +28,21 @@ function Landing() {
       navigate('/support')
     }
   }
+  
   const handleAgentLoginSuccess = (user) => {
     // Handle successful agent login
     console.log('Agent logged in:', user)
-    alert(`Welcome back, ${user.email}! Redirecting to agent portal...`)
-    // Here you would typically navigate to the agent dashboard
-    // For now, we'll just close the modal
     setShowAgentLogin(false)
+    
+    // Call the parent App component's handler to update its state
+    if (onAgentLogin) {
+      onAgentLogin(user)
+    }
+    
+    // Navigate to agent dashboard after state is updated
+    setTimeout(() => {
+      navigate('/agent')
+    }, 100) // Small delay to ensure state update completes
   }
 
   const handleCloseAgentLogin = () => {
@@ -45,7 +51,7 @@ function Landing() {
   
   return (
     <div className={`landing-container ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}>
-      <Navbar currentPage="home" showThemeToggle={true} showTagline={true} />
+      <Navbar currentPage="home" showThemeToggle={true} showTagline={true} hideUserInfo={true} />
       
       {/* Main content */}
       <div className="main-content">
@@ -150,9 +156,7 @@ function Landing() {
 
       {/* Agent Login Modal */}
       <AgentLogin 
-        isOpen={showAgentLogin}
-        onClose={handleCloseAgentLogin}
-        onLoginSuccess={handleAgentLoginSuccess}
+        isOpen={showAgentLogin}        onClose={handleCloseAgentLogin}        onLoginSuccess={handleAgentLoginSuccess}
       />
     </div>
   )

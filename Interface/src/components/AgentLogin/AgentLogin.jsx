@@ -21,22 +21,33 @@ function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
     // Clear error when user starts typing
     if (error) setError('')
   }
-  const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
     try {
+      // Validate input
+      if (!formData.email.trim() || !formData.password.trim()) {
+        throw new Error('Please fill in all fields')
+      }
+
       // Sign in with Firebase
       const user = await signInWithEmail(formData.email, formData.password)
       
       // Call success callback with user data
-      onLoginSuccess(user)
-      onClose()
+      if (onLoginSuccess) {
+        onLoginSuccess(user)
+      }
+      
+      // Clear form and close modal
       setFormData({ email: '', password: '' })
+      setError('')
+      setShowPassword(false)
     } catch (err) {
       // Use Firebase-specific error messages
       setError(getAuthErrorMessage(err))
+      console.error('Agent login error:', err)
     } finally {
       setLoading(false)
     }

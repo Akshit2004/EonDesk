@@ -1,7 +1,7 @@
 import { 
   signInWithEmailAndPassword, 
   signOut, 
-  onAuthStateChanged,
+  onAuthStateChanged as firebaseOnAuthStateChanged,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail
 } from 'firebase/auth';
@@ -19,6 +19,7 @@ export const signInWithEmail = async (email, password) => {
 };
 
 // Sign out
+export { signOut };
 export const signOutUser = async () => {
   try {
     await signOut(auth);
@@ -50,8 +51,13 @@ export const resetPassword = async (email) => {
 };
 
 // Auth state observer
+export const onAuthStateChanged = (callback) => {
+  return firebaseOnAuthStateChanged(auth, callback);
+};
+
+// Legacy export for compatibility
 export const onAuthStateChange = (callback) => {
-  return onAuthStateChanged(auth, callback);
+  return firebaseOnAuthStateChanged(auth, callback);
 };
 
 // Get current user

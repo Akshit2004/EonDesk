@@ -14,7 +14,6 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     // Set up Firebase auth state listener
     const unsubscribe = onAuthStateChange((user) => {
@@ -22,8 +21,16 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     });
 
+    // Fallback timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 5000); // 5 second timeout
+
     // Cleanup subscription on unmount
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      clearTimeout(timeout);
+    };
   }, []);
 
   const logout = async () => {

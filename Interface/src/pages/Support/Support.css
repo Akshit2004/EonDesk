@@ -115,7 +115,21 @@
 }
 
 .light-theme .form-select {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px;
+  padding-right: 3rem;
+  text-indent: 0.01px;
+  text-overflow: '';
+}
+
+/* Remove default arrows for all browsers in light theme */
+.light-theme .form-select::-ms-expand {
+  display: none;
 }
 
 .light-theme .form-select option {
@@ -504,16 +518,26 @@
   z-index: 10;
   cursor: pointer;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background: rgba(40, 40, 40, 0.95);
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   background-size: 16px;
   padding-right: 3rem;
   border: 1px solid rgba(59, 130, 246, 0.4);
-  background-position: right 1rem center;
-  background-size: 16px;
-  padding-right: 3rem;
+}
+
+/* Remove default arrows for all browsers */
+.form-select::-ms-expand {
+  display: none;
+}
+
+/* Firefox specific */
+.form-select {
+  text-indent: 0.01px;
+  text-overflow: '';
 }
 
 /* Custom dropdown styling for better visibility */
@@ -1481,132 +1505,6 @@
   }
 }
 
-/* Dashboard wrapper styles */
-.dashboard-wrapper {
-  background: transparent;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-top: 20px;
-  min-height: 70vh;
-}
-
-.dashboard-wrapper .ticket-dashboard {
-  background: rgba(30, 30, 30, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  border-radius: 8px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-  height: auto;
-  max-height: none;
-}
-
-.light-theme .dashboard-wrapper .ticket-dashboard {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
-}
-
-/* Override ticket dashboard styles for integration */
-.dashboard-wrapper .tickets-list-view {
-  background: transparent;
-  box-shadow: none;
-  border-radius: 0;
-  padding: 20px;
-}
-
-.dashboard-wrapper .ticket-view {
-  background: transparent;
-  box-shadow: none;
-  border-radius: 0;
-}
-
-.dashboard-wrapper .ticket-view-header {
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.light-theme .dashboard-wrapper .ticket-view-header {
-  background: rgba(0, 0, 0, 0.05);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-/* Enhanced form styles for user login */
-.ticket-form-container .dashboard-wrapper {
-  margin-top: 0;
-}
-
-/* Ticket finder styles */
-.input-helper {
-  display: flex;
-  align-items: center;
-  margin-top: 6px;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 13px;
-}
-
-.light-theme .input-helper {
-  color: rgba(30, 41, 59, 0.6);
-}
-
-.helper-icon {
-  width: 14px;
-  height: 14px;
-  margin-right: 6px;
-  flex-shrink: 0;
-}
-
-.helper-text {
-  line-height: 1.4;
-}
-
-.form-note {
-  margin-top: 30px;
-  padding: 20px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 8px;
-}
-
-.light-theme .form-note {
-  background: rgba(59, 130, 246, 0.05);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-}
-
-.note-content {
-  display: flex;
-  gap: 16px;
-}
-
-.note-icon {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  color: #60a5fa;
-}
-
-.note-text h4 {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #60a5fa;
-}
-
-.note-text ul {
-  margin: 0;
-  padding-left: 16px;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.light-theme .note-text ul {
-  color: rgba(30, 41, 59, 0.8);
-}
-
-.note-text li {
-  margin-bottom: 4px;
-}
-
 /* Thread wrapper styles */
 .thread-wrapper {
   background: rgba(30, 30, 30, 0.95);
@@ -1635,31 +1533,79 @@
 
 /* Responsive improvements */
 @media (max-width: 768px) {
-  .input-helper {
-    font-size: 12px;
+  .support-container {
+    padding: 0;
   }
   
-  .helper-icon {
-    width: 12px;
-    height: 12px;
+  .support-content {
+    padding: 1rem;
   }
   
-  .form-note {
-    margin-top: 20px;
-    padding: 16px;
+  .support-header {
+    padding: 0;
+    margin-bottom: 1.5rem;
   }
   
-  .note-content {
-    flex-direction: column;
-    gap: 12px;
+  .support-title {
+    font-size: 2rem;
   }
   
-  .note-icon {
-    align-self: flex-start;
+  .support-subtitle {
+    font-size: 1rem;
+  }
+  
+  .support-options {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .options-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .support-card {
+    padding: 2rem;
+    max-width: 100%;
+    margin: 0 auto;
   }
   
   .thread-wrapper {
     margin-top: 16px;
     min-height: 60vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .support-content {
+    padding: 0.75rem;
+  }
+  
+  .support-header {
+    padding: 0;
+  }
+  
+  .support-title {
+    font-size: 1.75rem;
+  }
+  
+  .support-options {
+    padding: 0;
+  }
+  
+  .support-card {
+    padding: 1.5rem;
+  }
+  
+  .card-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .card-icon .icon {
+    width: 30px;
+    height: 30px;
   }
 }

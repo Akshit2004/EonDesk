@@ -727,88 +727,135 @@ function CreateTicket({ onBack }) {
   )
 }
 
-// Enhanced CreateTicketForm wrapper that handles user setup
+// Enhanced CreateTicketForm wrapper that handles user setup with progressive form
 function EnhancedCreateTicket({ onBack, onTicketCreated }) {
-  const [currentUser, setCurrentUser] = useState(null)
-  const [userEmail, setUserEmail] = useState('')
-  const [userName, setUserName] = useState('')
+  const [currentStep, setCurrentStep] = useState(1)
+  const [formData, setFormData] = useState({
+    // User info
+    name: '',
+    email: '',
+    // Ticket details
+    category: 'general',
+    priority: 'medium',
+    title: '',
+    description: ''
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleUserSetup = (e) => {
-    e.preventDefault()
-    if (userEmail && userName) {
-      setCurrentUser({
-        email: userEmail,
-        name: userName
-      })
+  const steps = [
+    {
+      number: 1,
+      title: 'Contact Information',
+      description: 'Tell us who you are',
+      icon: User,
+      fields: ['name', 'email']
+    },
+    {
+      number: 2,
+      title: 'Issue Details',
+      description: 'Describe your problem',
+      icon: FileText,
+      fields: ['category', 'priority', 'title']
+    },
+    {
+      number: 3,
+      title: 'Additional Information',
+      description: 'Provide more details',
+      icon: MessageSquare,
+      fields: ['description']
+    },
+    {
+      number: 4,
+      title: 'Review & Submit',
+      description: 'Confirm your ticket details',
+      icon: CheckCircle,
+      fields: []
+    }
+  ]
+
+  const categories = [
+    { value: 'general', label: 'General Support' },
+    { value: 'technical', label: 'Technical Issue' },
+    { value: 'billing', label: 'Billing' },
+    { value: 'feature', label: 'Feature Request' },
+    { value: 'bug', label: 'Bug Report' }
+  ]
+
+  const priorities = [
+    { value: 'low', label: 'Low' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'high', label: 'High' },
+    { value: 'urgent', label: 'Urgent' }
+  ]
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+    setError('')
+  }
+
+  const validateStep = (step) => {
+    const stepFields = steps[step - 1].fields
+    for (const field of stepFields) {
+      if (!formData[field] || formData[field].trim() === '') {
+        return false
+      }
+    }
+    return true
+  }
+
+  const handleNext = () => {
+    if (validateStep(currentStep)) {
+      setCurrentStep(prev => Math.min(prev + 1, steps.length))
+    } else {
+      setError('Please fill in all required fields before continuing.')
     }
   }
 
-  const handleTicketCreated = (result) => {
-    if (onTicketCreated) {
-      onTicketCreated(result)
+  const handlePrevious = () => {
+    setCurrentStep(prev => Math.max(prev - 1, 1))
+    setError('')
+  }
+
+  const handleSubmit = async () => {
+    setLoading(true)
+    setError('')
+
+    try {
+      const ticketData = {
+        title: formData.title.trim(),
+        category: formData.category,
+        priority: formData.priority,
+        description: formData.description.trim(),
+        email: formData.email.trim(),
+        name: formData.name.trim()
+      }
+
+      const result = await createTicket(ticketData)
+      
+      if (result.success) {
+        if (onTicketCreated) {
+          onTicketCreated(result)
+        }
+      } else {
+        setError(result.error || 'Failed to create ticket')
+      }
+    } catch (error) {
+      console.error('Error creating ticket:', error)
+      setError('Failed to create ticket. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
-  if (!currentUser) {
-    return (
-      <div className="ticket-form-container">
-        <div className="form-header">
-          <button className="back-btn" onClick={onBack}>
-            <ArrowLeft className="back-icon" />
-          </button>
-          <div className="form-header-content">
-            <div className="form-header-icon">
-              <Plus className="header-form-icon" />
-              <div className="header-form-glow" />
-            </div>
-            <div>
-              <h2 className="form-title">Create Support Ticket</h2>
-              <p className="form-subtitle">First, let's get your contact information</p>
-            </div>
-          </div>
-        </div>
-
-        <form className="ticket-form" onSubmit={handleUserSetup}>
-          <div className="form-group">
-            <label htmlFor="userName" className="form-label">
-              <User className="label-icon" />
-              Your Name
-            </label>
-            <input
-              type="text"
-              id="userName"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="Enter your full name"
-              className="form-input"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="userEmail" className="form-label">
-              <Mail className="label-icon" />
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="userEmail"
-              value={userEmail}
-              onChange={(e) => setUserEmail(e.target.value)}
-              placeholder="Enter your email address"
-              className="form-input"
-              required
-            />
-          </div>
-
-          <button type="submit" className="submit-btn create-btn">
-            <Plus className="btn-icon" />
-            Continue to Create Ticket
-          </button>
-        </form>
-      </div>
-    )
+  const getProgressPercentage = () => {
+    return ((currentStep - 1) / (steps.length - 1)) * 100
   }
+
+  const getCurrentStepData = () => steps[currentStep - 1]
 
   return (
     <div className="ticket-form-container">
@@ -816,11 +863,251 @@ function EnhancedCreateTicket({ onBack, onTicketCreated }) {
         <button className="back-btn" onClick={onBack}>
           <ArrowLeft className="back-icon" />
         </button>
+        <div className="form-header-content">
+          <div className="form-header-icon">
+            <Plus className="header-form-icon" />
+            <div className="header-form-glow" />
+          </div>
+          <div>
+            <h2 className="form-title">Create Support Ticket</h2>
+            <p className="form-subtitle">Step {currentStep} of {steps.length}</p>
+          </div>
+        </div>
       </div>
-      <CreateTicketForm 
-        currentUser={currentUser}
-        onTicketCreated={handleTicketCreated}
-      />
+
+      <div className="progressive-form">
+        {/* Progress Bar */}
+        <div className="progress-bar">
+          <div className="progress-steps">
+            {steps.map((step, index) => {
+              const StepIcon = step.icon
+              const isActive = currentStep === step.number
+              const isCompleted = currentStep > step.number
+              
+              return (
+                <div 
+                  key={step.number}
+                  className={`progress-step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                >
+                  <div className="step-circle">
+                    {isCompleted ? (
+                      <CheckCircle className="step-icon" />
+                    ) : (
+                      <span className="step-number">{step.number}</span>
+                    )}
+                  </div>
+                  <div className="step-info">
+                    <span className="step-label">{step.title}</span>
+                    {(isActive || isCompleted) && (
+                      <span className="step-description">{step.description}</span>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          <div className="progress-line">
+            <div 
+              className="progress-fill" 
+              style={{ width: `${getProgressPercentage()}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Step Content */}
+        <div className="step-content">
+          <div className="step-header">
+            <h3 className="step-title">{getCurrentStepData().title}</h3>
+            <p className="step-description">{getCurrentStepData().description}</p>
+          </div>
+
+          {error && (
+            <div className="error-message">
+              <AlertCircle className="error-icon" />
+              {error}
+            </div>
+          )}
+
+          {/* Step 1: Contact Information */}
+          {currentStep === 1 && (
+            <div className="form-fields">
+              <div className="form-group">
+                <label className="form-label">
+                  <User className="label-icon" />
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  placeholder="Enter your full name"
+                  className="form-input"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">
+                  <Mail className="label-icon" />
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  placeholder="Enter your email address"
+                  className="form-input"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: Issue Details */}
+          {currentStep === 2 && (
+            <div className="form-fields">
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">
+                    <Layers className="label-icon" />
+                    Category *
+                  </label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => handleInputChange('category', e.target.value)}
+                    className="form-select"
+                  >
+                    {categories.map(cat => (
+                      <option key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">
+                    <AlertCircle className="label-icon" />
+                    Priority *
+                  </label>
+                  <select
+                    value={formData.priority}
+                    onChange={(e) => handleInputChange('priority', e.target.value)}
+                    className="form-select"
+                  >
+                    {priorities.map(priority => (
+                      <option key={priority.value} value={priority.value}>
+                        {priority.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">
+                  <FileText className="label-icon" />
+                  Subject *
+                </label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  placeholder="Brief description of your issue"
+                  className="form-input"
+                  maxLength={100}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Additional Information */}
+          {currentStep === 3 && (
+            <div className="form-fields">
+              <div className="form-group">
+                <label className="form-label">
+                  <MessageSquare className="label-icon" />
+                  Description *
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  placeholder="Please provide detailed information about your issue..."
+                  className="form-textarea"
+                  rows={8}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Review & Submit */}
+          {currentStep === 4 && (
+            <div className="form-summary">
+              <h4 className="summary-title">Review Your Ticket</h4>
+              <div className="summary-item">
+                <span className="summary-label">Name:</span>
+                <span className="summary-value">{formData.name}</span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Email:</span>
+                <span className="summary-value">{formData.email}</span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Category:</span>
+                <span className="summary-value">
+                  {categories.find(c => c.value === formData.category)?.label}
+                </span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Priority:</span>
+                <span className="summary-value">
+                  {priorities.find(p => p.value === formData.priority)?.label}
+                </span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Subject:</span>
+                <span className="summary-value">{formData.title}</span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Description:</span>
+                <span className="summary-value">{formData.description}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Navigation */}
+        <div className="form-navigation">
+          {currentStep > 1 && (
+            <button 
+              type="button"
+              onClick={handlePrevious}
+              className="nav-btn prev-btn"
+              disabled={loading}
+            >
+              <ChevronLeft className="nav-icon" />
+              Previous
+            </button>
+          )}
+          
+          {currentStep < steps.length ? (
+            <button 
+              type="button"
+              onClick={handleNext}
+              className={`nav-btn next-btn ${!validateStep(currentStep) ? 'disabled' : ''}`}
+              disabled={!validateStep(currentStep)}
+            >
+              Next
+              <ChevronRight className="nav-icon" />
+            </button>
+          ) : (
+            <button 
+              type="button"
+              onClick={handleSubmit}
+              className="nav-btn next-btn"
+              disabled={loading}
+            >
+              {loading ? 'Creating...' : 'Create Ticket'}
+              <Ticket className="nav-icon" />
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

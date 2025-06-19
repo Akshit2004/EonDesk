@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import { createTicket } from '../../firebase/tickets';
 import './CreateTicketForm.css';
 
@@ -56,9 +57,22 @@ const CreateTicketForm = ({ onTicketCreated, currentUser }) => {
         name: currentUser.name || currentUser.email
       };
 
-      const result = await createTicket(ticketData);
+      const result = await createTicket(ticketData);      if (result.success) {
+        // Show success message with email confirmation
+        toast.success(
+          `✅ Ticket created successfully! 
+           📧 Confirmation email sent to ${currentUser.email}
+           🎫 Ticket ID: ${result.ticketId}`, 
+          {
+            position: "top-right",
+            autoClose: 8000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
 
-      if (result.success) {
         // Reset form
         setFormData({
           title: '',
@@ -73,6 +87,7 @@ const CreateTicketForm = ({ onTicketCreated, currentUser }) => {
         }
       } else {
         setError(result.error);
+        toast.error(`Failed to create ticket: ${result.error}`);
       }
     } catch (error) {
       console.error('Error creating ticket:', error);

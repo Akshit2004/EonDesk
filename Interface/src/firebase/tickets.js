@@ -16,6 +16,7 @@ import {
   runTransaction
 } from 'firebase/firestore';
 import { db } from './config';
+import { sendTicketConfirmationEmail, sendSupportNotificationEmail } from '../services/emailService';
 
 // Collection reference
 const TICKETS_COLLECTION = 'support_tickets';
@@ -126,16 +127,45 @@ export const createTicket = async (ticketData) => {
       timestamp: serverTimestamp(),
       attachments: [],
       read_by: [customerEmail]
+    };    await addDoc(collection(db, TICKETS_COLLECTION, docRef.id, 'messages'), messageData);
+    
+    // Send automated confirmation email to customer
+    const emailData = {
+      ticketId,
+      customer_email: customerEmail,
+      customer_name: customerName,
+      title,
+      description,
+      priority: ticket.priority,
+      category
     };
 
-    await addDoc(collection(db, TICKETS_COLLECTION, docRef.id, 'messages'), messageData);
+    try {
+      const emailResult = await sendTicketConfirmationEmail(emailData);
+      if (emailResult.success) {
+        console.log('Confirmation email sent successfully');
+      } else {
+        console.warn('Failed to send confirmation email:', emailResult.error);
+      }
+
+      // Send notification to support team
+      const supportEmailResult = await sendSupportNotificationEmail(emailData);
+      if (supportEmailResult.success) {
+        console.log('Support notification email sent successfully');
+      } else {
+        console.warn('Failed to send support notification:', supportEmailResult.error);
+      }
+    } catch (emailError) {
+      console.warn('Email service error:', emailError);
+      // Don't fail the ticket creation if email fails
+    }
     
     return {
       success: true,
       ticketId,
       docId: docRef.id,
-      message: 'Ticket created successfully'
-    };  } catch (error) {
+      message: 'Ticket created successfully. Confirmation email sent to ' + customerEmail
+    };} catch (error) {
     console.error('Error creating ticket:', error);
     
     // Provide more specific error messages

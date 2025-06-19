@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChange } from '../firebase';
 
 const AuthContext = createContext();
 
@@ -16,12 +15,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChange((user) => {
-      setUser(user);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    // Removed Firebase auth state change listener
+    setLoading(false);
   }, []);
 
   const value = {

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { X, Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react'
-import { signIn } from '../../firebase/auth'
 import './AgentLogin.css'
 
 function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
@@ -28,17 +27,13 @@ function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
     setError('')
 
     try {
-      const { user, error } = await signIn(formData.email, formData.password)
+      // Removed Firebase signIn logic
       
-      if (error) {
-        setError(error)
-      } else if (user) {
-        // Success - call the success callback
-        onLoginSuccess(user)
-        onClose()
-        // Reset form
-        setFormData({ email: '', password: '' })
-      }
+      // Simulate successful login for demonstration
+      const user = { email: formData.email } // Mock user object
+      onLoginSuccess(user)
+      onClose()
+      setFormData({ email: '', password: '' })
     } catch (err) {
       setError('An unexpected error occurred. Please try again.')
     } finally {

@@ -4,7 +4,10 @@ import { useAuth } from '../../contexts/AuthContext';
 import StatCard from './components/StatCard';
 import TicketsList from './components/TicketsList';
 import TicketDetailsModal from './components/TicketDetailsModal';
+import CreateTicketForm from '../../components/TicketDashboard/CreateTicketForm';
+import AgentSidebar from './components/AgentSidebar';
 import './AgentDashboard.css';
+import './components/AgentSidebar.css';
 
 const AgentDashboard = () => {
   const [tickets, setTickets] = useState([]);
@@ -21,7 +24,8 @@ const AgentDashboard = () => {
   const [filter, setFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [ticketsPerPage] = useState(10);
-  const { user } = useAuth();
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const { user, logout } = useAuth();
 
   // Fetch tickets and stats on component mount
   useEffect(() => {
@@ -81,6 +85,21 @@ const AgentDashboard = () => {
     setCurrentPage(1); // Reset to first page when filter changes
   };
 
+  const handleTicketCreated = () => {
+    setShowCreateModal(false);
+    fetchTicketsAndStats();
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      // Optionally redirect to login page
+      window.location.href = '/';
+    } catch (error) {
+      alert('Logout failed. Please try again.');
+    }
+  };
+
   const statCards = [
     {
       title: 'Total Tickets',
@@ -123,56 +142,61 @@ const AgentDashboard = () => {
 
   return (
     <div className="agent-dashboard">
-      <div className="dashboard-header">
-        <h1>Support Agent Dashboard</h1>
-        <p>Welcome back, {user?.displayName || user?.email}!</p>
-      </div>
-
-      {/* Stats Cards Section */}
-      <div className="stats-section">
-        <div className="stats-grid">
-          {statCards.map((stat, index) => (
-            <StatCard key={index} {...stat} />
-          ))}
+      <AgentSidebar onLogout={handleLogout} />
+      <div className="dashboard-main-content" style={{ flex: 1, marginLeft: 240, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <div className="dashboard-header">
+          <h1>Support Agent Dashboard</h1>
         </div>
-      </div>
 
-      {/* Tickets Section */}
-      <div className="tickets-section">
-        <div className="tickets-header">
-          <h2>Support Tickets</h2>
-          <div className="filters">            <select 
-              value={filter} 
-              onChange={(e) => handleFilterChange(e.target.value)}
-              className="filter-select"
-            >
-              <option value="all">All Tickets</option>
-              <option value="open">Open</option>
-              <option value="inProgress">In Progress</option>
-              <option value="resolved">Resolved</option>
-            </select>
-            <button 
-              onClick={fetchTicketsAndStats}
-              className="refresh-btn"
-            >
-              🔄 Refresh
-            </button>
+        {/* Stats Cards Section */}
+        <div className="stats-section">
+          <div className="stats-grid">
+            {statCards.map((stat, index) => (
+              <StatCard key={index} {...stat} />
+            ))}
           </div>
-        </div>        <TicketsList 
-          tickets={currentTickets}
-          onTicketClick={handleTicketClick}
-          onStatusUpdate={handleStatusUpdate}
-          currentUser={user}
-          totalTickets={filteredTickets.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          ticketsPerPage={ticketsPerPage}
-        />
-      </div>
+        </div>
 
-      {/* Ticket Details Modal */}
-      {showModal && selectedTicket && (        <TicketDetailsModal
+        {/* Tickets Section */}
+        <div className="tickets-section">
+          <div className="tickets-header">
+            <h2>Support Tickets</h2>
+            <div className="filters">
+              <select 
+                value={filter} 
+                onChange={(e) => handleFilterChange(e.target.value)}
+                className="filter-select"
+              >
+                <option value="all">All Tickets</option>
+                <option value="open">Open</option>
+                <option value="inProgress">In Progress</option>
+                <option value="resolved">Resolved</option>
+              </select>
+              <button 
+                onClick={fetchTicketsAndStats}
+                className="refresh-btn"
+              >
+                🔄 Refresh
+              </button>
+              <button className="create-ticket-btn" onClick={() => setShowCreateModal(true)}>
+                + Create Ticket
+              </button>
+            </div>
+          </div>        <TicketsList 
+            tickets={currentTickets}
+            onTicketClick={handleTicketClick}
+            onStatusUpdate={handleStatusUpdate}
+            currentUser={user}
+            totalTickets={filteredTickets.length}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            ticketsPerPage={ticketsPerPage}
+          />
+        </div>
+
+        {/* Ticket Details Modal */}
+        {showModal && selectedTicket && (        <TicketDetailsModal
           ticket={selectedTicket}
           onClose={() => {
             setShowModal(false);
@@ -181,7 +205,23 @@ const AgentDashboard = () => {
           onStatusUpdate={handleStatusUpdate}
           currentUser={user}
         />
+      )}      {/* Create Ticket Modal */}
+      {showCreateModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button className="modal-close" onClick={() => setShowCreateModal(false)}>&times;</button>
+              <h2>Create New Ticket</h2>
+              <p className="modal-subtitle">Submit a new support request</p>
+            </div>
+            <CreateTicketForm onTicketCreated={handleTicketCreated} currentUser={{
+              email: user?.email,
+              name: user?.displayName || user?.email
+            }} />
+          </div>
+        </div>
       )}
+      </div>
     </div>
   );
 };

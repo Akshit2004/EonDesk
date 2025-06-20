@@ -5,6 +5,22 @@
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   overflow-x: hidden;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  display: flex;
+}
+
+.dashboard-main-content {
+  flex: 1;
+  margin-left: 240px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 900px) {
+  .dashboard-main-content {
+    margin-left: 64px;
+  }
 }
 
 .dashboard-header {
@@ -198,6 +214,356 @@
 
 .refresh-btn:active {
   transform: translateY(-1px);
+}
+
+.create-ticket-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 1rem;
+  transition: all 0.3s;
+}
+
+.create-ticket-btn:hover {
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modalFadeIn 0.4s ease-out;
+  padding: 1rem;
+}
+
+@keyframes modalFadeIn {
+  from { 
+    opacity: 0; 
+    backdrop-filter: blur(0px);
+  }
+  to { 
+    opacity: 1; 
+    backdrop-filter: blur(8px);
+  }
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 24px;
+  padding: 0;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(59, 130, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  animation: modalSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes modalSlideIn {
+  0% { 
+    transform: scale(0.8) translateY(60px) rotateX(15deg); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: scale(1) translateY(0) rotateX(0deg); 
+    opacity: 1; 
+  }
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-radius: 24px 24px 0 0;
+  padding: 2rem 2.5rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='7' cy='7' r='7'/%3E%3Ccircle cx='53' cy='7' r='7'/%3E%3Ccircle cx='7' cy='53' r='7'/%3E%3Ccircle cx='53' cy='53' r='7'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.1;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1) rotate(90deg);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.create-ticket-form {
+  padding: 2.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 0 0 24px 24px;
+}
+
+.create-ticket-form h2 {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.025em;
+  position: relative;
+  z-index: 2;
+}
+
+.modal-subtitle {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Enhanced form styles for modal */
+.create-ticket-form .form-group {
+  margin-bottom: 1.75rem;
+}
+
+.create-ticket-form label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.create-ticket-form input,
+.create-ticket-form select,
+.create-ticket-form textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  color: #374151;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.create-ticket-form input:focus,
+.create-ticket-form select:focus,
+.create-ticket-form textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 
+    0 0 0 4px rgba(59, 130, 246, 0.1),
+    0 4px 12px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px);
+}
+
+.create-ticket-form input::placeholder,
+.create-ticket-form textarea::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.create-ticket-form textarea {
+  min-height: 120px;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.6;
+}
+
+.create-ticket-form button[type="submit"] {
+  width: 100%;
+  padding: 1.25rem 2rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-top: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+}
+
+.create-ticket-form button[type="submit"]:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(59, 130, 246, 0.4);
+}
+
+.create-ticket-form button[type="submit"]:active {
+  transform: translateY(-1px);
+}
+
+.create-ticket-form .error-message {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border: 1px solid #f87171;
+  color: #dc2626;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Responsive modal */
+@media (max-width: 600px) {
+  .modal-content {
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    min-width: 0;
+    width: 98vw;
+    border-radius: 12px;
+  }
+  .modal-close {
+    top: 0.7rem;
+    right: 1rem;
+    font-size: 2rem;
+  }
+}
+
+/* Responsive modal enhancements */
+@media (max-width: 768px) {
+  .modal-content {
+    max-width: 95vw;
+    margin: 0 1rem;
+  }
+  
+  .modal-header {
+    padding: 1.5rem 2rem 1.25rem;
+  }
+  
+  .create-ticket-form {
+    padding: 2rem 1.5rem;
+  }
+  
+  .create-ticket-form h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    max-width: 100vw;
+    margin: 0 0.5rem;
+    border-radius: 20px;
+  }
+  
+  .modal-header {
+    padding: 1.25rem 1.5rem 1rem;
+    border-radius: 20px 20px 0 0;
+  }
+  
+  .create-ticket-form {
+    padding: 1.5rem 1.25rem;
+    border-radius: 0 0 20px 20px;
+  }
+  
+  .create-ticket-form h2 {
+    font-size: 1.25rem;
+  }
+  
+  .modal-close {
+    top: 1rem;
+    right: 1.25rem;
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Dark theme support for enhanced modal */
+:global(.dark-theme) .modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+:global(.dark-theme) .modal-content {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(59, 130, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+:global(.dark-theme) .create-ticket-form {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+:global(.dark-theme) .create-ticket-form label {
+  color: #e2e8f0;
+}
+
+:global(.dark-theme) .create-ticket-form input,
+:global(.dark-theme) .create-ticket-form select,
+:global(.dark-theme) .create-ticket-form textarea {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+  border-color: #4b5563;
+  color: #e2e8f0;
+}
+
+:global(.dark-theme) .create-ticket-form input:focus,
+:global(.dark-theme) .create-ticket-form select:focus,
+:global(.dark-theme) .create-ticket-form textarea:focus {
+  background: #374151;
+  border-color: #60a5fa;
+  box-shadow: 
+    0 0 0 4px rgba(96, 165, 250, 0.1),
+    0 4px 12px rgba(96, 165, 250, 0.15);
+}
+
+:global(.dark-theme) .create-ticket-form input::placeholder,
+:global(.dark-theme) .create-ticket-form textarea::placeholder {
+  color: #9ca3af;
+}
+
+:global(.dark-theme) .create-ticket-form .error-message {
+  background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+  border-color: #dc2626;
+  color: #fca5a5;
 }
 
 /* Responsive Design */

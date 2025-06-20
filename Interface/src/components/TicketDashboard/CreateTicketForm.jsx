@@ -3,8 +3,9 @@ import { toast } from 'react-toastify';
 import { createTicket } from '../../firebase/tickets';
 import './CreateTicketForm.css';
 
-const CreateTicketForm = ({ onTicketCreated, currentUser }) => {
-  const [formData, setFormData] = useState({
+const CreateTicketForm = ({ onTicketCreated, currentUser }) => {  const [formData, setFormData] = useState({
+    name: currentUser?.name || '',
+    email: currentUser?.email || '',
     title: '',
     category: 'general',
     priority: 'medium',
@@ -35,33 +36,30 @@ const CreateTicketForm = ({ onTicketCreated, currentUser }) => {
       [name]: value
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!currentUser) {
-      setError('User information is required');
+    if (!formData.name.trim() || !formData.email.trim()) {
+      setError('Name and email are required');
       return;
     }
 
     setLoading(true);
     setError(null);
 
-    try {
-      const ticketData = {
+    try {      const ticketData = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
         title: formData.title.trim(),
         category: formData.category,
         priority: formData.priority,
-        description: formData.description.trim(),
-        email: currentUser.email,
-        name: currentUser.name || currentUser.email
+        description: formData.description.trim()
       };
 
-      const result = await createTicket(ticketData);      if (result.success) {
-        // Show success message with email confirmation
+      const result = await createTicket(ticketData);      if (result.success) {        // Show success message with email confirmation
         toast.success(
           `✅ Ticket created successfully! 
-           📧 Confirmation email sent to ${currentUser.email}
+           📧 Confirmation email sent to ${formData.email}
            🎫 Ticket ID: ${result.ticketId}`, 
           {
             position: "top-right",
@@ -75,6 +73,8 @@ const CreateTicketForm = ({ onTicketCreated, currentUser }) => {
 
         // Reset form
         setFormData({
+          name: currentUser?.name || '',
+          email: currentUser?.email || '',
           title: '',
           category: 'general',
           priority: 'medium',
@@ -105,9 +105,37 @@ const CreateTicketForm = ({ onTicketCreated, currentUser }) => {
         <div className="error-message">
           {error}
         </div>
-      )}
+      )}      <form onSubmit={handleSubmit}>
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="name">Full Name *</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              placeholder="Enter your full name"
+              disabled={loading}
+            />
+          </div>
 
-      <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="email">Email Address *</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              placeholder="Enter your email address"
+              disabled={loading}
+            />
+          </div>
+        </div>
+
         <div className="form-group">
           <label htmlFor="title">Subject *</label>
           <input
@@ -171,12 +199,10 @@ const CreateTicketForm = ({ onTicketCreated, currentUser }) => {
             placeholder="Please provide detailed information about your issue..."
             disabled={loading}
           />
-        </div>
-
-        <div className="form-actions">
+        </div>        <div className="form-actions">
           <button
             type="submit"
-            disabled={loading || !formData.title.trim() || !formData.description.trim()}
+            disabled={loading || !formData.name.trim() || !formData.email.trim() || !formData.title.trim() || !formData.description.trim()}
             className="submit-button"
           >
             {loading ? 'Creating...' : 'Create Ticket'}

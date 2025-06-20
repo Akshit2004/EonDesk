@@ -51,40 +51,59 @@ const EmailsDashboard = () => {
     const extractedData = gmailService.extractTicketDataFromEmail(email);
     setTicketFormData(extractedData);
     setShowCreateTicket(true);
-  };
-
-  const handleTicketCreated = async (result) => {
+  };  const handleTicketCreated = async (result) => {
     if (result.success && ticketFormData?.originalEmail) {
       try {
         // Send automated reply with ticket number
-        await gmailService.sendTicketConfirmationReply(
+        const emailResult = await gmailService.sendTicketConfirmationReply(
           ticketFormData.originalEmail, 
           result.ticketId
         );
         
-        toast.success(`Ticket #${result.ticketId} created and confirmation email sent!`);
-        
-        // Remove email from dashboard
-        await handleRemoveEmail(ticketFormData.originalEmailId);
+        if (emailResult.success) {
+          toast.success(`Ticket #${result.ticketId} created and confirmation email sent!`);
+          
+          // Remove email from dashboard after successful email send
+          const removeResult = await gmailService.archiveEmail(ticketFormData.originalEmailId);
+          if (removeResult.success) {
+            setEmails(prev => prev.filter(email => email.id !== ticketFormData.originalEmailId));
+            setSelectedEmail(null);
+          } else {
+            console.error('Error removing email:', removeResult.error);
+            toast.warning('Ticket created and email sent, but failed to remove email from dashboard');
+          }
+        } else {
+          toast.warning(`Ticket #${result.ticketId} created but failed to send confirmation email: ${emailResult.error}`);
+        }
         
       } catch (error) {
-        console.error('Error sending confirmation email:', error);
-        toast.warning(`Ticket created but failed to send confirmation email: ${error.message}`);
+        console.error('Error in ticket creation process:', error);
+        toast.warning(`Ticket #${result.ticketId} created but encountered an error: ${error.message}`);
       }
+    } else if (result.success) {
+      // Ticket created successfully but no email data
+      toast.success(`Ticket #${result.ticketId} created successfully!`);
+    } else {
+      // Ticket creation failed
+      toast.error(`Failed to create ticket: ${result.error || 'Unknown error'}`);
     }
     
     setShowCreateTicket(false);
     setTicketFormData(null);
   };
-
   const handleRemoveEmail = async (emailId) => {
     setProcessingEmails(prev => new Set(prev).add(emailId));
     
     try {
-      await gmailService.archiveEmail(emailId);
-      setEmails(prev => prev.filter(email => email.id !== emailId));
-      setSelectedEmail(null);
-      toast.success('Email removed from dashboard');
+      const result = await gmailService.archiveEmail(emailId);
+      
+      if (result.success) {
+        setEmails(prev => prev.filter(email => email.id !== emailId));
+        setSelectedEmail(null);
+        toast.success('Email removed from dashboard');
+      } else {
+        toast.error(`Failed to remove email: ${result.error}`);
+      }
     } catch (error) {
       console.error('Error removing email:', error);
       toast.error('Failed to remove email');

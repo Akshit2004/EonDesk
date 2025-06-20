@@ -184,16 +184,24 @@ ${originalEmail.body}
       });
 
       const result = await response.json();
-      
-      if (response.ok) {
+        if (response.ok) {
         console.log('Ticket confirmation email sent successfully');
         return { success: true, messageId: result.id };
       } else {
-        throw new Error('Failed to send confirmation email');
+        console.error('Failed to send confirmation email:', result);
+        return { 
+          success: false, 
+          error: result.error?.message || 'Failed to send confirmation email',
+          details: result
+        };
       }
     } catch (error) {
       console.error('Error sending ticket confirmation email:', error);
-      throw error;
+      return { 
+        success: false, 
+        error: error.message || 'Network error while sending confirmation email',
+        details: error
+      };
     }
   }
 
@@ -219,16 +227,25 @@ ${originalEmail.body}
             addLabelIds: ['PROCESSED'] // Custom label for processed emails
           }),
         }
-      );
-
-      if (response.ok) {
+      );      if (response.ok) {
+        console.log('Email archived successfully');
         return { success: true };
       } else {
-        throw new Error('Failed to archive email');
+        const result = await response.json();
+        console.error('Failed to archive email:', result);
+        return { 
+          success: false, 
+          error: result.error?.message || 'Failed to archive email',
+          details: result
+        };
       }
     } catch (error) {
       console.error('Error archiving email:', error);
-      throw error;
+      return { 
+        success: false, 
+        error: error.message || 'Network error while archiving email',
+        details: error
+      };
     }
   }
 

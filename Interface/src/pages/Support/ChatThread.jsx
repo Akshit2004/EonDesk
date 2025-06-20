@@ -395,14 +395,13 @@ export default function ChatThread({ ticket, onBack }) {
     );
   };
   useEffect(() => {
-    // Prevent background scroll when modal is open
-    document.body.classList.add('modal-open');
-    return () => {
-      document.body.classList.remove('modal-open');
-    };
+    // Remove modal-open class if present (since not a modal anymore)
+    document.body.classList.remove('modal-open');
+    // No-op cleanup
+    return () => {};
   }, []);
   return (
-    <div className="chat-thread-modal-overlay">
+    <div className="chat-thread-fullscreen">
       <div className="chat-thread-container forum-centered">
         <div className="thread-header">
           <button className="back-btn" onClick={onBack} title="Close">

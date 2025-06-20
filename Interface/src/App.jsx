@@ -7,6 +7,7 @@ import { initializeEmailJS } from './services/emailService'
 import { onAuthStateChanged } from './firebase/auth'
 import Landing from './pages/Landing/Landing'
 import Support from './pages/Support/Support'
+import AgentDashboard from './pages/AgentDashboard'
 import AgentLogin from './components/AgentLogin/AgentLogin'
 import './App.css'
 import 'react-toastify/dist/ReactToastify.css'
@@ -60,6 +61,7 @@ function App() {
           <div className="App">            <Routes>
               <Route path="/" element={<Landing onAgentLogin={handleLandingAgentLogin} />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/agent-dashboard" element={<AgentDashboard />} />
             </Routes>
 
             {/* Agent Login Modal */}

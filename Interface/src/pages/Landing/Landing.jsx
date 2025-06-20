@@ -38,10 +38,9 @@ function Landing({ onAgentLogin }) {
     if (onAgentLogin) {
       onAgentLogin(user)
     }
-    
-    // Navigate to agent dashboard after state is updated
+      // Navigate to agent dashboard after state is updated
     setTimeout(() => {
-      navigate('/agent')
+      navigate('/agent-dashboard')
     }, 100) // Small delay to ensure state update completes
   }
 

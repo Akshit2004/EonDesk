@@ -1,4 +1,17 @@
 /* App.css - Main application styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 :root {
   --primary-bg: #ffffff;
   --secondary-bg: #f8fafc;

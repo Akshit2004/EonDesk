@@ -89,15 +89,14 @@ function Landing({ onAgentLogin }) {
                     <Users className="role-icon" />
                     <div className="icon-glow" />
                   </div>
-                  <h3 className="role-title">Customer Portal</h3>
-                  <p className="role-description">
+                  <h3 className="role-title">Customer Portal</h3>                  <p className="role-description">
                     Get instant help, track tickets, and access our knowledge base
                   </p>
-                  <div className="role-features">
+                  {/* <div className="role-features">
                     <span className="feature-tag">24/7 Support</span>
                     <span className="feature-tag">Live Chat</span>
                     <span className="feature-tag">AI Assistant</span>
-                  </div>
+                  </div> */}
                   <div className="role-action">
                     <span>Get Support</span>
                     <ArrowRight className="arrow-icon" />
@@ -123,39 +122,17 @@ function Landing({ onAgentLogin }) {
                     <ArrowRight className="arrow-icon" />
                   </div>
                 </div>
-              )}
-            </div>
-
-            <div className="stats-section">
-              <div className="stat-item">
-                <Zap className="stat-icon" />
-                <div className="stat-content">
-                  <span className="stat-number">99.9%</span>
-                  <span className="stat-label">Uptime</span>
-                </div>
-              </div>
-              <div className="stat-item">
-                <Users className="stat-icon" />
-                <div className="stat-content">
-                  <span className="stat-number">10K+</span>
-                  <span className="stat-label">Happy Users</span>
-                </div>
-              </div>
-              <div className="stat-item">
-                <Sparkles className="stat-icon" />
-                <div className="stat-content">
-                  <span className="stat-number">2min</span>
-                  <span className="stat-label">Response Time</span>
-                </div>
-              </div>
-            </div>          
+              )}            
+              </div>          
           </div>
         </main>
       </div>
 
       {/* Agent Login Modal */}
       <AgentLogin 
-        isOpen={showAgentLogin}        onClose={handleCloseAgentLogin}        onLoginSuccess={handleAgentLoginSuccess}
+        isOpen={showAgentLogin}        
+        onClose={handleCloseAgentLogin}        
+        onLoginSuccess={handleAgentLoginSuccess}
       />
     </div>
   )

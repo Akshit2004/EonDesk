@@ -561,81 +561,6 @@
   transform: translateX(3px);
 }
 
-/* Stats section */
-.stats-section {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
-  padding: 1rem 1.5rem;
-  border-radius: 10px;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  transition: all 0.3s ease;
-}
-
-/* Light Theme Stats */
-.light-theme .stat-item {
-  background: rgba(255, 255, 255, 0.8);
-  border-color: rgba(59, 130, 246, 0.2);
-}
-
-.stat-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
-  border-color: #3b82f6;
-}
-
-.stat-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  color: #3b82f6;
-  transition: transform 0.3s ease;
-}
-
-.stat-item:hover .stat-icon {
-  transform: scale(1.1);
-}
-
-.stat-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-number {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-/* Light Theme Stat Number */
-.light-theme .stat-number {
-  color: #3b82f6;
-}
-
-.stat-label {
-  font-size: 0.75rem;
-  color: #d1d5db;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 500;
-}
-
-/* Light Theme Stat Label */
-.light-theme .stat-label {
-  color: #6c757d;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 500;
-}
-
 /* Responsive design */
 @media (max-width: 768px) {
   .header {
@@ -647,17 +572,8 @@
   .role-selection {
     grid-template-columns: 1fr;
   }
-
   .role-card {
     padding: 2rem;
-  }
-
-  .stats-section {
-    gap: 1.5rem;
-  }
-
-  .stat-item {
-    padding: 1rem 1.5rem;
   }
 
   .hero-title {
@@ -673,14 +589,8 @@
   .role-selection {
     grid-template-columns: 1fr;
   }
-  
-  .role-card {
+    .role-card {
     padding: 1.5rem;
-  }
-  
-  .stats-section {
-    flex-direction: column;
-    align-items: center;
   }
 
   .hero-title {

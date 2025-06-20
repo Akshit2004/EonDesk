@@ -1,4 +1,4 @@
-/* Email-like Thread Interface */
+/* Threaded Conversation Interface */
 .chat-thread-container {
   background: #fff;
   border-radius: 0;
@@ -18,13 +18,13 @@
   bottom: 0;
 }
 
-/* Email Header */
-.email-header {
+/* Thread Header */
+.thread-header {
   display: flex;
   align-items: center;
   padding: 20px 24px;
   border-bottom: 2px solid #f0f2f5;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
   color: white;
 }
 
@@ -59,7 +59,7 @@
   margin-bottom: 8px;
 }
 
-.mail-icon {
+.thread-icon {
   width: 24px;
   height: 24px;
 }
@@ -87,23 +87,28 @@
   font-weight: 500;
 }
 
+.message-count {
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
 .status-open { background: rgba(52, 168, 83, 0.2); border-color: rgba(52, 168, 83, 0.4); }
 .status-pending { background: rgba(255, 193, 7, 0.2); border-color: rgba(255, 193, 7, 0.4); }
 .status-closed { background: rgba(108, 117, 125, 0.2); border-color: rgba(108, 117, 125, 0.4); }
 
-/* Email Thread */
-.email-thread {
+/* Thread Content */
+.thread-content {
   flex: 1;
   padding: 0;
   overflow-y: auto;
   background: #f8f9fa;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 210px); /* Subtract header height + navbar padding */
-  min-height: 0; /* Allow shrinking */
-}
-
-.thread-loading, .thread-empty {
+  height: calc(100vh - 210px);
+  min-height: 0;
+}.thread-loading, .thread-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,54 +125,91 @@
   opacity: 0.5;
 }
 
-/* Email Message */
-.email-message {
+/* Thread Messages Container */
+.thread-messages {
+  padding: 16px;
+  flex: 1;
+}
+
+/* Thread Container */
+.thread-container {
+  margin-bottom: 8px;
+}
+
+/* Thread Message */
+.thread-message {
   background: #fff;
-  margin: 0; /* Remove margin between messages */
-  border-radius: 0; /* Remove border radius for email-like appearance */
-  box-shadow: none; /* Remove individual shadows */
-  border: none;
-  border-bottom: 3px solid #e9ecef; /* Add separator line between emails */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 8px;
+  margin-left: calc(var(--thread-depth, 0) * 24px);
+  border: 2px solid transparent;
   transition: all 0.3s ease;
+  position: relative;
   overflow: hidden;
-  flex-shrink: 0; /* Prevent shrinking */
 }
 
-.email-message:last-child {
-  border-bottom: none; /* Remove border from last message */
+.thread-message:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
 }
 
-.email-message:hover {
-  background: #f8f9fa; /* Light hover effect */
-  transform: none; /* Remove transform on hover */
-}
-
-.email-message.collapsed {
-  cursor: pointer;
-}
-
-.email-message.from-customer {
+.thread-message.from-customer {
   border-left: 4px solid #007bff;
 }
 
-.email-message.from-agent {
+.thread-message.from-agent {
   border-left: 4px solid #28a745;
 }
 
+/* Thread depth styling */
+.thread-message.depth-1 {
+  background: #f8f9fa;
+}
+
+.thread-message.depth-2 {
+  background: #f1f3f4;
+}
+
+.thread-message.depth-3 {
+  background: #e9ecef;
+}
+
+/* Thread Connector */
+.thread-connector {
+  position: absolute;
+  left: -16px;
+  top: 16px;
+  display: flex;
+  align-items: center;
+  color: #6c757d;
+}
+
+.connector-line {
+  width: 12px;
+  height: 2px;
+  background: #dee2e6;
+  margin-right: 4px;
+}
+
+.connector-icon {
+  width: 16px;
+  height: 16px;
+}
+
 /* Message Header */
-.email-message-header {
+.message-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px; /* Increased padding for better email feel */
-  background: #fff;
+  padding: 16px 20px;
+  cursor: pointer;
   border-bottom: 1px solid #f0f2f5;
 }
 
-.email-message.collapsed .email-message-header {
+.thread-message.collapsed .message-header {
   border-bottom: none;
-  padding: 16px 24px; /* Slightly less padding when collapsed */
-  background: #fafbfc; /* Subtle background for collapsed state */
+  background: #fafbfc;
 }
 
 .sender-info {
@@ -178,19 +220,26 @@
 }
 
 .sender-avatar {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #f8f9fa;
   border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.sender-avatar.highlighted {
+  border-color: #007bff;
+  background: #e3f2fd;
+  transform: scale(1.1);
 }
 
 .avatar-icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .avatar-icon.customer {
@@ -209,18 +258,33 @@
   font-weight: 600;
   font-size: 0.95rem;
   color: #212529;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.sender-email {
-  font-size: 0.8rem;
+.thread-indicator {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: #e9ecef;
+  border-radius: 8px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
   color: #6c757d;
+}
+
+.thread-icon {
+  width: 10px;
+  height: 10px;
 }
 
 .message-meta {
   display: flex;
   align-items: center;
   gap: 12px;
+  font-size: 0.8rem;
   color: #6c757d;
 }
 
@@ -228,12 +292,42 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.8rem;
 }
 
 .time-icon {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
+}
+
+.reply-count {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.message-actions-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.thread-toggle {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #6c757d;
+  transition: all 0.2s;
+}
+
+.thread-toggle:hover {
+  background: #e9ecef;
+  color: #495057;
 }
 
 .expand-toggle {
@@ -255,20 +349,73 @@
   color: #6c757d;
 }
 
+/* Parent Reference */
+.parent-reference {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 0.85rem;
+}
+
+.quote-icon {
+  width: 14px;
+  height: 14px;
+  color: #6c757d;
+}
+
+.parent-info {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.parent-preview {
+  color: #495057;
+  font-style: italic;
+  flex: 1;
+  margin-left: 8px;
+}
+
 /* Message Preview (collapsed state) */
 .message-preview {
-  padding: 0 24px 20px 88px; /* Aligned with sender details + increased padding */
+  padding: 0 20px 16px 68px;
   color: #6c757d;
   font-size: 0.9rem;
-  font-style: italic;
   line-height: 1.4;
-  background: #fafbfc; /* Subtle background for preview */
 }
 
 /* Message Content (expanded state) */
 .message-content {
-  padding: 0 24px 20px 24px; /* Increased padding for better readability */
+  padding: 0 20px 16px 20px;
   border-bottom: 1px solid #f0f2f5;
+}
+
+.quoted-message {
+  display: flex;
+  gap: 8px;
+  background: #f8f9fa;
+  border-left: 3px solid #dee2e6;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+
+.quote-content {
+  flex: 1;
+}
+
+.quote-author {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 4px;
+}
+
+.quote-text {
+  color: #6c757d;
+  font-style: italic;
 }
 
 .content-text {
@@ -281,7 +428,7 @@
 
 /* Message Actions */
 .message-actions {
-  padding: 16px 24px; /* Increased padding to match other sections */
+  padding: 12px 20px;
   background: #f8f9fa;
   border-bottom: 1px solid #f0f2f5;
 }
@@ -313,9 +460,9 @@
 
 /* Reply Composer */
 .reply-composer {
-  padding: 24px; /* Increased padding for better composition area */
+  padding: 20px;
   background: #f8f9fa;
-  border-top: 2px solid #e9ecef; /* Stronger separator for composer */
+  border-top: 2px solid #e9ecef;
 }
 
 .reply-header {
@@ -340,6 +487,22 @@
   height: 16px;
 }
 
+.quoted-context {
+  display: flex;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+
+.context-text {
+  color: #6c757d;
+  font-style: italic;
+}
+
 .reply-textarea {
   width: 100%;
   border: 2px solid #e9ecef;
@@ -353,6 +516,7 @@
   transition: border-color 0.2s;
   margin-bottom: 12px;
   background: #fff;
+  color: #212529;
 }
 
 .reply-textarea:focus {
@@ -409,6 +573,11 @@
   height: 16px;
 }
 
+/* Thread Replies */
+.thread-replies {
+  margin-top: 8px;
+}
+
 /* Error Notification */
 .error-notification {
   background: #f8d7da;
@@ -431,35 +600,36 @@
     height: 100vh;
     border-radius: 0;
     margin: 0;
-    padding-top: 60px; /* Smaller navbar padding for mobile */
+    padding-top: 60px;
   }
   
-  .email-header {
+  .thread-header {
     padding: 16px;
   }
   
   .ticket-subject h2 {
     font-size: 1.2rem;
   }
-    .email-message {
-    margin: 0; /* Keep no margin on mobile */
-    border-radius: 0; /* Keep flat design */
+  
+  .thread-message {
+    margin-left: calc(var(--thread-depth, 0) * 16px);
+    border-radius: 8px;
   }
   
-  .email-message-header {
-    padding: 16px 20px; /* Adjusted mobile padding */
+  .message-header {
+    padding: 12px 16px;
   }
   
   .message-content {
-    padding: 0 20px 16px 20px; /* Adjusted mobile padding */
+    padding: 0 16px 12px 16px;
   }
   
   .message-preview {
-    padding: 0 20px 16px 64px; /* Adjusted mobile preview padding */
+    padding: 0 16px 12px 52px;
   }
   
   .reply-composer {
-    padding: 20px; /* Adjusted mobile composer padding */
+    padding: 16px;
   }
   
   .ticket-meta {
@@ -468,18 +638,12 @@
     gap: 8px;
   }
   
-  .email-thread {
-    height: calc(100vh - 180px); /* Adjust for mobile header + navbar */
-  }
-}
-
-@media (max-width: 480px) {
-  .chat-thread-container {
-    padding-top: 50px; /* Even smaller navbar padding for small mobile */
+  .thread-content {
+    height: calc(100vh - 180px);
   }
   
-  .sender-info {
-    gap: 8px;
+  .thread-messages {
+    padding: 12px;
   }
   
   .sender-avatar {
@@ -491,8 +655,42 @@
     width: 16px;
     height: 16px;
   }
-    .message-preview {
-    padding: 0 16px 12px 56px; /* Adjusted small mobile preview padding */
+  
+  .message-actions-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .thread-toggle {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-thread-container {
+    padding-top: 50px;
+  }
+  
+  .thread-message {
+    margin-left: calc(var(--thread-depth, 0) * 12px);
+  }
+  
+  .thread-connector {
+    left: -12px;
+  }
+  
+  .connector-line {
+    width: 8px;
+  }
+  
+  .connector-icon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .message-preview {
+    padding: 0 12px 8px 44px;
   }
   
   .reply-actions {
@@ -504,11 +702,36 @@
     justify-content: center;
   }
   
-  .email-message {
-    margin: 0; /* Keep no margin on small mobile */
+  .thread-content {
+    height: calc(100vh - 150px);
   }
   
-  .email-thread {
-    height: calc(100vh - 150px); /* Further adjust for smaller screens + navbar */
+  .thread-messages {
+    padding: 8px;
+  }
+  
+  .sender-name {
+    font-size: 0.9rem;
+  }
+  
+  .thread-indicator {
+    font-size: 0.65rem;
+    padding: 1px 4px;
+  }
+  
+  .message-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .parent-reference {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .quoted-message {
+    padding: 8px;
+    font-size: 0.8rem;
   }
 }

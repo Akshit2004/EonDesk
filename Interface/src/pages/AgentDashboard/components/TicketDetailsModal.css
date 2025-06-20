@@ -19,7 +19,7 @@
   max-width: 800px;
   max-height: 90vh;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
   display: flex;
   flex-direction: column;
 }
@@ -219,7 +219,7 @@
 .message-form textarea:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+
 }
 
 .message-form textarea:disabled {
@@ -339,7 +339,7 @@
 :global(.dark-theme) .modal-content {
   background: rgba(15, 23, 42, 0.95);
   border: 1px solid rgba(59, 130, 246, 0.3);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
 }
 
 :global(.dark-theme) .modal-header {
@@ -402,7 +402,7 @@
 
 :global(.dark-theme) .status-select:focus {
   border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+
 }
 
 :global(.dark-theme) .action-btn {
@@ -432,7 +432,7 @@
 
 :global(.light-theme) .modal-content {
   background: white;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
 }
 
 :global(.light-theme) .modal-header {
@@ -494,7 +494,7 @@
 
 :global(.light-theme) .status-select:focus {
   border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+
 }
 
 :global(.light-theme) .action-btn {

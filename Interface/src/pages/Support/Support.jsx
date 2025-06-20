@@ -49,7 +49,7 @@ function Support() {
             <div className="header-icon-wrapper">
               <Headphones className="header-main-icon" />
               <div className="header-icon-glow" />
-            </div>
+            </div>            
             <h1 className="support-title">Customer Support</h1>
             <p className="support-subtitle">How can we help you today?</p>
           </div>
@@ -100,42 +100,9 @@ function Support() {
               <div className="card-action">
                 <span>Track Now</span>
                 <ArrowRight className="arrow-icon" />
-              </div>
-            </div>
+              </div>            </div>
           </div>
-
-          <div className="quick-stats">            <div className="stat-card">
-              <div className="stat-icon-wrapper">
-                <Clock className="stat-icon" />
-                <div className="stat-icon-bg" />
-              </div>
-              <div className="stat-content">
-                <span className="stat-number">2min</span>
-                <span className="stat-label">Avg Response Time</span>
-              </div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon-wrapper">
-                <Target className="stat-icon" />
-                <div className="stat-icon-bg" />
-              </div>
-              <div className="stat-content">
-                <span className="stat-number">98%</span>
-                <span className="stat-label">Resolution Rate</span>
-              </div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon-wrapper">
-                <Shield className="stat-icon" />
-                <div className="stat-icon-bg" />
-              </div>
-              <div className="stat-content">
-                <span className="stat-number">24/7</span>
-                <span className="stat-label">Support Available</span>
-              </div>
-            </div>
-          </div>
-        </div>      ) : selectedOption === 'create' ? (
+        </div>) : selectedOption === 'create' ? (
           <EnhancedCreateTicket 
             onTicketCreated={handleTicketCreated}
             onBack={() => setSelectedOption(null)}

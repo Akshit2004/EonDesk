@@ -61,19 +61,6 @@
   color: #1e40af;
 }
 
-.light-theme .stat-card {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(30, 41, 59, 0.1);
-}
-
-.light-theme .stat-number {
-  color: #1e293b;
-}
-
-.light-theme .stat-label {
-  color: rgba(30, 41, 59, 0.6);
-}
-
 /* Light Theme Form Styles */
 .light-theme .ticket-form-container {
   background: rgba(255, 255, 255, 0.9);
@@ -355,53 +342,6 @@
 
 .support-card:hover .arrow-icon {
   transform: translateX(4px);
-}
-
-.quick-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-top: 3rem;
-}
-
-.stat-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(59, 130, 246, 0.3);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
-}
-
-.stat-icon {
-  width: 24px;
-  height: 24px;
-  color: #3b82f6;
-}
-
-.stat-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-number {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: white;
-}
-
-.stat-label {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Form Styles */
@@ -973,38 +913,7 @@
   transform: translate(-50%, -50%);
   width: 50px;
   height: 50px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
-}
-
-/* Enhanced Stat Cards */
-.stat-icon-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 1rem;
-  flex-shrink: 0;
-}
-
-.stat-icon {
-  width: 24px;
-  height: 24px;
-  color: #3b82f6;
-  z-index: 2;
-  position: relative;
-}
-
-.stat-icon-bg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 50%;  background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
 }
 
 /* Enhanced Summary Section */
@@ -1095,11 +1004,6 @@
 
 .light-theme .header-form-glow {
   background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-}
-
-.light-theme .stat-icon-bg {
-  background: rgba(59, 130, 246, 0.08);
-  border: 1px solid rgba(59, 130, 246, 0.15);
 }
 
 .light-theme .summary-header {

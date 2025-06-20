@@ -18,6 +18,48 @@
   bottom: 0;
 }
 
+.chat-thread-container.forum-centered {
+  position: relative;
+  max-width: 720px;
+  width: 95vw;
+  margin: 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  height: 80vh;
+  min-height: 400px;
+  max-height: 90vh;
+  left: unset;
+  right: unset;
+  top: unset;
+  bottom: unset;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  z-index: 1010;
+  animation: modal-pop 0.2s cubic-bezier(.4,2,.6,1) 1;
+}
+
+/* Overlay for modal */
+.chat-thread-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes modal-pop {
+  0% { transform: scale(0.95) translateY(40px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Hide background scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
 /* Thread Header */
 .thread-header {
   display: flex;
@@ -593,6 +635,55 @@
   font-weight: 500;
 }
 
+/* Summary/Description at the top */
+.thread-summary {
+  margin-top: 12px;
+  font-size: 1rem;
+  color: #333;
+  background: #f1f3f4;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-style: italic;
+}
+
+/* Date separators */
+.date-separator {
+  text-align: center;
+  margin: 24px 0 12px 0;
+  font-size: 0.95rem;
+  color: #888;
+  font-weight: 500;
+  letter-spacing: 1px;
+  position: relative;
+}
+.date-separator:before, .date-separator:after {
+  content: '';
+  display: inline-block;
+  width: 40px;
+  height: 1px;
+  background: #e0e0e0;
+  vertical-align: middle;
+  margin: 0 12px;
+}
+
+/* Load more button */
+.load-more-btn {
+  display: block;
+  margin: 0 auto 16px auto;
+  padding: 8px 20px;
+  background: #357abd;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.load-more-btn:hover {
+  background: #285a8c;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .chat-thread-container {
@@ -733,5 +824,22 @@
   .quoted-message {
     padding: 8px;
     font-size: 0.8rem;
+  }
+}
+
+/* Responsive tweaks for modal */
+@media (max-width: 900px) {
+  .chat-thread-container.forum-centered {
+    max-width: 98vw;
+    min-width: 0;
+    height: 90vh;
+  }
+}
+@media (max-width: 600px) {
+  .chat-thread-container.forum-centered {
+    max-width: 100vw;
+    min-width: 0;
+    height: 100vh;
+    border-radius: 0;
   }
 }

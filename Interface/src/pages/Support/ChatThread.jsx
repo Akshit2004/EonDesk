@@ -3,6 +3,19 @@ import { getTicketMessages, addMessageToTicket } from '../../firebase/tickets';
 import { ArrowLeft, Reply, Send, User, Headphones, Clock, ChevronDown, ChevronUp, Mail, MessageSquare, CornerDownRight, Quote, Hash } from 'lucide-react';
 import './ChatThread.css';
 
+function formatForumDate(date) {
+  if (!date) return 'N/A';
+  const d = new Date(date);
+  return d.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+}
+
 export default function ChatThread({ ticket, onBack }) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,6 +26,7 @@ export default function ChatThread({ ticket, onBack }) {
   const [expandedMessages, setExpandedMessages] = useState(new Set());
   const [collapsedThreads, setCollapsedThreads] = useState(new Set());
   const [hoveredThread, setHoveredThread] = useState(null);
+  const [showCount, setShowCount] = useState(20); // For pagination
   const chatEndRef = useRef(null);
 
   // Build thread structure from flat messages
@@ -59,7 +73,7 @@ export default function ChatThread({ ticket, onBack }) {
   // Get all message IDs in a thread
   const getThreadMessageIds = (message) => {
     const ids = [message.id];
-    message.children.forEach(child => {
+    (message.children || []).forEach(child => {
       ids.push(...getThreadMessageIds(child));
     });
     return ids;
@@ -174,6 +188,21 @@ export default function ChatThread({ ticket, onBack }) {
     return allMessages.find(m => m.id === message.reply_to);
   };
 
+  // Group messages by date
+  const groupMessagesByDate = (msgs) => {
+    const groups = [];
+    let lastDate = null;
+    msgs.forEach((msg) => {
+      const msgDate = new Date(msg.timestamp).toDateString();
+      if (msgDate !== lastDate) {
+        groups.push({ type: 'date', date: msgDate });
+        lastDate = msgDate;
+      }
+      groups.push({ type: 'msg', msg });
+    });
+    return groups;
+  };
+
   const renderMessage = (message, threadStructure, allMessages, depth = 0) => {
     const isExpanded = expandedMessages.has(message.id);
     const isCustomer = (message.sender === 'customer' || message.sender_type === 'customer');
@@ -224,7 +253,7 @@ export default function ChatThread({ ticket, onBack }) {
                 <div className="message-meta">
                   <Clock className="time-icon" />
                   <span className="message-time">
-                    {message.timestamp?.toLocaleString?.() || new Date().toLocaleString()}
+                    {formatForumDate(message.timestamp)}
                   </span>
                   {hasReplies && (
                     <span className="reply-count">
@@ -365,55 +394,71 @@ export default function ChatThread({ ticket, onBack }) {
       </div>
     );
   };
+  useEffect(() => {
+    // Prevent background scroll when modal is open
+    document.body.classList.add('modal-open');
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, []);
   return (
-    <div className="chat-thread-container">
-      <div className="thread-header">
-        <button className="back-btn" onClick={onBack}>
-          <ArrowLeft className="back-icon" />
-        </button>
-        <div className="header-info">
-          <div className="ticket-subject">
-            <MessageSquare className="thread-icon" />
-            <h2>Discussion: {ticket.ticketId}</h2>
-          </div>
-          <div className="ticket-meta">
-            <span className={`status-badge status-${ticket.status?.toLowerCase() || 'open'}`}>
-              {ticket.status || 'Open'}
-            </span>
-            <span className="ticket-priority">Priority: {ticket.priority || 'Medium'}</span>
-            <span className="message-count">{messages.length} messages</span>
+    <div className="chat-thread-modal-overlay">
+      <div className="chat-thread-container forum-centered">
+        <div className="thread-header">
+          <button className="back-btn" onClick={onBack} title="Close">
+            <span style={{fontSize: '1.5rem', fontWeight: 'bold', lineHeight: 1}}>&times;</span>
+          </button>
+          <div className="header-info">
+            <div className="ticket-subject">
+              <MessageSquare className="thread-icon" />
+              <h2>Discussion: {ticket.ticketId}</h2>
+            </div>
+            <div className="ticket-meta">
+              <span className="ticket-priority">Priority: {ticket.priority || 'Medium'}</span>
+              <span className="message-count">{messages.length} messages</span>
+            </div>
+            <div className="thread-summary">
+              <b>Summary:</b> {ticket.description || ticket.message || 'No description provided.'}
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div className="thread-content">
-        {loading ? (
-          <div className="thread-loading">
-            <MessageSquare className="loading-icon" />
-            Loading discussion...
-          </div>
-        ) : (
-          messages.length === 0 ? (
-            <div className="thread-empty">
-              <MessageSquare className="empty-icon" />
-              No messages in this discussion.
+        <div className="thread-content">
+          {loading ? (
+            <div className="thread-loading">
+              <MessageSquare className="loading-icon" />
+              Loading discussion...
             </div>
           ) : (
-            <div className="thread-messages">
-              {buildThreadStructure(messages).map(thread => 
-                renderMessage(thread, buildThreadStructure(messages), messages, 0)
-              )}
-            </div>
-          )
-        )}
-        <div ref={chatEndRef} />
-      </div>
-      
-      {error && (
-        <div className="error-notification">
-          <span className="error-text">{error}</span>
+            messages.length === 0 ? (
+              <div className="thread-empty">
+                <MessageSquare className="empty-icon" />
+                No messages in this discussion.
+              </div>
+            ) : (
+              <div className="thread-messages">
+                {messages.length > showCount && (
+                  <button className="load-more-btn" onClick={() => setShowCount(showCount + 20)}>
+                    Load more messages
+                  </button>
+                )}
+                {groupMessagesByDate(messages.slice(-showCount)).map((item, idx) =>
+                  item.type === 'date' ? (
+                    <div key={item.date + idx} className="date-separator">{item.date}</div>
+                  ) : (
+                    renderMessage(item.msg, buildThreadStructure(messages), messages, 0)
+                  )
+                )}
+              </div>
+            )
+          )}
+          <div ref={chatEndRef} />
         </div>
-      )}
+        {error && (
+          <div className="error-notification">
+            <span className="error-text">{error}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

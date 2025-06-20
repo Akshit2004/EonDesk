@@ -17,6 +17,7 @@ function Support() {
   const navigate = useNavigate()
   const [selectedOption, setSelectedOption] = useState(null)
   const [trackedTicket, setTrackedTicket] = useState(null)
+  const [loadingChatThread, setLoadingChatThread] = useState(false);
 
   const handleGoBack = () => {
     navigate('/')
@@ -32,8 +33,12 @@ function Support() {
   }
 
   const handleTrackTicket = (ticket) => {
-    setTrackedTicket(ticket)
-    setSelectedOption('chat')
+    setLoadingChatThread(true);
+    setTimeout(() => {
+      setTrackedTicket(ticket);
+      setSelectedOption('chat');
+      setLoadingChatThread(false);
+    }, 700); // 700ms delay for animation
   }
 
   return (
@@ -112,6 +117,11 @@ function Support() {
         ) : selectedOption === 'chat' && trackedTicket ? (
           <ChatThread ticket={trackedTicket} onBack={() => { setSelectedOption(null); setTrackedTicket(null); }} />
         ) : null}
+        {loadingChatThread && (
+          <div className="modal-loading-overlay">
+            <div className="modal-spinner"></div>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -569,6 +579,17 @@ function TrackTicketCard({ onBack, onTicketFound }) {
           {loading ? 'Tracking...' : 'Track Ticket'}
           <Search className="nav-icon" />
         </button>
+        {loading && (
+          <div className="ticket-searching-animation">
+            <Search className="ticket-searching-icon" />
+            <div className="ticket-searching-dots">
+              <div className="ticket-searching-dot"></div>
+              <div className="ticket-searching-dot"></div>
+              <div className="ticket-searching-dot"></div>
+            </div>
+            <div style={{marginTop:8, color:'#357abd', fontWeight:500}}>Searching for your ticket...</div>
+          </div>
+        )}
       </div>
     </div>
   )

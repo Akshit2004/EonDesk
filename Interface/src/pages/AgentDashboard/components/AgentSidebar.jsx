@@ -1,8 +1,8 @@
 import React from 'react';
-import { FaTachometerAlt, FaTicketAlt, FaSignOutAlt } from 'react-icons/fa';
+import { FaTachometerAlt, FaEnvelope, FaSignOutAlt } from 'react-icons/fa';
 import './AgentSidebar.css';
 
-const AgentSidebar = ({ onLogout }) => {
+const AgentSidebar = ({ onLogout, activeTab, onTabChange }) => {
   return (
     <aside className="agent-sidebar">
       <div className="sidebar-header">
@@ -15,12 +15,18 @@ const AgentSidebar = ({ onLogout }) => {
         </div>
       </div>
       <nav className="sidebar-nav">
-        <a href="#dashboard" className="sidebar-link active">
+        <button 
+          className={`sidebar-link ${activeTab === 'dashboard' ? 'active' : ''}`}
+          onClick={() => onTabChange('dashboard')}
+        >
           <FaTachometerAlt className="sidebar-link-icon" /> Dashboard
-        </a>
-        <a href="#tickets" className="sidebar-link">
-          <FaTicketAlt className="sidebar-link-icon" /> Tickets
-        </a>
+        </button>
+        <button 
+          className={`sidebar-link ${activeTab === 'emails' ? 'active' : ''}`}
+          onClick={() => onTabChange('emails')}
+        >
+          <FaEnvelope className="sidebar-link-icon" /> Emails
+        </button>
         <button className="sidebar-link logout-link" onClick={onLogout}>
           <FaSignOutAlt className="sidebar-link-icon" /> Logout
         </button>

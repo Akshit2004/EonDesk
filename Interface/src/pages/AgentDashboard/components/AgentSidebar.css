@@ -58,6 +58,8 @@
   cursor: pointer;
   border-radius: 8px 0 0 8px;
   transition: background 0.2s, color 0.2s;
+  width: 100%;
+  text-align: left;
 }
 
 .sidebar-link:hover, .sidebar-link.active {

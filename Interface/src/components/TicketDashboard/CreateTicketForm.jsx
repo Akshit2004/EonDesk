@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { createTicket } from '../../firebase/tickets';
 import './CreateTicketForm.css';
 
-const CreateTicketForm = ({ onTicketCreated, currentUser }) => {  const [formData, setFormData] = useState({
-    name: currentUser?.name || '',
-    email: currentUser?.email || '',
-    title: '',
-    category: 'general',
-    priority: 'medium',
-    description: ''
+const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTicket = false }) => {
+  const [formData, setFormData] = useState({
+    name: initialData?.name || currentUser?.name || '',
+    email: initialData?.email || currentUser?.email || '',
+    title: initialData?.title || '',
+    category: initialData?.category || 'general',
+    priority: initialData?.priority || 'medium',
+    description: initialData?.description || ''
   });
+
+  // Update form data when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        name: initialData.name || currentUser?.name || '',
+        email: initialData.email || currentUser?.email || '',
+        title: initialData.title || '',
+        category: initialData.category || 'general',
+        priority: initialData.priority || 'medium',
+        description: initialData.description || ''
+      });
+    }
+  }, [initialData, currentUser]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 

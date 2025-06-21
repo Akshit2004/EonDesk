@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getTicketMessages, addMessageToTicket, updateTicketStatus } from '../../../firebase/tickets';
+import { getTicketMessages, addMessageToTicket, updateTicketStatus } from '../../../services/postgresAgentApi';
 import './TicketDetailsModal.css';
 
 const TicketDetailsModal = ({ 
@@ -12,14 +12,13 @@ const TicketDetailsModal = ({
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-
   useEffect(() => {
     fetchMessages();
-  }, [ticket.id]);
+  }, [ticket.ticket_id]);
 
   const fetchMessages = async () => {
     try {
-      const result = await getTicketMessages(ticket.id);
+      const result = await getTicketMessages(ticket.ticket_id);
       if (result.success) {
         setMessages(result.messages);
       }
@@ -29,7 +28,6 @@ const TicketDetailsModal = ({
       setLoading(false);
     }
   };
-
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || sending) return;
@@ -38,13 +36,15 @@ const TicketDetailsModal = ({
     try {
       const messageData = {
         content: newMessage,
-        sender_id: currentUser.uid,
+        sender_id: currentUser.uid || currentUser.email || 'agent',
         sender_type: 'agent',
-        sender_name: currentUser.displayName || currentUser.email,
-        message_type: 'public'
+        sender_name: currentUser.displayName || currentUser.email || 'Support Agent',
+        message_type: 'public',
+        attachments: [],
+        read_by: []
       };
 
-      await addMessageToTicket(ticket.id, messageData);
+      await addMessageToTicket(ticket.ticket_id || ticket.id, messageData);
       setNewMessage('');
       fetchMessages(); // Refresh messages
     } catch (error) {
@@ -53,10 +53,9 @@ const TicketDetailsModal = ({
       setSending(false);
     }
   };
-
   const handleStatusChange = async (newStatus) => {
     try {
-      await onStatusUpdate(ticket.id, newStatus);
+      await onStatusUpdate(ticket.ticket_id || ticket.id, newStatus);
       onClose(); // Close modal after status update
     } catch (error) {
       console.error('Error updating status:', error);

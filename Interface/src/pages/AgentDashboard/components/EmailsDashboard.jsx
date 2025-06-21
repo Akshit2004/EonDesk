@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FaEnvelope, FaEnvelopeOpen, FaTicketAlt, FaTrash, FaEye, FaReply, FaClock, FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import gmailService from '../../../services/gmailService';
-import { createTicket } from '../../../firebase/tickets';
 import CreateTicketForm from '../../../components/TicketDashboard/CreateTicketForm';
 import './EmailsDashboard.css';
 

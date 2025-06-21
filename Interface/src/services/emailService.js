@@ -72,12 +72,10 @@ export const sendTicketConfirmationEmail = async (ticketData) => {
       serviceId: EMAIL_CONFIG.SERVICE_ID,
       templateId: EMAIL_CONFIG.TEMPLATES.TICKET_CONFIRMATION,
       userId: EMAIL_CONFIG.USER_ID
-    });
-
-    const templateParams = {
+    });    const templateParams = {
       to_email: ticketData.customer_email,
       customer_name: ticketData.customer_name || 'Customer',
-      ticket_id: ticketData.ticketId,
+      ticket_id: ticketData.ticketId || ticketData.ticket_id,
       ticket_title: ticketData.title,
       ticket_description: ticketData.description || 'No description provided',
       ticket_priority: ticketData.priority,
@@ -167,10 +165,9 @@ export const createTicketConfirmationTemplate = (ticketData) => {
             <p>Dear ${ticketData.customer_name || 'Customer'},</p>
             
             <p>Thank you for contacting our support team. We have successfully created a support ticket for your request.</p>
-            
-            <div class="ticket-info">
+              <div class="ticket-info">
                 <h3>Ticket Details:</h3>
-                <p><strong>Ticket ID:</strong> <span class="ticket-id">${ticketData.ticketId}</span></p>
+                <p><strong>Ticket ID:</strong> <span class="ticket-id">${ticketData.ticketId || ticketData.ticket_id}</span></p>
                 <p><strong>Subject:</strong> ${ticketData.title}</p>
                 <p><strong>Category:</strong> ${ticketData.category}</p>
                 <p><strong>Priority:</strong> <span class="priority-${ticketData.priority}">${ticketData.priority.toUpperCase()}</span></p>
@@ -186,7 +183,7 @@ export const createTicketConfirmationTemplate = (ticketData) => {
             <ul>
                 <li>Our support team will review your ticket and respond within 24 hours</li>
                 <li>You will receive email updates when there are new responses</li>
-                <li>You can track your ticket status using your Ticket ID: <strong>${ticketData.ticketId}</strong></li>
+                <li>You can track your ticket status using your Ticket ID: <strong>${ticketData.ticketId || ticketData.ticket_id}</strong></li>
                 <li>Please save this Ticket ID for future reference</li>
             </ul>
             
@@ -313,11 +310,9 @@ export const sendSupportNotificationEmail = async (ticketData) => {
       serviceId: EMAIL_CONFIG.SERVICE_ID,
       templateId: EMAIL_CONFIG.TEMPLATES.SUPPORT_NOTIFICATION,
       userId: EMAIL_CONFIG.USER_ID
-    });
-
-    const templateParams = {
+    });    const templateParams = {
       to_email: EMAIL_CONFIG.SUPPORT_EMAIL,
-      ticket_id: ticketData.ticketId,
+      ticket_id: ticketData.ticketId || ticketData.ticket_id,
       customer_name: ticketData.customer_name,
       customer_email: ticketData.customer_email,
       ticket_title: ticketData.title,

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { getTicketMessages, addMessageToTicket } from '../../firebase/tickets';
+import { getTicketMessages, addMessageToTicket } from '../../services/ticketApi';
 import { ArrowLeft, Reply, Send, User, Headphones, Clock, ChevronDown, ChevronUp, Mail, MessageSquare, CornerDownRight, Quote, Hash } from 'lucide-react';
 import './ChatThread.css';
 
@@ -81,37 +81,44 @@ export default function ChatThread({ ticket, onBack }) {
     async function fetchMessages() {
       setLoading(true);
       setError('');
-      
-      // Create the initial ticket message
+        // Create the initial ticket message
       const initialMessage = {
         id: 'initial',
-        content: ticket.description || ticket.message || 'No description provided',
+        content: ticket.description || ticket.message || ticket.title || 'Support ticket created',
         sender: 'customer',
         sender_type: 'customer',
         sender_name: ticket.customer_name || 'Customer',
-        timestamp: ticket.createdAt || new Date(),
+        timestamp: ticket.created_at || new Date(),
         message_type: 'public',
         reply_to: null
       };
-      
-      const result = await getTicketMessages(ticket.id);
-      
-      if (result.success) {
-        // Combine initial message with subsequent replies
-        const allMessages = [initialMessage, ...result.messages];
-        setMessages(allMessages);
-        // Auto-expand the latest few messages
-        const latestIndices = allMessages.slice(-3).map((_, index) => allMessages.length - 3 + index).filter(i => i >= 0);
-        setExpandedMessages(new Set([0, ...latestIndices]));
-      } else {
-        // If we can't load messages, at least show the initial ticket
+
+      try {
+        const result = await getTicketMessages(ticket.ticket_id);
+        if (result.success && Array.isArray(result.messages)) {
+          const allMessages = [initialMessage, ...result.messages];
+          setMessages(allMessages);
+          const latestIndices = allMessages.slice(-3).map((_, index) => allMessages.length - 3 + index).filter(i => i >= 0);
+          setExpandedMessages(new Set([0, ...latestIndices]));
+        } else {
+          // If API fails or returns invalid data, just show the initial message
+          setMessages([initialMessage]);
+          setExpandedMessages(new Set([0]));
+          if (result.error) {
+            setError(`Failed to load messages: ${result.error}`);
+          }
+        }
+      } catch (error) {
+        // Fallback: show just the initial message
         setMessages([initialMessage]);
         setExpandedMessages(new Set([0]));
+        setError(`Failed to load messages: ${error.message}`);
       }
+      
       setLoading(false);
     }
     fetchMessages();
-  }, [ticket.id]);useEffect(() => {
+  }, [ticket.ticket_id]);useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);  const handleReply = async (messageId, parentMessage) => {
     if (!replyText.trim()) return;
@@ -119,42 +126,43 @@ export default function ChatThread({ ticket, onBack }) {
     setError('');
     
     try {
-      await addMessageToTicket(ticket.id, {
-        sender_id: ticket.customer_email || 'customer',
+      const messageData = {
+        content: replyText.trim(),
+        sender_id: 'customer', // or get from context
         sender_type: 'customer',
         sender_name: ticket.customer_name || 'Customer',
-        content: replyText.trim(),
         message_type: 'public',
-        reply_to: messageId,
-        quoted_text: parentMessage?.content?.substring(0, 100) + (parentMessage?.content?.length > 100 ? '...' : ''),
-        quoted_author: parentMessage?.sender_name || (parentMessage?.sender_type === 'customer' ? ticket.customer_name || 'Customer' : 'Support Agent')
-      });
+        attachments: [],
+        read_by: [],
+        reply_to: parentMessage ? parentMessage.id : null
+      };
       
-      setReplyText('');
-      setReplyingTo(null);
-      
-      // Reload messages to include the new reply
-      const result = await getTicketMessages(ticket.id);
+      const result = await addMessageToTicket(ticket.ticket_id, messageData);
       if (result.success) {
-        const initialMessage = {
-          id: 'initial',
-          content: ticket.description || ticket.message || 'No description provided',
-          sender: 'customer',
-          sender_type: 'customer',
-          sender_name: ticket.customer_name || 'Customer',
-          timestamp: ticket.createdAt || new Date(),
-          message_type: 'public',
-          reply_to: null
-        };
+        setReplyText('');
+        setReplyingTo(null);
         
-        const allMessages = [initialMessage, ...result.messages];
-        setMessages(allMessages);
-        // Auto-expand the latest message
-        const latestIndex = allMessages.length - 1;
-        setExpandedMessages(prev => new Set([...prev, latestIndex]));
+        // Refetch messages
+        const msgResult = await getTicketMessages(ticket.ticket_id);
+        if (msgResult.success && Array.isArray(msgResult.messages)) {          const initialMessage = {
+            id: 'initial',
+            content: ticket.description || ticket.message || ticket.title || 'Support ticket created',
+            sender: 'customer',
+            sender_type: 'customer',
+            sender_name: ticket.customer_name || 'Customer',
+            timestamp: ticket.created_at || new Date(),
+            message_type: 'public',
+            reply_to: null
+          };
+          setMessages([initialMessage, ...msgResult.messages]);
+        } else {
+          setError('Failed to refresh messages after sending');
+        }
+      } else {
+        setError(result.error || 'Failed to send message');
       }
-    } catch (e) {
-      setError('Failed to send reply.');
+    } catch (err) {
+      setError(`Failed to send message: ${err.message}`);
     }
     setSending(false);
   };
@@ -415,9 +423,8 @@ export default function ChatThread({ ticket, onBack }) {
             <div className="ticket-meta">
               <span className="ticket-priority">Priority: {ticket.priority || 'Medium'}</span>
               <span className="message-count">{messages.length} messages</span>
-            </div>
-            <div className="thread-summary">
-              <b>Summary:</b> {ticket.description || ticket.message || 'No description provided.'}
+            </div>            <div className="thread-summary">
+              <b>Summary:</b> {ticket.description || ticket.message || ticket.title || 'Support ticket'}
             </div>
           </div>
         </div>

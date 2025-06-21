@@ -7,10 +7,11 @@ import {
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
-import { createTicket } from '../../firebase/tickets'
 import { CreateTicketForm } from '../../components/TicketDashboard'
-import { getTicketById } from '../../firebase/getTicketById'
+import { getTicketById } from '../../services/ticketApi'
+import { createTicketPG } from '../../services/postgresTicketApi'
 import ChatThread from './ChatThread'
+import { toast } from 'react-toastify'
 import './Support.css'
 
 function Support() {
@@ -28,7 +29,10 @@ function Support() {
   }
 
   const handleTicketCreated = (result) => {
-    console.log('Ticket created successfully:', result.ticketId)
+    // Print ticket_id or ticketId for compatibility
+    const ticketNo = result.ticket_id || result.ticketId;
+    console.log('Ticket created successfully. Ticket ID:', ticketNo);
+    toast.success(`Ticket created! Your Ticket No: ${ticketNo}`);
     // Optionally switch to track mode or show success message
   }
 
@@ -220,6 +224,16 @@ function EnhancedCreateTicket({ onBack, onTicketCreated }) {
     setError('')
   }
 
+  // Add REST API function for ticket creation
+  async function createTicketAPI(ticketData) {
+    const response = await fetch('http://localhost:3001/tickets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(ticketData),
+    });
+    return await response.json();
+  }
+
   const handleSubmit = async () => {
     setLoading(true)
     setError('')
@@ -230,13 +244,17 @@ function EnhancedCreateTicket({ onBack, onTicketCreated }) {
         category: formData.category,
         priority: formData.priority,
         description: formData.description.trim(),
-        email: formData.email.trim(),
-        name: formData.name.trim()
+        customer_email: formData.email.trim(),
+        customer_name: formData.name.trim(),
+        status: 'open',
+        created_by: formData.email.trim(),
+        assigned_agent: null,
+        assigned_agent_name: null,
+        ticket_id: `TKT-${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 5)}`.toUpperCase()
       }
 
-      const result = await createTicket(ticketData)
-      
-      if (result.success) {
+      const result = await createTicketPG(ticketData)
+      if (result && !result.error) {
         if (onTicketCreated) {
           onTicketCreated(result)
         }
@@ -532,9 +550,9 @@ function TrackTicketCard({ onBack, onTicketFound }) {
       const result = await getTicketById(ticketId.trim())
       if (result.success) {
         setStatus({
-          id: result.ticket.ticketId,
+          id: result.ticket.ticket_id,
           state: result.ticket.status || 'In Progress',
-          lastUpdate: result.ticket.updatedAt?.toLocaleString() || 'N/A',
+          lastUpdate: result.ticket.updated_at ? new Date(result.ticket.updated_at).toLocaleString() : 'N/A',
         })
         if (onTicketFound) onTicketFound(result.ticket)
       } else {

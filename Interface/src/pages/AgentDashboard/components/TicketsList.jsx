@@ -160,15 +160,13 @@ const TicketsList = ({
           <div className="header-cell">Priority</div>
           <div className="header-cell">Last Updated</div>
           <div className="header-cell">Actions</div>
-        </div>
-
-        <div className="table-body">
+        </div>        <div className="table-body">
           {tickets.map((ticket) => (
             <div 
-              key={ticket.id} 
+              key={ticket.ticket_id || ticket.id} 
               className="table-row"
               onClick={() => onTicketClick(ticket)}
-            >              <div className="table-cell">
+            ><div className="table-cell">
                 <span className="ticket-id">{ticket.ticketId || ticket.ticket_id || 'N/A'}</span>
               </div>
               
@@ -203,13 +201,12 @@ const TicketsList = ({
               <div className="table-cell">
                 <span className="last-updated">{formatDate(ticket.updatedAt)}</span>
               </div>
-                <div className="table-cell actions-cell" onClick={(e) => e.stopPropagation()}>
-                <div className="action-buttons">
+                <div className="table-cell actions-cell" onClick={(e) => e.stopPropagation()}>                <div className="action-buttons">
                   {ticket.status !== 'resolved' && ticket.status !== 'closed' && (
                     <select
                       className="status-select"
                       value={ticket.status}
-                      onChange={(e) => onStatusUpdate(ticket.id, e.target.value)}
+                      onChange={(e) => onStatusUpdate(ticket.ticket_id || ticket.id, e.target.value)}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <option value="open">Open</option>

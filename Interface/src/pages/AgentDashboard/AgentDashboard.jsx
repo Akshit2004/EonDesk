@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllTicketsForAgent, getTicketStats, updateTicketStatus } from '../../firebase/tickets';
+import { getAllTicketsForAgent, getTicketStats, updateTicketStatus } from '../../services/postgresAgentApi';
 import { useAuth } from '../../contexts/AuthContext';
 import StatCard from './components/StatCard';
 import TicketsList from './components/TicketsList';

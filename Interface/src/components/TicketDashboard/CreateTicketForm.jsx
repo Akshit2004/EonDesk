@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { createTicket } from '../../firebase/tickets';
+import { createTicketPG } from '../../services/postgresTicketApi';
+import { sendTicketConfirmationEmail } from '../../services/emailService';
 import './CreateTicketForm.css';
 
 const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTicket = false }) => {
@@ -71,20 +72,58 @@ const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTi
         description: formData.description.trim()
       };
 
-      const result = await createTicket(ticketData);      if (result.success) {        // Show success message with email confirmation
-        toast.success(
-          `✅ Ticket created successfully! 
-           📧 Confirmation email sent to ${formData.email}
-           🎫 Ticket ID: ${result.ticketId}`, 
-          {
-            position: "top-right",
-            autoClose: 8000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
+      const result = await createTicketPG(ticketData);      if (result.success) {
+        // Send confirmation email
+        try {
+          const emailResult = await sendTicketConfirmationEmail(result);
+          
+          if (emailResult.success) {
+            // Show success message with email confirmation
+            toast.success(
+              `✅ Ticket created successfully! 
+               📧 Confirmation email sent to ${formData.email}
+               🎫 Ticket ID: ${result.ticketId}`, 
+              {
+                position: "top-right",
+                autoClose: 8000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+              }
+            );
+          } else {
+            // Ticket created but email failed
+            toast.warning(
+              `✅ Ticket created successfully! 
+               ⚠️ Failed to send confirmation email: ${emailResult.error}
+               🎫 Ticket ID: ${result.ticketId}`, 
+              {
+                position: "top-right",
+                autoClose: 8000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+              }
+            );
           }
-        );
+        } catch (emailError) {
+          console.error('Email service error:', emailError);
+          toast.warning(
+            `✅ Ticket created successfully! 
+             ⚠️ Email service unavailable
+             🎫 Ticket ID: ${result.ticketId}`, 
+            {
+              position: "top-right",
+              autoClose: 8000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            }
+          );
+        }
 
         // Reset form
         setFormData({

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Eye, EyeOff, Lock, Loader2, Shield, User } from 'lucide-react'
-import { signInWithEmail, getAuthErrorMessage } from '../../firebase/auth'
 import './AgentLogin.css'
 
 function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
@@ -21,7 +20,8 @@ function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
     // Clear error when user starts typing
     if (error) setError('')
   }
-    const handleSubmit = async (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
@@ -32,21 +32,28 @@ function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
         throw new Error('Please fill in all fields')
       }
 
-      // Sign in with Firebase
-      const user = await signInWithEmail(formData.email, formData.password)
-      
+      // Authenticate with backend
+      const response = await fetch('http://localhost:3001/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, password: formData.password })
+      })
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed')
+      }
+
       // Call success callback with user data
       if (onLoginSuccess) {
-        onLoginSuccess(user)
+        onLoginSuccess(data.user)
       }
-      
+
       // Clear form and close modal
       setFormData({ email: '', password: '' })
       setError('')
       setShowPassword(false)
     } catch (err) {
-      // Use Firebase-specific error messages
-      setError(getAuthErrorMessage(err))
+      setError(err.message)
       console.error('Agent login error:', err)
     } finally {
       setLoading(false)
@@ -63,7 +70,8 @@ function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
   if (!isOpen) return null
   return (
     <div className="login-overlay" onClick={handleClose}>
-      <div className="login-modal" onClick={(e) => e.stopPropagation()}>        <div className="login-header">
+      <div className="login-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="login-header">
           <div className="header-content">
             <div className="header-icon">
               <Shield size={32} />
@@ -82,7 +90,8 @@ function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
                 <div className="error-icon">⚠</div>
                 <span>{error}</span>
               </div>
-            )}            <div className="form-group">
+            )}
+            <div className="form-group">
               <label htmlFor="email" className="form-label">
                 <User size={16} />
                 Email Address
@@ -102,7 +111,8 @@ function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
                   />
                 </div>
               </div>
-            </div>            <div className="form-group">
+            </div>
+            <div className="form-group">
               <label htmlFor="password" className="form-label">
                 <Lock size={16} />
                 Password
@@ -156,7 +166,7 @@ function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
               <button className="link-button">Contact Admin</button>
             </div>
             <p className="footer-text">
-              Secure authentication powered by Firebase
+              Secure authentication powered by PostgreSQL
             </p>
           </div>
         </div>

@@ -53,6 +53,7 @@ const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTi
     }));
   };
   const handleSubmit = async (e) => {
+    console.log('DEBUG: handleSubmit called');
     e.preventDefault();
     
     if (!formData.name.trim() || !formData.email.trim()) {
@@ -72,11 +73,15 @@ const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTi
         description: formData.description.trim()
       };
 
-      const result = await createTicketPG(ticketData);      if (result.success) {
+      const result = await createTicketPG(ticketData);
+      console.log('DEBUG: createTicketPG result', result);
+      if (result.success) {
         // Send confirmation email
         try {
+          console.log('DEBUG: Calling sendTicketConfirmationEmail with', result);
           const emailResult = await sendTicketConfirmationEmail(result);
-          
+          console.log('DEBUG: sendTicketConfirmationEmail result', emailResult);
+
           if (emailResult.success) {
             // Show success message with email confirmation
             toast.success(
@@ -145,6 +150,7 @@ const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTi
       }
     } catch (error) {
       console.error('Error creating ticket:', error);
+      console.log('DEBUG: handleSubmit error', error);
       setError('Failed to create ticket. Please try again.');
     } finally {
       setLoading(false);

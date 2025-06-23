@@ -12,6 +12,7 @@ import { getTicketById } from '../../services/ticketApi'
 import { createTicketPG } from '../../services/postgresTicketApi'
 import ChatThread from './ChatThread'
 import { toast } from 'react-toastify'
+import { sendTicketConfirmationEmail } from '../../services/emailService';
 import './Support.css'
 
 function Support() {
@@ -237,7 +238,6 @@ function EnhancedCreateTicket({ onBack, onTicketCreated }) {
   const handleSubmit = async () => {
     setLoading(true)
     setError('')
-
     try {
       const ticketData = {
         title: formData.title.trim(),
@@ -255,6 +255,15 @@ function EnhancedCreateTicket({ onBack, onTicketCreated }) {
 
       const result = await createTicketPG(ticketData)
       if (result && !result.error) {
+        // Send confirmation email
+        try {
+          const emailResult = await sendTicketConfirmationEmail(result);
+          if (!emailResult.success) {
+            setError('Ticket created, but failed to send confirmation email: ' + emailResult.error);
+          }
+        } catch (emailError) {
+          setError('Ticket created, but email service failed.');
+        }
         if (onTicketCreated) {
           onTicketCreated(result)
         }

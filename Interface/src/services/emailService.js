@@ -1,29 +1,30 @@
 import emailjs from '@emailjs/browser';
 import { EMAIL_CONFIG } from '../config/emailConfig';
 
+// Use Vite environment variables if available
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || EMAIL_CONFIG.SERVICE_ID;
+const USER_ID = import.meta.env.VITE_EMAILJS_USER_ID || EMAIL_CONFIG.USER_ID;
+const TEMPLATE_CONFIRMATION = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || EMAIL_CONFIG.TEMPLATES.TICKET_CONFIRMATION;
+const TEMPLATE_SUPPORT = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || EMAIL_CONFIG.TEMPLATES.SUPPORT_NOTIFICATION;
+
 /**
  * Validate EmailJS configuration
  * @returns {Object} - Validation result
  */
 const validateEmailConfig = () => {
   const errors = [];
-  
-  if (!EMAIL_CONFIG.USER_ID || EMAIL_CONFIG.USER_ID === 'YOUR_PUBLIC_KEY_HERE') {
+  if (!USER_ID) {
     errors.push('EmailJS Public Key (USER_ID) is not configured');
   }
-  
-  if (!EMAIL_CONFIG.SERVICE_ID || EMAIL_CONFIG.SERVICE_ID === 'YOUR_SERVICE_ID_HERE') {
+  if (!SERVICE_ID) {
     errors.push('EmailJS Service ID is not configured');
   }
-  
-  if (!EMAIL_CONFIG.TEMPLATES.TICKET_CONFIRMATION || EMAIL_CONFIG.TEMPLATES.TICKET_CONFIRMATION === 'YOUR_TICKET_CONFIRMATION_TEMPLATE_ID') {
+  if (!TEMPLATE_CONFIRMATION) {
     errors.push('Ticket confirmation template ID is not configured');
   }
-  
-  if (!EMAIL_CONFIG.TEMPLATES.SUPPORT_NOTIFICATION || EMAIL_CONFIG.TEMPLATES.SUPPORT_NOTIFICATION === 'YOUR_SUPPORT_NOTIFICATION_TEMPLATE_ID') {
+  if (!TEMPLATE_SUPPORT) {
     errors.push('Support notification template ID is not configured');
   }
-  
   return {
     isValid: errors.length === 0,
     errors
@@ -35,14 +36,11 @@ const validateEmailConfig = () => {
  */
 export const initializeEmailJS = () => {
   const validation = validateEmailConfig();
-  
   if (!validation.isValid) {
     console.warn('⚠️ EmailJS configuration incomplete:', validation.errors);
-    console.warn('Please update src/config/emailConfig.js with your EmailJS credentials');
     return false;
   }
-  
-  emailjs.init(EMAIL_CONFIG.USER_ID);
+  emailjs.init(USER_ID);
   console.log('✅ EmailJS initialized successfully');
   return true;
 };
@@ -53,26 +51,24 @@ export const initializeEmailJS = () => {
  * @returns {Promise<Object>} - Result of email sending operation
  */
 export const sendTicketConfirmationEmail = async (ticketData) => {
+  console.log('DEBUG: Entered sendTicketConfirmationEmail with', ticketData);
   try {
     const validation = validateEmailConfig();
-    
     if (!validation.isValid) {
       const errorMessage = `EmailJS not properly configured: ${validation.errors.join(', ')}`;
       console.error('❌', errorMessage);
-      console.error('Please visit https://dashboard.emailjs.com/admin/account to get your credentials');
-      
       return {
         success: false,
         error: errorMessage,
         details: { configErrors: validation.errors }
       };
     }
-
     console.log('🔧 Sending confirmation email with config:', {
-      serviceId: EMAIL_CONFIG.SERVICE_ID,
-      templateId: EMAIL_CONFIG.TEMPLATES.TICKET_CONFIRMATION,
-      userId: EMAIL_CONFIG.USER_ID
-    });    const templateParams = {
+      serviceId: SERVICE_ID,
+      templateId: TEMPLATE_CONFIRMATION,
+      userId: USER_ID
+    });
+    const templateParams = {
       to_email: ticketData.customer_email,
       customer_name: ticketData.customer_name || 'Customer',
       ticket_id: ticketData.ticketId || ticketData.ticket_id,
@@ -89,10 +85,10 @@ export const sendTicketConfirmationEmail = async (ticketData) => {
     console.log('📧 Recipient should be:', ticketData.customer_email);
 
     const response = await emailjs.send(
-      EMAIL_CONFIG.SERVICE_ID,
-      EMAIL_CONFIG.TEMPLATES.TICKET_CONFIRMATION,
+      SERVICE_ID,
+      TEMPLATE_CONFIRMATION,
       templateParams,
-      EMAIL_CONFIG.USER_ID
+      USER_ID
     );
 
     console.log('✅ Email sent successfully:', response);
@@ -221,8 +217,8 @@ export const sendTestEmail = async (testEmail = 's78841441@gmail.com') => {
     };
 
     const response = await emailjs.send(
-      EMAIL_CONFIG.SERVICE_ID,
-      EMAIL_CONFIG.TEMPLATES.TICKET_CONFIRMATION,
+      SERVICE_ID,
+      TEMPLATE_CONFIRMATION,
       templateParams
     );
 
@@ -265,8 +261,8 @@ export const testEmailJSConnection = async () => {
     };
 
     const response = await emailjs.send(
-      EMAIL_CONFIG.SERVICE_ID,
-      EMAIL_CONFIG.TEMPLATES.TICKET_CONFIRMATION,
+      SERVICE_ID,
+      TEMPLATE_CONFIRMATION,
       testParams
     );
 

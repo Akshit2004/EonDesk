@@ -88,7 +88,8 @@ const TicketDetailsModal = ({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">          <div className="ticket-info">
+        <div className="modal-header">
+          <div className="ticket-info">
             <h2>Ticket #{ticket.ticketId || ticket.ticket_id || 'N/A'}</h2>
             <span
               className="status-badge"
@@ -97,7 +98,7 @@ const TicketDetailsModal = ({
               {ticket.status?.replace('_', ' ').toUpperCase()}
             </span>
           </div>
-          <button className="close-btn" onClick={onClose}>✕</button>
+          <button className="close-btn" type="button" tabIndex={0} aria-label="Close modal" onClick={(e) => { e.stopPropagation(); onClose(); }}>✕</button>
         </div>
 
         <div className="modal-body">

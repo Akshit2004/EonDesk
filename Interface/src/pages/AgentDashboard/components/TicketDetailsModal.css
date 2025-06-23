@@ -8,20 +8,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: 20px;
+  z-index: 2000;
+  padding: 0;
 }
 
 .modal-content {
   background: white;
   border-radius: 12px;
-  width: 100%;
-  max-width: 800px;
-  max-height: 90vh;
+  width: 98vw;
+  max-width: 1800px;
+  min-width: 90vw;
+  max-height: 95vh;
   overflow: hidden;
 
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 2100;
 }
 
 .modal-header {
@@ -31,6 +34,8 @@
   justify-content: space-between;
   align-items: center;
   background: #f8fafc;
+  position: relative;
+  z-index: 2200;
 }
 
 .ticket-info {
@@ -61,15 +66,17 @@
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #64748b;
+  color: #000 !important;
   padding: 4px;
   border-radius: 4px;
   transition: all 0.2s;
+  z-index: 2300;
+  position: relative;
 }
 
 .close-btn:hover {
   background: #e2e8f0;
-  color: #374151;
+  color: #000 !important;
 }
 
 .modal-body {

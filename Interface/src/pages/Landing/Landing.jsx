@@ -45,12 +45,12 @@ function Landing({ onAgentLogin }) {
     }, 100) // Small delay to ensure state update completes
   }
 
-  const handleCustomerLogin = async ({ customerNo, password }) => {
+  const handleCustomerLogin = async ({ customer_no, password }) => {
     try {
       const response = await fetch('http://localhost:3001/customer-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customerNo, password })
+        body: JSON.stringify({ customer_no, password })
       });
       const data = await response.json();
       if (!response.ok) {
@@ -58,6 +58,7 @@ function Landing({ onAgentLogin }) {
       }
       // Optionally store customer info in state/localStorage here
       setShowCustomerLogin(false);
+      localStorage.setItem('customer_no', customer_no);
       navigate('/support');
     } catch (err) {
       alert(err.message);

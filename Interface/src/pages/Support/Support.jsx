@@ -1,9 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   ArrowLeft, Ticket, Plus, FileText, Clock, User, Mail, Phone, ArrowRight, 
   CheckCircle, ChevronLeft, ChevronRight, Headphones, MessageSquare, Settings, 
-  AlertCircle, Shield,  HelpCircle,
-  BookOpen, Target, Layers, Search
+  AlertCircle,Layers, Search
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
@@ -13,6 +12,7 @@ import { createTicketPG } from '../../services/postgresTicketApi'
 import ChatThread from './ChatThread'
 import { toast } from 'react-toastify'
 import { sendTicketConfirmationEmail } from '../../services/emailService';
+import TrackTicketsDashboard from '../TrackTickets/TrackTicketsDashboard';
 import './Support.css'
 
 function Support() {
@@ -20,6 +20,8 @@ function Support() {
   const [selectedOption, setSelectedOption] = useState(null)
   const [trackedTicket, setTrackedTicket] = useState(null)
   const [loadingChatThread, setLoadingChatThread] = useState(false);
+  const [customerNoForTrack, setCustomerNoForTrack] = useState('');
+  const [showTrackDashboard, setShowTrackDashboard] = useState(false);
 
   const handleGoBack = () => {
     navigate('/')
@@ -46,6 +48,15 @@ function Support() {
     }, 700); // 700ms delay for animation
   }
 
+  // On mount, auto-fill customerNoForTrack from localStorage if available
+  useEffect(() => {
+    const storedCustomerNo = localStorage.getItem('customer_no');
+    if (storedCustomerNo) {
+      setCustomerNoForTrack(storedCustomerNo);
+      setShowTrackDashboard(true);
+    }
+  }, []);
+
   return (
     <div className="support-container">
       <Navbar currentPage="support" showThemeToggle={true} showTagline={false} />
@@ -65,7 +76,7 @@ function Support() {
           </div>
         </div>
 
-      {!selectedOption ? (
+      {!selectedOption && !showTrackDashboard ? (
         <div className="support-options">
           <div className="options-grid">
             <div 
@@ -93,7 +104,7 @@ function Support() {
             {/* New Track Ticket Card */}
             <div 
               className="support-card track-ticket"
-              onClick={() => handleOptionSelect('track')}
+              onClick={() => setShowTrackDashboard(true)}
             >
               <div className="card-icon">
                 <Search className="icon" />
@@ -117,6 +128,50 @@ function Support() {
             onTicketCreated={handleTicketCreated}
             onBack={() => setSelectedOption(null)}
           />
+        ) : showTrackDashboard ? (
+          !customerNoForTrack ? (
+            <div className="ticket-form-container">
+              <div className="form-header">
+                <button className="back-btn" onClick={() => setShowTrackDashboard(false)}>
+                  <ArrowLeft className="back-icon" />
+                </button>
+                <div className="form-header-content">
+                  <div className="form-header-icon">
+                    <Search className="header-form-icon" />
+                    <div className="header-form-glow" />
+                  </div>
+                  <div>
+                    <h2 className="form-title">Track Your Tickets</h2>
+                    <p className="form-subtitle">Enter your Customer Number</p>
+                  </div>
+                </div>
+              </div>
+              <div className="track-form-fields">
+                <div className="form-group">
+                  <label className="form-label">Customer Number</label>
+                  <input
+                    type="text"
+                    value={customerNoForTrack}
+                    onChange={e => setCustomerNoForTrack(e.target.value)}
+                    placeholder="Enter your customer number"
+                    className="form-input"
+                    disabled
+                  />
+                </div>
+                <button className="nav-btn next-btn" disabled>
+                  View Tickets
+                  <Search className="nav-icon" />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <button className="back-btn" style={{marginBottom:16}} onClick={() => { setCustomerNoForTrack(''); setShowTrackDashboard(false); }}>
+                <ArrowLeft className="back-icon" /> Back
+              </button>
+              <TrackTicketsDashboard customer_no={customerNoForTrack} />
+            </div>
+          )
         ) : selectedOption === 'track' ? (
           <TrackTicketCard onBack={() => setSelectedOption(null)} onTicketFound={handleTrackTicket} />
         ) : selectedOption === 'chat' && trackedTicket ? (

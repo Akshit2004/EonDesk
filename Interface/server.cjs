@@ -211,6 +211,20 @@ app.post('/customer-login', async (req, res) => {
   }
 });
 
+// Get all tickets for a customer_no
+app.get('/tickets/customer/:customer_no', async (req, res) => {
+  try {
+    const { customer_no } = req.params;
+    const result = await pool.query(
+      'SELECT * FROM ticket WHERE customer_no = $1 ORDER BY created_at DESC',
+      [customer_no]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

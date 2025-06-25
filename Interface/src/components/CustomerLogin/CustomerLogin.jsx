@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import './CustomerLogin.css';
 
 const CustomerLogin = ({ isOpen, onClose, onLogin, theme }) => {
-  const [customerNo, setCustomerNo] = useState('');
+  const [customer_no, setcustomer_no] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!customerNo || !password) {
+    if (!customer_no || !password) {
       setError('Please enter both Customer No. and password.');
       return;
     }
     setError('');
-    onLogin({ customerNo, password });
+    onLogin({ customer_no, password });
   };
 
   if (!isOpen) return null;
@@ -31,8 +31,8 @@ const CustomerLogin = ({ isOpen, onClose, onLogin, theme }) => {
             Customer No.
             <input
               type="text"
-              value={customerNo}
-              onChange={e => setCustomerNo(e.target.value)}
+              value={customer_no}
+              onChange={e => setcustomer_no(e.target.value)}
               placeholder="Enter your customer number"
               autoComplete="username"
             />

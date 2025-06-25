@@ -13,6 +13,7 @@ export async function createTicketPG(ticketData) {
       created_by: ticketData.email || ticketData.customer_email,
       customer_name: ticketData.name || ticketData.customer_name,
       customer_email: ticketData.email || ticketData.customer_email,
+      customer_no: ticketData.customer_no, // <-- add this line
       assigned_agent: null,
       assigned_agent_name: null,
       description: ticketData.description || ticketData.message

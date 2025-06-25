@@ -71,7 +71,7 @@ app.get('/tickets', async (req, res) => {
 app.post('/tickets', async (req, res) => {
   const {
     ticket_id, title, category, priority, status, created_by,
-    customer_name, customer_email, assigned_agent, assigned_agent_name, description
+    customer_name, customer_email, customer_no, assigned_agent, assigned_agent_name, description // add customer_no
   } = req.body;
   
   try {
@@ -81,9 +81,9 @@ app.post('/tickets', async (req, res) => {
     const finalTicketId = ticket_id || `TKT-${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 5)}`.toUpperCase();
     
     const result = await pool.query(
-      `INSERT INTO ticket (ticket_id, title, category, priority, status, created_by, customer_name, customer_email, assigned_agent, assigned_agent_name, description, created_at, updated_at)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW(),NOW()) RETURNING *`,
-      [finalTicketId, title || 'Support Request', category || 'general', priority || 'medium', status || 'open', created_by, customer_name, customer_email, assigned_agent, assigned_agent_name, description]
+      `INSERT INTO ticket (ticket_id, title, category, priority, status, created_by, customer_name, customer_email, customer_no, assigned_agent, assigned_agent_name, description, created_at, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,NOW(),NOW()) RETURNING *`,
+      [finalTicketId, title || 'Support Request', category || 'general', priority || 'medium', status || 'open', created_by, customer_name, customer_email, customer_no, assigned_agent, assigned_agent_name, description]
     );
     
     console.log('Created ticket:', result.rows[0]);
@@ -193,14 +193,14 @@ app.post('/login', async (req, res) => {
 
 // Customer login verification
 app.post('/customer-login', async (req, res) => {
-  const { customerNo, password } = req.body;
-  if (!customerNo || !password) {
+  const { customer_no, password } = req.body;
+  if (!customer_no || !password) {
     return res.status(400).json({ error: 'Customer No. and password are required' });
   }
   try {
     const result = await pool.query(
       'SELECT id, customer_no FROM customer WHERE customer_no = $1 AND password = $2',
-      [customerNo, password]
+      [customer_no, password]
     );
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });

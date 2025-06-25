@@ -139,6 +139,7 @@ function EnhancedCreateTicket({ onBack, onTicketCreated }) {
     // User info
     name: '',
     email: '',
+    customer_no: '', // Added customer_no
     // Ticket details
     category: 'general',
     priority: 'medium',
@@ -154,7 +155,7 @@ function EnhancedCreateTicket({ onBack, onTicketCreated }) {
       title: 'Contact Information',
       description: 'Tell us who you are',
       icon: User,
-      fields: ['name', 'email']
+      fields: ['name', 'email', 'customer_no'] // Add customer_no to step 1
     },
     {
       number: 2,
@@ -246,6 +247,7 @@ function EnhancedCreateTicket({ onBack, onTicketCreated }) {
         description: formData.description.trim(),
         customer_email: formData.email.trim(),
         customer_name: formData.name.trim(),
+        customer_no: formData.customer_no.trim(), // Add customer_no to payload
         status: 'open',
         created_by: formData.email.trim(),
         assigned_agent: null,
@@ -381,6 +383,19 @@ function EnhancedCreateTicket({ onBack, onTicketCreated }) {
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   placeholder="Enter your email address"
+                  className="form-input"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">
+                  <span className="label-icon"><Ticket /></span>
+                  Customer No. *
+                </label>
+                <input
+                  type="text"
+                  value={formData.customer_no}
+                  onChange={(e) => handleInputChange('customer_no', e.target.value)}
+                  placeholder="Enter your customer number"
                   className="form-input"
                 />
               </div>

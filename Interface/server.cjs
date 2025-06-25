@@ -191,6 +191,26 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Customer login verification
+app.post('/customer-login', async (req, res) => {
+  const { customerNo, password } = req.body;
+  if (!customerNo || !password) {
+    return res.status(400).json({ error: 'Customer No. and password are required' });
+  }
+  try {
+    const result = await pool.query(
+      'SELECT id, customer_no FROM customer WHERE customer_no = $1 AND password = $2',
+      [customerNo, password]
+    );
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    res.json({ customer: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

@@ -3,6 +3,7 @@ import { Users, Headphones, Sparkles, ArrowRight, Shield, Zap, Sun, Moon } from 
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../../contexts/ThemeContext'
 import AgentLogin from '../../components/AgentLogin/AgentLogin'
+import CustomerLogin from '../../components/CustomerLogin/CustomerLogin'
 import Navbar from '../../components/Navbar/Navbar'
 import './Landing.css'
 
@@ -12,6 +13,7 @@ function Landing({ onAgentLogin }) {
   const [selectedRole, setSelectedRole] = useState('customer') // Default to customer
   const [isToggling, setIsToggling] = useState(false)
   const [showAgentLogin, setShowAgentLogin] = useState(false)
+  const [showCustomerLogin, setShowCustomerLogin] = useState(false)
   
   const handleToggle = () => {
     setIsToggling(true)
@@ -24,8 +26,7 @@ function Landing({ onAgentLogin }) {
     if (role === 'agent') {
       setShowAgentLogin(true)
     } else {
-      // For customer portal, navigate to support page
-      navigate('/support')
+      setShowCustomerLogin(true)
     }
   }
   
@@ -44,8 +45,31 @@ function Landing({ onAgentLogin }) {
     }, 100) // Small delay to ensure state update completes
   }
 
+  const handleCustomerLogin = async ({ customerNo, password }) => {
+    try {
+      const response = await fetch('http://localhost:3001/customer-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customerNo, password })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+      // Optionally store customer info in state/localStorage here
+      setShowCustomerLogin(false);
+      navigate('/support');
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
   const handleCloseAgentLogin = () => {
     setShowAgentLogin(false)
+  }
+
+  const handleCloseCustomerLogin = () => {
+    setShowCustomerLogin(false)
   }
   
   return (
@@ -133,6 +157,13 @@ function Landing({ onAgentLogin }) {
         isOpen={showAgentLogin}        
         onClose={handleCloseAgentLogin}        
         onLoginSuccess={handleAgentLoginSuccess}
+      />
+      {/* Customer Login Modal */}
+      <CustomerLogin
+        isOpen={showCustomerLogin}
+        onClose={handleCloseCustomerLogin}
+        onLogin={handleCustomerLogin}
+        theme={isDarkTheme ? 'dark' : 'light'}
       />
     </div>
   )

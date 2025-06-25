@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import './TrackTicketsDashboard.css';
 import './TrackTickets.css';
+import ChatThread from '../Support/ChatThread';
 
 function TrackTicketsDashboard({ customer_no }) {
   const [tickets, setTickets] = useState([]);
@@ -47,13 +49,11 @@ function TrackTicketsDashboard({ customer_no }) {
       </div>
       <div className="ticket-details">
         {selectedTicket ? (
-          <div>
-            <h2>{selectedTicket.title}</h2>
-            <p><b>Status:</b> {selectedTicket.status}</p>
-            <p><b>Created:</b> {new Date(selectedTicket.created_at).toLocaleString()}</p>
-            <p><b>Description:</b> {selectedTicket.description}</p>
-            {/* Add more ticket details/messages here */}
-          </div>
+          <>
+            <div className="ticket-chat-panel">
+              <ChatThread ticket={selectedTicket} />
+            </div>
+          </>
         ) : (
           <div>Select a ticket to view details</div>
         )}

@@ -77,3 +77,13 @@
   color: #c00;
   margin-bottom: 12px;
 }
+.ticket-chat-panel {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  padding: 0;
+  margin: 0;
+}

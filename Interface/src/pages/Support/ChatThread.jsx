@@ -403,18 +403,19 @@ export default function ChatThread({ ticket, onBack }) {
     );
   };
   useEffect(() => {
-    // Remove modal-open class if present (since not a modal anymore)
+    // Remove modal-open class for dashboard embedding
     document.body.classList.remove('modal-open');
-    // No-op cleanup
     return () => {};
   }, []);
   return (
-    <div className="chat-thread-fullscreen">
+    <div className="chat-thread-embedded">
       <div className="chat-thread-container forum-centered">
         <div className="thread-header">
-          <button className="back-btn" onClick={onBack} title="Close">
-            <span style={{fontSize: '1.5rem', fontWeight: 'bold', lineHeight: 1}}>&times;</span>
-          </button>
+          {onBack && (
+            <button className="back-btn" onClick={onBack} title="Close">
+              <span style={{fontSize: '1.5rem', fontWeight: 'bold', lineHeight: 1}}>&times;</span>
+            </button>
+          )}
           <div className="header-info">
             <div className="ticket-subject">
               <MessageSquare className="thread-icon" />
@@ -423,7 +424,8 @@ export default function ChatThread({ ticket, onBack }) {
             <div className="ticket-meta">
               <span className="ticket-priority">Priority: {ticket.priority || 'Medium'}</span>
               <span className="message-count">{messages.length} messages</span>
-            </div>            <div className="thread-summary">
+            </div>
+            <div className="thread-summary">
               <b>Summary:</b> {ticket.description || ticket.message || ticket.title || 'Support ticket'}
             </div>
           </div>

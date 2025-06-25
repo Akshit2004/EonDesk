@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './CustomerLogin.css';
 
-const CustomerLogin = ({ isOpen, onClose, onLogin, theme }) => {
+const CustomerLogin = ({ onClose, onLogin, theme }) => {
   const [customer_no, setcustomer_no] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -13,10 +13,8 @@ const CustomerLogin = ({ isOpen, onClose, onLogin, theme }) => {
       return;
     }
     setError('');
-    onLogin({ customer_no, password });
+    if (onLogin) onLogin({ customer_no, password });
   };
-
-  if (!isOpen) return null;
 
   // Determine theme class
   const themeClass = theme === 'dark' ? 'dark' : 'light';
@@ -24,7 +22,9 @@ const CustomerLogin = ({ isOpen, onClose, onLogin, theme }) => {
   return (
     <div className="customer-login-modal-overlay">
       <div className={`customer-login-modal ${themeClass}`}>
-        <button className="close-btn" onClick={onClose}>&times;</button>
+        {onClose && (
+          <button className="close-btn" onClick={onClose}>&times;</button>
+        )}
         <h2>Customer Login</h2>
         <form onSubmit={handleSubmit}>
           <label>

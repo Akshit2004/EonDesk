@@ -67,7 +67,6 @@ function AgentLogin({ isOpen, onClose, onLoginSuccess }) {
     onClose()
   }
 
-  if (!isOpen) return null
   return (
     <div className="login-overlay" onClick={handleClose}>
       <div className="login-modal" onClick={(e) => e.stopPropagation()}>

@@ -5,10 +5,11 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import { AuthProvider } from './contexts/AuthContext'
 import { initializeEmailJS } from './services/emailService'
 import { onAuthStateChanged } from './firebase/auth'
-import Landing from './pages/Landing/Landing'
 import Support from './pages/Support/Support'
 import AgentDashboard from './pages/AgentDashboard'
 import AgentLogin from './components/AgentLogin/AgentLogin'
+import { CustomerLoginPage } from './pages'
+import { AgentLoginPage } from './pages'
 import './App.css'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -43,12 +44,6 @@ function App() {
     setShowAgentLogin(false)
   }
 
-  const handleLandingAgentLogin = (user) => {
-    // Handle agent login from Landing page
-    setCurrentUser(user)
-    const isAdmin = user.email?.includes('admin') || user.email?.includes('support@')
-    setUserRole(isAdmin ? 'admin' : 'agent')
-  }
   const handleAgentLogout = () => {
     setCurrentUser(null)
     setUserRole(null)
@@ -59,10 +54,12 @@ function App() {
       <ThemeProvider>
         <Router>
           <div className="App">            <Routes>
-              <Route path="/" element={<Landing onAgentLogin={handleLandingAgentLogin} />} />
-              <Route path="/support" element={<Support />} />
-              <Route path="/agent-dashboard" element={<AgentDashboard />} />
-            </Routes>
+            {/* <Route path="/" element={<Landing onAgentLogin={handleLandingAgentLogin} />} /> */}
+            <Route path="/customer" element={<CustomerLoginPage />} />
+            <Route path="/agent" element={<AgentLoginPage />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/agent-dashboard" element={<AgentDashboard />} />
+          </Routes>
 
             {/* Agent Login Modal */}
             {showAgentLogin && (

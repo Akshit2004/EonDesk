@@ -75,14 +75,6 @@ function Support() {
             <ArrowLeft className="back-icon" />
             <span>Back to Home</span>
           </button>
-          <div className="header-content">
-            <div className="header-icon-wrapper">
-              <Headphones className="header-main-icon" />
-              <div className="header-icon-glow" />
-            </div>            
-            <h1 className="support-title">Customer Support</h1>
-            <p className="support-subtitle">How can we help you today?</p>
-          </div>
         </div>
 
       {!selectedOption && !showTrackDashboard ? (

@@ -48,13 +48,22 @@ function Support() {
     }, 700); // 700ms delay for animation
   }
 
-  // On mount, auto-fill customerNoForTrack from localStorage if available
-  useEffect(() => {
+  // Helper to autofill customer number from localStorage
+  const autofillCustomerNo = () => {
     const storedCustomerNo = localStorage.getItem('customer_no');
     if (storedCustomerNo) {
       setCustomerNoForTrack(storedCustomerNo);
       setShowTrackDashboard(true);
+    } else {
+      setCustomerNoForTrack('');
+      setShowTrackDashboard(true);
     }
+  };
+
+  // On mount, auto-fill customerNoForTrack from localStorage if available
+  useEffect(() => {
+    autofillCustomerNo();
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -104,7 +113,7 @@ function Support() {
             {/* New Track Ticket Card */}
             <div 
               className="support-card track-ticket"
-              onClick={() => setShowTrackDashboard(true)}
+              onClick={autofillCustomerNo}
             >
               <div className="card-icon">
                 <Search className="icon" />

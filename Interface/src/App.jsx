@@ -54,7 +54,7 @@ function App() {
       <ThemeProvider>
         <Router>
           <div className="App">            <Routes>
-            {/* <Route path="/" element={<Landing onAgentLogin={handleLandingAgentLogin} />} /> */}
+            <Route path="/" element={<CustomerLoginPage />} />
             <Route path="/customer" element={<CustomerLoginPage />} />
             <Route path="/agent" element={<AgentLoginPage />} />
             <Route path="/support" element={<Support />} />

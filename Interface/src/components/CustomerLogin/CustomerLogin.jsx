@@ -30,6 +30,8 @@ const CustomerLogin = ({ onLogin }) => {
       if (onLogin) onLogin(data.user);
       setcustomer_no('');
       setPassword('');
+      // Store customer number in localStorage on successful login
+      localStorage.setItem('customer_no', customer_no);
       navigate('/support');
     } catch (err) {
       setError(err.message);

@@ -71,10 +71,6 @@ function Support() {
       <Navbar currentPage="support" showThemeToggle={true} showTagline={false} />
       <div className="support-content">
         <div className="support-header">
-          <button className="back-button" onClick={handleGoBack}>
-            <ArrowLeft className="back-icon" />
-            <span>Back to Home</span>
-          </button>
         </div>
 
       {!selectedOption && !showTrackDashboard ? (

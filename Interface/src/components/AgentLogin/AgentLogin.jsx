@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Eye, EyeOff, Lock, Loader2, Shield, User } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import './AgentLogin.css'
 
 function AgentLogin({ onLoginSuccess }) {
@@ -10,6 +11,7 @@ function AgentLogin({ onLoginSuccess }) {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const navigate = useNavigate()
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -48,10 +50,12 @@ function AgentLogin({ onLoginSuccess }) {
         onLoginSuccess(data.user)
       }
 
-      // Clear form and close modal
+      // Clear form
       setFormData({ email: '', password: '' })
       setError('')
       setShowPassword(false)
+      // Redirect to agent dashboard
+      navigate('/agent-dashboard')
     } catch (err) {
       setError(err.message)
       console.error('Agent login error:', err)

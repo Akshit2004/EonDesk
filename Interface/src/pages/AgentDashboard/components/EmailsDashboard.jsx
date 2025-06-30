@@ -34,9 +34,16 @@ const EmailsDashboard = () => {
     try {
       const fetchedEmails = await gmailService.fetchEmails();
       setEmails(fetchedEmails);
+      // Only show error if no emails are fetched
+      if (!fetchedEmails || fetchedEmails.length === 0) {
+        toast.info('No support emails found.');
+      }
     } catch (error) {
       console.error('Error fetching emails:', error);
-      toast.error('Failed to fetch emails. Please check your Gmail configuration.');
+      // Only show error if emails are empty (not already loaded)
+      if (emails.length === 0) {
+        toast.error('Failed to fetch emails. Please check your Gmail configuration.');
+      }
     } finally {
       setLoading(false);
     }
@@ -61,16 +68,9 @@ const EmailsDashboard = () => {
         
         if (emailResult.success) {
           toast.success(`Ticket #${result.ticketId} created and confirmation email sent!`);
-          
-          // Remove email from dashboard after successful email send
-          const removeResult = await gmailService.archiveEmail(ticketFormData.originalEmailId);
-          if (removeResult.success) {
-            setEmails(prev => prev.filter(email => email.id !== ticketFormData.originalEmailId));
-            setSelectedEmail(null);
-          } else {
-            console.error('Error removing email:', removeResult.error);
-            toast.warning('Ticket created and email sent, but failed to remove email from dashboard');
-          }
+          // Remove email from dashboard after successful email send (just from UI)
+          setEmails(prev => prev.filter(email => email.id !== ticketFormData.originalEmailId));
+          setSelectedEmail(null);
         } else {
           toast.warning(`Ticket #${result.ticketId} created but failed to send confirmation email: ${emailResult.error}`);
         }
@@ -90,29 +90,18 @@ const EmailsDashboard = () => {
     setShowCreateTicket(false);
     setTicketFormData(null);
   };
-  const handleRemoveEmail = async (emailId) => {
+
+  const handleRemoveEmail = (emailId) => {
     setProcessingEmails(prev => new Set(prev).add(emailId));
-    
-    try {
-      const result = await gmailService.archiveEmail(emailId);
-      
-      if (result.success) {
-        setEmails(prev => prev.filter(email => email.id !== emailId));
-        setSelectedEmail(null);
-        toast.success('Email removed from dashboard');
-      } else {
-        toast.error(`Failed to remove email: ${result.error}`);
-      }
-    } catch (error) {
-      console.error('Error removing email:', error);
-      toast.error('Failed to remove email');
-    } finally {
-      setProcessingEmails(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(emailId);
-        return newSet;
-      });
-    }
+    // Only remove from dashboard UI, do not call Gmail API
+    setEmails(prev => prev.filter(email => email.id !== emailId));
+    setSelectedEmail(null);
+    toast.success('Email removed from dashboard');
+    setProcessingEmails(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(emailId);
+      return newSet;
+    });
   };
 
   const formatDate = (date) => {

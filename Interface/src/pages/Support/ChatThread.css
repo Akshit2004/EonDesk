@@ -236,11 +236,11 @@ body.modal-open {
 }
 
 .thread-message.from-customer {
-  border-left: 4px solid #007bff;
+  border-left: 4px solid #007bff !important; /* Blue for customer */
 }
 
 .thread-message.from-agent {
-  border-left: 4px solid #28a745;
+  border-left: 4px solid #28a745 !important; /* Green for agent */
 }
 
 /* Thread depth styling */
@@ -752,7 +752,7 @@ body.modal-open {
   border-left: 4px solid #6366f1 !important;
 }
 .thread-message.from-agent {
-  border-left: 4px solid #22d3ee !important;
+  border-left: 4px solid #00ff40 !important;
 }
 .thread-message.depth-1 {
   background: #181a20 !important;

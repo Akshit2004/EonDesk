@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUserCircle, FaLock } from 'react-icons/fa';
+import { FaUserCircle, FaLock, FaShieldAlt } from 'react-icons/fa';
 import './CustomerLogin.css';
 
 const CustomerLogin = ({ onLogin }) => {
@@ -43,44 +43,55 @@ const CustomerLogin = ({ onLogin }) => {
 
   return (
     <div className="customer-login-page-bg">
-      <div className="customer-login-bg-graphic">
-        <div className="customer-login-bg-slide slide-1" />
-        <div className="customer-login-bg-slide slide-2" />
-        <div className="customer-login-bg-slide slide-3" />
-      </div>
       <div className="customer-login-page-center">
         <div className="customer-login-modal customer-login-page-form">
+          <div className="customer-login-branding">
+            <div className="customer-login-logo">EON</div>
+            <div className="customer-login-subtitle">Professional Support Portal</div>
+          </div>
+          
           <h2 className="customer-login-title">Customer Login</h2>
+          
           <form onSubmit={handleSubmit}>
-            <label className="customer-login-label">
+            <div className="customer-login-input-group">
               <FaUserCircle className="customer-login-icon" />
               <input
                 type="text"
                 value={customer_no}
                 onChange={e => setcustomer_no(e.target.value)}
-                placeholder="Customer Number"
+                placeholder="Enter your customer number"
                 autoComplete="username"
                 disabled={loading}
                 className="customer-login-input"
               />
-            </label>
-            <label className="customer-login-label">
+            </div>
+            
+            <div className="customer-login-input-group">
               <FaLock className="customer-login-icon" />
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="Password"
+                placeholder="Enter your password"
                 autoComplete="current-password"
                 disabled={loading}
                 className="customer-login-input"
               />
-            </label>
+            </div>
+            
             {error && <div className="error">{error}</div>}
+            
             <button type="submit" disabled={loading} className="customer-login-btn">
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
+          
+          <div className="customer-login-security-notice">
+            <div className="customer-login-security-text">
+              <FaShieldAlt className="customer-login-security-icon" />
+              Your connection is secure and encrypted
+            </div>
+          </div>
         </div>
       </div>
     </div>

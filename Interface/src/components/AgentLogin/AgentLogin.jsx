@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Eye, EyeOff, Lock, Loader2, Shield, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { usePostgresAuth } from '../../contexts/PostgresAuthContext';
+import { usePostgresAuth } from '../../contexts/PostgresAuthContext'
 import './AgentLogin.css'
 
 function AgentLogin({ onLoginSuccess }) {
@@ -76,11 +76,11 @@ function AgentLogin({ onLoginSuccess }) {
           <div className="login-header">
             <div className="header-content">
               <div className="header-icon">
-                <Shield size={32} />
+                <Shield size={36} />
               </div>
               <div className="header-text">
-                <h2 className="login-title">Agent Portal</h2>
-                <p className="login-subtitle">Secure Access for Support Agents</p>
+                <h2 className="login-title">EON Support</h2>
+                <p className="login-subtitle">Professional Agent Portal</p>
               </div>
             </div>
           </div>
@@ -157,7 +157,7 @@ function AgentLogin({ onLoginSuccess }) {
                 ) : (
                   <>
                     <Shield size={18} />
-                    <span>Access Agent Portal</span>
+                    <span>Sign In</span>
                   </>
                 )}
               </button>

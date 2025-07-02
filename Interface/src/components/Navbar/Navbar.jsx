@@ -37,24 +37,6 @@ function Navbar({ currentPage, showThemeToggle = true, showTagline = false, hide
               )}
             </div>
           </div>
-        </div>        {/* Navigation Links */}
-        <div className="desktop-nav">
-          <button 
-            className={`nav-link ${currentPage === 'home' ? 'active' : ''}`}
-            onClick={() => handleNavigation('home')}
-          >
-            <Home className="nav-icon" />
-            <span className="nav-label">Home</span>
-            <div className="nav-indicator"></div>
-          </button>
-          <button 
-            className={`nav-link ${currentPage === 'support' ? 'active' : ''}`}
-            onClick={() => handleNavigation('support')}
-          >
-            <Headphones className="nav-icon" />
-            <span className="nav-label">Support</span>
-            <div className="nav-indicator"></div>
-          </button>
         </div>
 
         {/* Actions */}

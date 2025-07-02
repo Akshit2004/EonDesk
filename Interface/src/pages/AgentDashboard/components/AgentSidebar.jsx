@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaTachometerAlt, FaEnvelope, FaSignOutAlt } from 'react-icons/fa';
+import { FaTachometerAlt, FaEnvelope, FaSignOutAlt, FaShieldAlt } from 'react-icons/fa';
 import './AgentSidebar.css';
 
 const AgentSidebar = ({ onLogout, activeTab, onTabChange }) => {
@@ -7,11 +7,11 @@ const AgentSidebar = ({ onLogout, activeTab, onTabChange }) => {
     <aside className="agent-sidebar">
       <div className="sidebar-header">
         <div className="sidebar-avatar">
-          {/* You can use a user avatar here if available */}
-          <span style={{ fontSize: 48 }} role="img" aria-label="avatar">👤</span>
+          <FaShieldAlt />
         </div>
         <div className="sidebar-user">
-          <span className="sidebar-user-role">Support Agent</span>
+          <span className="sidebar-user-name">Agent Portal</span>
+          <span className="sidebar-user-role">Support Dashboard</span>
         </div>
       </div>
       <nav className="sidebar-nav">
@@ -25,10 +25,10 @@ const AgentSidebar = ({ onLogout, activeTab, onTabChange }) => {
           className={`sidebar-link ${activeTab === 'emails' ? 'active' : ''}`}
           onClick={() => onTabChange('emails')}
         >
-          <FaEnvelope className="sidebar-link-icon" /> Emails
+          <FaEnvelope className="sidebar-link-icon" /> Email Management
         </button>
         <button className="sidebar-link logout-link" onClick={onLogout}>
-          <FaSignOutAlt className="sidebar-link-icon" /> Logout
+          <FaSignOutAlt className="sidebar-link-icon" /> Sign Out
         </button>
       </nav>
     </aside>

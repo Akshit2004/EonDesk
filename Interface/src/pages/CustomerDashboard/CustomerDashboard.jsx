@@ -37,7 +37,7 @@ export default function CustomerDashboard() {
   const [showModal, setShowModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('open'); // Set default to 'open'
   const [currentPage, setCurrentPage] = useState(1);
   const [ticketsPerPage] = useState(10);
   
@@ -139,17 +139,15 @@ export default function CustomerDashboard() {
                     title="Total Tickets"
                     value={stats.total}
                     icon={<FaTicketAlt />}
-                    color="#3b82f6"
+                    color="blue"
                     trend={`${stats.total} tickets created`}
-                    onClick={() => setStatusFilter('all')}
-                    clickable
                     active={statusFilter === 'all'}
                   />
                   <StatCard
                     title="Open Tickets"
                     value={stats.open}
                     icon={<FaClock />}
-                    color="#f59e0b"
+                    color="yellow"
                     trend={`${stats.open} awaiting response`}
                     onClick={() => setStatusFilter('open')}
                     clickable
@@ -159,7 +157,7 @@ export default function CustomerDashboard() {
                     title="In Progress"
                     value={stats.inProgress}
                     icon={<FaExclamationTriangle />}
-                    color="#10b981"
+                    color="green"
                     trend={`${stats.inProgress} being worked on`}
                     onClick={() => setStatusFilter('inProgress')}
                     clickable
@@ -169,7 +167,7 @@ export default function CustomerDashboard() {
                     title="Resolved"
                     value={stats.resolved}
                     icon={<FaCheckCircle />}
-                    color="#6366f1"
+                    color="purple"
                     trend={`${stats.resolved} completed`}
                     onClick={() => setStatusFilter('resolved')}
                     clickable

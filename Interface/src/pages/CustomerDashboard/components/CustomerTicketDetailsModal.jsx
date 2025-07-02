@@ -8,6 +8,7 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAllMessages, setShowAllMessages] = useState(false);
+  const [attachment, setAttachment] = useState(null);
 
   React.useEffect(() => {
     if (ticket?.ticket_id) {
@@ -29,27 +30,45 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
     }
   };
 
+  const handleAttachmentChange = (e) => {
+    setAttachment(e.target.files[0]);
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() && !attachment) return;
 
     setSending(true);
     try {
-      const response = await fetch(`http://localhost:3001/tickets/${ticket.ticket_id}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: newMessage,
-          sender_type: 'customer',
-          sender_name: `Customer ${customerNo}`,
-          customer_no: customerNo
-        })
-      });
-
+      let response;
+      if (attachment) {
+        const formData = new FormData();
+        formData.append('content', newMessage);
+        formData.append('sender_type', 'customer');
+        formData.append('sender_name', `Customer ${customerNo}`);
+        formData.append('customer_no', customerNo);
+        formData.append('attachment', attachment);
+        response = await fetch(`http://localhost:3001/tickets/${ticket.ticket_id}/messages`, {
+          method: 'POST',
+          body: formData
+        });
+      } else {
+        response = await fetch(`http://localhost:3001/tickets/${ticket.ticket_id}/messages`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: newMessage,
+            sender_type: 'customer',
+            sender_name: `Customer ${customerNo}`,
+            customer_no: customerNo
+          })
+        });
+      }
       if (response.ok) {
         const newMsg = await response.json();
         setMessages(prev => [...prev, newMsg]);
         setNewMessage('');
+        setAttachment(null);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -197,10 +216,19 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
               disabled={sending}
               className="message-textarea"
             />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+              <input
+                type="file"
+                onChange={handleAttachmentChange}
+                disabled={sending}
+                style={{ fontSize: '0.95rem' }}
+              />
+              {attachment && <span style={{ fontSize: '0.95rem', color: '#2563eb' }}>{attachment.name}</span>}
+            </div>
             <div className="form-actions">
               <button 
                 type="submit" 
-                disabled={!newMessage.trim() || sending}
+                disabled={(!newMessage.trim() && !attachment) || sending}
                 className="send-btn"
               >
                 <FaPaperPlane />

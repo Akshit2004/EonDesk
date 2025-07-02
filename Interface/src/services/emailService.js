@@ -31,9 +31,6 @@ const validateEmailConfig = () => {
   };
 };
 
-/**
- * Initialize EmailJS with your user ID
- */
 export const initializeEmailJS = () => {
   const validation = validateEmailConfig();
   if (!validation.isValid) {
@@ -47,8 +44,8 @@ export const initializeEmailJS = () => {
 
 /**
  * Send automated ticket confirmation email
- * @param {Object} ticketData - The ticket data containing customer info and ticket details
- * @returns {Promise<Object>} - Result of email sending operation
+ * @param {Object} ticketData 
+ * @returns {Promise<Object>} 
  */
 export const sendTicketConfirmationEmail = async (ticketData) => {
   console.log('DEBUG: Entered sendTicketConfirmationEmail with', ticketData);

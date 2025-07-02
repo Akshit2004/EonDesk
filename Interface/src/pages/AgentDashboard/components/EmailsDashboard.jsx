@@ -2,8 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { FaEnvelope, FaEnvelopeOpen, FaTicketAlt, FaTrash, FaEye, FaReply, FaClock, FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import gmailService from '../../../services/gmailService';
+import { sendTicketConfirmationEmail } from '../../../services/emailService';
 import CreateTicketForm from '../../../components/TicketDashboard/CreateTicketForm';
 import './EmailsDashboard.css';
+
+// Utility to extract email address from 'Name <email@domain.com>'
+function extractEmailAddress(str) {
+  if (!str) return '';
+  const match = str.match(/<([^>]+)>/);
+  if (match) return match[1];
+  // If no <>, try if it's just an email
+  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(str.trim())) return str.trim();
+  return '';
+}
 
 const EmailsDashboard = () => {
   const [emails, setEmails] = useState([]);
@@ -60,33 +71,31 @@ const EmailsDashboard = () => {
   };  const handleTicketCreated = async (result) => {
     if (result.success && ticketFormData?.originalEmail) {
       try {
-        // Send automated reply with ticket number
-        const emailResult = await gmailService.sendTicketConfirmationReply(
-          ticketFormData.originalEmail, 
-          result.ticketId
-        );
-        
+        // Extract just the email address for EmailJS
+        const customerEmail = extractEmailAddress(ticketFormData.originalEmail?.from);
+        const emailResult = await sendTicketConfirmationEmail({
+          ...result,
+          customer_email: customerEmail,
+          customer_name: ticketFormData.name,
+          subject: ticketFormData.title || ticketFormData.originalEmail?.subject,
+          description: ticketFormData.description || ticketFormData.originalEmail?.body,
+        });
         if (emailResult.success) {
           toast.success(`Ticket #${result.ticketId} created and confirmation email sent!`);
-          // Remove email from dashboard after successful email send (just from UI)
           setEmails(prev => prev.filter(email => email.id !== ticketFormData.originalEmailId));
           setSelectedEmail(null);
         } else {
           toast.warning(`Ticket #${result.ticketId} created but failed to send confirmation email: ${emailResult.error}`);
         }
-        
       } catch (error) {
         console.error('Error in ticket creation process:', error);
         toast.warning(`Ticket #${result.ticketId} created but encountered an error: ${error.message}`);
       }
     } else if (result.success) {
-      // Ticket created successfully but no email data
       toast.success(`Ticket #${result.ticketId} created successfully!`);
     } else {
-      // Ticket creation failed
       toast.error(`Failed to create ticket: ${result.error || 'Unknown error'}`);
     }
-    
     setShowCreateTicket(false);
     setTicketFormData(null);
   };

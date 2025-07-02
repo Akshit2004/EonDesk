@@ -25,6 +25,11 @@ body {
   --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(255, 255, 255, 0.2);
+  --font-size-h1: 3.5rem;
+  --font-size-h2: 2.3rem;
+  --font-size-h3: 1.7rem;
+  --font-size-base: 1.15rem;
+  --font-size-small: 1rem;
 }
 
 .dark-theme {
@@ -66,6 +71,25 @@ body {
   background-color: var(--primary-bg);
   color: var(--text-primary);
   transition: all 0.3s ease;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+}
+h2 {
+  font-size: var(--font-size-h2);
+}
+h3 {
+  font-size: var(--font-size-h3);
+}
+body, .App {
+  font-size: var(--font-size-base);
+}
+button, .agent-auth-required button {
+  font-size: var(--font-size-base);
+}
+.agent-auth-required p {
+  font-size: var(--font-size-small);
 }
 
 /* Loading States */

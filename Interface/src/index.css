@@ -19,6 +19,8 @@
   
   /* Smooth scrolling for all elements */
   scroll-behavior: smooth;
+
+  font-size: 18px;
 }
 
 /* Custom scrollbar for webkit browsers */
@@ -44,6 +46,8 @@
 /* Enhanced scrollbar styles for better UX */
 html {
   scroll-behavior: smooth;
+
+  font-size: 18px;
 }
 
 /* Light theme scrollbar */

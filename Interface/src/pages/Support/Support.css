@@ -225,123 +225,214 @@
   margin-bottom: 4rem;
 }
 
+/* --- Enhanced Support Card Styles for Professional Look --- */
+:root {
+  --card-bg-dark: rgba(30, 32, 40, 0.85);
+  --card-bg-light: rgba(255, 255, 255, 0.92);
+  --card-border-dark: rgba(80, 100, 180, 0.18);
+  --card-border-light: rgba(30, 41, 59, 0.10);
+  --card-shadow-dark: 0 8px 32px 0 rgba(16, 30, 60, 0.18);
+  --card-shadow-light: 0 8px 32px 0 rgba(59, 130, 246, 0.10);
+  --card-hover-shadow-dark: 0 16px 48px 0 rgba(59, 130, 246, 0.25);
+  --card-hover-shadow-light: 0 16px 48px 0 rgba(59, 130, 246, 0.18);
+  --card-gradient-dark: linear-gradient(135deg, #232946 0%, #16161a 100%);
+  --card-gradient-light: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --card-feature-bg-dark: rgba(80, 100, 180, 0.10);
+  --card-feature-bg-light: rgba(30, 41, 59, 0.08);
+  --card-feature-border-dark: rgba(80, 100, 180, 0.18);
+  --card-feature-border-light: rgba(30, 41, 59, 0.15);
+}
+
 .support-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 2.5rem;
+  background: var(--card-bg-dark);
+  background-image: var(--card-gradient-dark);
+  border: 1.5px solid var(--card-border-dark);
+  border-radius: 22px;
+  box-shadow: var(--card-shadow-dark);
+  padding: 2.75rem 2.25rem 2.5rem 2.25rem;
   cursor: pointer;
-  transition: all 0.4s ease;
+  transition: 
+    box-shadow 0.35s cubic-bezier(.4,2,.6,1),
+    border-color 0.25s,
+    transform 0.25s cubic-bezier(.4,2,.6,1),
+    background 0.3s;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(10px);
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .support-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(59,130,246,0.10) 0%, rgba(37,99,235,0.08) 100%);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.3s;
+}
+
+.support-card:hover {
+  box-shadow: var(--card-hover-shadow-dark);
+  border-color: #3b82f6;
+  transform: translateY(-6px) scale(1.025);
+  background: linear-gradient(135deg, #232946 0%, #1e293b 100%);
 }
 
 .support-card:hover::before {
   opacity: 1;
 }
 
-.support-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(59, 130, 246, 0.4);
-  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+.light-theme .support-card {
+  background: var(--card-bg-light);
+  background-image: var(--card-gradient-light);
+  border: 1.5px solid var(--card-border-light);
+  box-shadow: var(--card-shadow-light);
 }
 
+.light-theme .support-card:hover {
+  box-shadow: var(--card-hover-shadow-light);
+  border-color: #3b82f6;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e0e7ef 100%);
+}
+
+/* Card Icon Styling */
 .card-icon {
   position: relative;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 2rem;
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 2.2rem auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
 }
-
 .card-icon .icon {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   z-index: 2;
   position: relative;
+  filter: drop-shadow(0 2px 8px rgba(59,130,246,0.10));
 }
-
 .create-ticket .icon {
   color: #3b82f6;
 }
-
-.icon-glow {
+.track-ticket .icon {
+  color: #1e293b;
+}
+.light-theme .track-ticket .icon {
+  color: #3b82f6;
+}
+.card-icon .card-glow {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80px;
-  height: 80px;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,0.13) 0%, transparent 70%);
+  z-index: 1;
+  filter: blur(1px);
 }
 
-.create-ticket .icon-glow {
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
-}
-
+/* Card Title & Description */
 .card-title {
-  font-size: 1.5rem;
-  font-weight: 600; 
-  margin: 0 0 1rem;
+  font-size: 1.55rem;
+  font-weight: 700;
+  margin: 0 0 1.1rem 0;
   text-align: center;
+  letter-spacing: -0.5px;
 }
-
 .card-description {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.78);
   text-align: center;
-  margin: 0 0 2rem;
-  line-height: 1.6;
+  margin: 0 0 2.1rem 0;
+  line-height: 1.7;
+  font-size: 1.08rem;
+}
+.light-theme .card-description {
+  color: rgba(30,41,59,0.68);
 }
 
+/* Card Features Styling */
 .card-features {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.6rem;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.1rem;
 }
-
 .feature {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--card-feature-bg-dark);
+  border: 1px solid var(--card-feature-border-dark);
+  color: #b3c6f7;
+  padding: 0.48rem 1.15rem;
+  border-radius: 18px;
+  font-size: 0.93rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.light-theme .feature {
+  background: var(--card-feature-bg-light);
+  border: 1px solid var(--card-feature-border-light);
+  color: #3b4a6b;
 }
 
+/* Card Action Button Styling */
 .card-action {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  font-weight: 500;
-  color: #667eea;
+  gap: 0.6rem;
+  font-weight: 600;
+  color: #3b82f6;
+  font-size: 1.08rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
 }
-
+.support-card:hover .card-action {
+  color: #1d4ed8;
+}
+.light-theme .card-action {
+  color: #1d4ed8;
+}
+.light-theme .support-card:hover .card-action {
+  color: #2563eb;
+}
 .arrow-icon {
-  width: 18px;
-  height: 18px;
-  transition: transform 0.3s ease;
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s cubic-bezier(.4,2,.6,1);
+}
+.support-card:hover .arrow-icon {
+  transform: translateX(7px) scale(1.08);
 }
 
-.support-card:hover .arrow-icon {
-  transform: translateX(4px);
+/* Responsive Tweaks */
+@media (max-width: 900px) {
+  .options-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .support-card {
+    min-height: 340px;
+    padding: 2rem 1.2rem 2rem 1.2rem;
+  }
+  .card-icon {
+    width: 64px;
+    height: 64px;
+  }
+  .card-icon .icon {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 /* Form Styles */

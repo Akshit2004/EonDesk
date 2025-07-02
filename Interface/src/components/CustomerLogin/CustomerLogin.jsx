@@ -42,43 +42,46 @@ const CustomerLogin = ({ onLogin }) => {
   };
 
   return (
-    <div className="customer-login-bg-animated">
-      <div className="customer-login-glass-card">
-        <div className="customer-login-card-header">
-          <img src="/eon_logo_trans.png" alt="Eon Logo" className="customer-login-logo" />
-          <h2 className="customer-login-title">Welcome Back</h2>
-          <p className="customer-login-subtitle">Sign in to your customer account</p>
+    <div className="customer-login-page-bg">
+      <div className="customer-login-bg-graphic">
+        <div className="customer-login-bg-slide slide-1" />
+        <div className="customer-login-bg-slide slide-2" />
+        <div className="customer-login-bg-slide slide-3" />
+      </div>
+      <div className="customer-login-page-center">
+        <div className="customer-login-modal customer-login-page-form">
+          <h2 className="customer-login-title">Customer Login</h2>
+          <form onSubmit={handleSubmit}>
+            <label className="customer-login-label">
+              <FaUserCircle className="customer-login-icon" />
+              <input
+                type="text"
+                value={customer_no}
+                onChange={e => setcustomer_no(e.target.value)}
+                placeholder="Customer Number"
+                autoComplete="username"
+                disabled={loading}
+                className="customer-login-input"
+              />
+            </label>
+            <label className="customer-login-label">
+              <FaLock className="customer-login-icon" />
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="Password"
+                autoComplete="current-password"
+                disabled={loading}
+                className="customer-login-input"
+              />
+            </label>
+            {error && <div className="error">{error}</div>}
+            <button type="submit" disabled={loading} className="customer-login-btn">
+              {loading ? 'Logging in...' : 'Login'}
+            </button>
+          </form>
         </div>
-        <form onSubmit={handleSubmit} className="customer-login-form">
-          <div className="customer-login-input-group">
-            <FaUserCircle className="customer-login-icon" />
-            <input
-              type="text"
-              value={customer_no}
-              onChange={e => setcustomer_no(e.target.value)}
-              placeholder="Customer Number"
-              autoComplete="username"
-              disabled={loading}
-              className="customer-login-input"
-            />
-          </div>
-          <div className="customer-login-input-group">
-            <FaLock className="customer-login-icon" />
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Password"
-              autoComplete="current-password"
-              disabled={loading}
-              className="customer-login-input"
-            />
-          </div>
-          {error && <div className="customer-login-error">{error}</div>}
-          <button type="submit" disabled={loading} className="customer-login-btn">
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
       </div>
     </div>
   );

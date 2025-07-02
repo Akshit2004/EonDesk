@@ -213,6 +213,27 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Nav icon color fixes for theme visibility */
+.light-theme .nav-icon {
+  color: #2563eb !important;
+  filter: none;
+}
+.dark-theme .nav-icon {
+  color: #e5e7eb !important;
+}
+
+/* Improve hover/active states for nav icons */
+.light-theme .nav-link:hover .nav-icon,
+.light-theme .nav-link.active .nav-icon {
+  color: #1d4ed8 !important;
+  filter: drop-shadow(0 0 8px rgba(59,130,246,0.25));
+}
+.dark-theme .nav-link:hover .nav-icon,
+.dark-theme .nav-link.active .nav-icon {
+  color: #60a5fa !important;
+  filter: drop-shadow(0 0 8px rgba(59,130,246,0.5));
+}
+
 .nav-indicator {
   position: absolute;
   bottom: 0;
@@ -276,6 +297,25 @@
 
 :global(.light-theme) .nav-link.active .nav-indicator {
   transform: translateX(-50%) scaleX(1);
+}
+
+/* Nav label color for theme support */
+.nav-label {
+  transition: color 0.3s;
+}
+.light-theme .nav-label {
+  color: #2563eb;
+}
+.dark-theme .nav-label {
+  color: #e5e7eb;
+}
+.light-theme .nav-link:hover .nav-label,
+.light-theme .nav-link.active .nav-label {
+  color: #1d4ed8;
+}
+.dark-theme .nav-link:hover .nav-label,
+.dark-theme .nav-link.active .nav-label {
+  color: #60a5fa;
 }
 
 /* Enhanced Actions Section */

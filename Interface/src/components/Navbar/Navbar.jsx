@@ -44,7 +44,7 @@ function Navbar({ currentPage, showThemeToggle = true, showTagline = false, hide
             onClick={() => handleNavigation('home')}
           >
             <Home className="nav-icon" />
-            <span>Home</span>
+            <span className="nav-label">Home</span>
             <div className="nav-indicator"></div>
           </button>
           <button 
@@ -52,7 +52,7 @@ function Navbar({ currentPage, showThemeToggle = true, showTagline = false, hide
             onClick={() => handleNavigation('support')}
           >
             <Headphones className="nav-icon" />
-            <span>Support</span>
+            <span className="nav-label">Support</span>
             <div className="nav-indicator"></div>
           </button>
         </div>
@@ -110,14 +110,14 @@ function Navbar({ currentPage, showThemeToggle = true, showTagline = false, hide
               onClick={() => handleNavigation('home')}
             >
               <Home className="nav-icon" />
-              <span>Home</span>
+              <span className="nav-label">Home</span>
             </button>
             <button 
               className={`mobile-nav-link ${currentPage === 'support' ? 'active' : ''}`}
               onClick={() => handleNavigation('support')}
             >
               <Headphones className="nav-icon" />
-              <span>Support</span>
+              <span className="nav-label">Support</span>
             </button>
           </div>
 

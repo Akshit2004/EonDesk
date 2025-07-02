@@ -31,7 +31,10 @@ const TicketDetailsModal = ({
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || sending) return;
-
+    if (!currentUser) {
+      console.error('No current user found. Cannot send message.');
+      return;
+    }
     setSending(true);
     try {
       const messageData = {
@@ -125,6 +128,10 @@ const TicketDetailsModal = ({
           <div className="messages-section">
             <h3>Conversation</h3>
             <div className="messages-container">
+              {/* Debug: Show currentUser info for troubleshooting */}
+              <pre style={{ background: '#f8f8f8', color: '#333', fontSize: '0.8em', padding: '0.5em', borderRadius: '4px' }}>
+                currentUser: {JSON.stringify(currentUser, null, 2)}
+              </pre>
               {loading ? (
                 <div className="loading">Loading messages...</div>
               ) : messages.length === 0 ? (
@@ -146,20 +153,26 @@ const TicketDetailsModal = ({
             </div>
           </div>
 
-          <form onSubmit={handleSendMessage} className="message-form">
-            <textarea
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your response..."
-              rows={3}
-              disabled={sending}
-            />
-            <div className="form-actions">
-              <button type="submit" disabled={!newMessage.trim() || sending}>
-                {sending ? 'Sending...' : 'Send Message'}
-              </button>
+          {currentUser ? (
+            <form onSubmit={handleSendMessage} className="message-form">
+              <textarea
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Type your response..."
+                rows={3}
+                disabled={sending}
+              />
+              <div className="form-actions">
+                <button type="submit" disabled={!newMessage.trim() || sending}>
+                  {sending ? 'Sending...' : 'Send Message'}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="no-current-user-warning" style={{ color: 'red', marginTop: '1rem' }}>
+              You must be logged in as an agent to send messages.
             </div>
-          </form>
+          )}
         </div>
 
         <div className="modal-footer">

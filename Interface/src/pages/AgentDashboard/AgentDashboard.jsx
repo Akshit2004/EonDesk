@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllTicketsForAgent, getTicketStats, updateTicketStatus } from '../../services/postgresAgentApi';
-import { useAuth } from '../../contexts/AuthContext';
+import { usePostgresAuth } from '../../contexts/PostgresAuthContext';
 import StatCard from './components/StatCard';
 import TicketsList from './components/TicketsList';
 import TicketDetailsModal from './components/TicketDetailsModal';
@@ -27,7 +27,9 @@ const AgentDashboard = () => {
   const [ticketsPerPage] = useState(10);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const { user, logout } = useAuth();
+  const { user, logout } = usePostgresAuth();
+  // Debug: Show user from context
+  console.log('AgentDashboard user from PostgresAuth:', user);
 
   // Fetch tickets and stats on component mount
   useEffect(() => {

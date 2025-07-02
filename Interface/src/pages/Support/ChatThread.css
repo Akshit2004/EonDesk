@@ -723,6 +723,172 @@ body.modal-open {
   background: #285a8c;
 }
 
+/* --- Improved Dark Theme for Threaded Chat --- */
+.chat-thread-container, .chat-thread-container.forum-centered {
+  background: #15161a !important;
+  color: #e3e6ee !important;
+}
+
+.thread-header {
+  background: linear-gradient(135deg, #181a20 0%, #232946 100%) !important;
+  color: #e3e6ee !important;
+  border-bottom: 2px solid #232946 !important;
+}
+
+.thread-content {
+  background: #181a20 !important;
+}
+
+.thread-message {
+  background: #20222a !important;
+  color: #e3e6ee !important;
+  border: 1.5px solid #232946 !important;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.13) !important;
+}
+.thread-message:hover {
+  box-shadow: 0 4px 16px rgba(99,102,241,0.13) !important;
+}
+.thread-message.from-customer {
+  border-left: 4px solid #6366f1 !important;
+}
+.thread-message.from-agent {
+  border-left: 4px solid #22d3ee !important;
+}
+.thread-message.depth-1 {
+  background: #181a20 !important;
+}
+.thread-message.depth-2 {
+  background: #181a20 !important;
+}
+.thread-message.depth-3 {
+  background: #15161a !important;
+}
+
+.message-header {
+  background: #181a20 !important;
+  border-bottom: 1px solid #232946 !important;
+  color: #e3e6ee !important;
+}
+
+.sender-avatar {
+  background: #232946 !important;
+  border: 2px solid #232946 !important;
+}
+.sender-avatar.highlighted {
+  border-color: #6366f1 !important;
+  background: #232946 !important;
+}
+.sender-name {
+  color: #e3e6ee !important;
+}
+
+.thread-indicator {
+  background: #232946 !important;
+  color: #a5b4fc !important;
+}
+
+.message-meta, .parent-info, .parent-preview, .quote-text, .context-text {
+  color: #a5b4fc !important;
+}
+
+.message-content, .quoted-message, .parent-reference, .message-preview {
+  background: #181a20 !important;
+  color: #e3e6ee !important;
+  border-color: #232946 !important;
+}
+
+.quoted-message {
+  border-left: 3px solid #6366f1 !important;
+}
+
+.content-text {
+  color: #e3e6ee !important;
+}
+
+.reply-btn, .reply-send-btn {
+  background: linear-gradient(90deg, #6366f1 0%, #22d3ee 100%) !important;
+  color: #fff !important;
+  border: none !important;
+}
+.reply-btn:hover, .reply-send-btn:hover {
+  background: #4f46e5 !important;
+}
+.reply-cancel-btn {
+  background: #232946 !important;
+  color: #a5b4fc !important;
+  border: none !important;
+}
+.reply-cancel-btn:hover {
+  background: #181a20 !important;
+}
+.reply-textarea {
+  background: #232946 !important;
+  color: #e3e6ee !important;
+  border: 2px solid #232946 !important;
+}
+.reply-textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px #6366f133 !important;
+}
+
+.thread-summary {
+  background: #232946 !important;
+  color: #a5b4fc !important;
+}
+
+.date-separator {
+  color: #a5b4fc !important;
+}
+.date-separator:before, .date-separator:after {
+  background: #232946 !important;
+}
+
+.load-more-btn {
+  background: #232946 !important;
+  color: #a5b4fc !important;
+  border: none !important;
+}
+.load-more-btn:hover {
+  background: #6366f1 !important;
+  color: #fff !important;
+}
+
+.error-notification {
+  background: #2d1a1a !important;
+  border: 1px solid #a94442 !important;
+  color: #ffb4b4 !important;
+}
+
+/* Remove light backgrounds in composer and actions */
+.reply-composer, .message-actions {
+  background: #181a20 !important;
+  border-top: 2px solid #232946 !important;
+}
+
+/* Remove light backgrounds in thread-toggle, expand-toggle, etc. */
+.thread-toggle, .expand-toggle {
+  background: #232946 !important;
+  color: #a5b4fc !important;
+  border: 1px solid #232946 !important;
+}
+.thread-toggle:hover, .expand-toggle:hover {
+  background: #181a20 !important;
+  color: #fff !important;
+}
+
+/* Remove light backgrounds in status badges and meta */
+.status-badge {
+  background: #232946 !important;
+  border: 1px solid #6366f1 !important;
+  color: #a5b4fc !important;
+}
+.message-count {
+  background: #232946 !important;
+  color: #a5b4fc !important;
+}
+
+/* End Improved Dark Theme */
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .chat-thread-container {

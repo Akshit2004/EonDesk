@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Eye, EyeOff, Lock, Loader2, Shield, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { usePostgresAuth } from '../../contexts/PostgresAuthContext';
 import './AgentLogin.css'
 
 function AgentLogin({ onLoginSuccess }) {
@@ -12,6 +13,7 @@ function AgentLogin({ onLoginSuccess }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const { login } = usePostgresAuth();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -44,6 +46,9 @@ function AgentLogin({ onLoginSuccess }) {
       if (!response.ok) {
         throw new Error(data.error || 'Login failed')
       }
+
+      // Store user in PostgresAuthContext
+      login(data.user)
 
       // Call success callback with user data
       if (onLoginSuccess) {

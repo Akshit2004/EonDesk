@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { AuthProvider } from './contexts/AuthContext'
+import { PostgresAuthProvider } from './contexts/PostgresAuthContext'
 import { initializeEmailJS } from './services/emailService'
 import './index.css'
 import App from './App.jsx'
@@ -10,8 +10,8 @@ initializeEmailJS();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
+    <PostgresAuthProvider>
       <App />
-    </AuthProvider>
+    </PostgresAuthProvider>
   </StrictMode>,
 )

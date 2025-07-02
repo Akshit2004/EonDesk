@@ -33,7 +33,7 @@ const CustomerLogin = ({ onLogin }) => {
       setPassword('');
       // Store customer number in localStorage on successful login
       localStorage.setItem('customer_no', customer_no);
-      navigate('/support');
+      navigate('/customer-dashboard');
     } catch (err) {
       setError(err.message);
     } finally {

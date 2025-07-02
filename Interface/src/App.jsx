@@ -4,11 +4,11 @@ import { ToastContainer } from 'react-toastify'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { PostgresAuthProvider } from './contexts/PostgresAuthContext'
 import { initializeEmailJS } from './services/emailService'
-import Support from './pages/Support/Support'
 import AgentDashboard from './pages/AgentDashboard'
 import AgentLogin from './components/AgentLogin/AgentLogin'
 import { CustomerLoginPage } from './pages'
 import { AgentLoginPage } from './pages'
+import { CustomerDashboard } from './pages'
 import './App.css'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -21,12 +21,13 @@ function App() {
     <PostgresAuthProvider>
       <ThemeProvider>
         <Router>
-          <div className="App">            <Routes>
+          <div className="App">            
+            <Routes>
             <Route path="/" element={<CustomerLoginPage />} />
             <Route path="/customer" element={<CustomerLoginPage />} />
             <Route path="/agent" element={<AgentLoginPage />} />
-            <Route path="/support" element={<Support />} />
             <Route path="/agent-dashboard" element={<AgentDashboard />} />
+            <Route path="/customer-dashboard" element={<CustomerDashboard />} />
           </Routes>
 
             <ToastContainer

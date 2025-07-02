@@ -299,3 +299,29 @@
   color: #64748b;
 }
 
+.stat-card-clickable {
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 rgba(59, 130, 246, 0.08);
+  border: 2px solid #e0e7ef;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+
+.stat-card-clickable:hover {
+  box-shadow: 0 8px 24px 0 rgba(59, 130, 246, 0.18);
+  border: 2px solid #3b82f6;
+  background: linear-gradient(135deg, #e0e7ef 0%, #c7d2fe 100%);
+}
+
+.stat-card-active {
+  border: 2.5px solid #3b82f6;
+  background: linear-gradient(135deg, #e0e7ef 0%, #c7d2fe 100%);
+  box-shadow: 0 8px 24px 0 rgba(59, 130, 246, 0.18);
+}
+
+.stat-trend {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+

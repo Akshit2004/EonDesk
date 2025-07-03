@@ -100,7 +100,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(59, 130, 246, 0.05) 100%);
+  background: #fff; /* Changed from blue gradient to white shade */
   border-bottom: 1px solid rgba(226, 232, 240, 0.3);
 }
 

@@ -158,7 +158,6 @@ const TicketsList = ({
           <div className="header-cell">Subject</div>
           <div className="header-cell">Status</div>
           <div className="header-cell">Priority</div>
-          <div className="header-cell">Last Updated</div>
           <div className="header-cell">Actions</div>
         </div>        <div className="table-body">
           {tickets.map((ticket) => (
@@ -196,10 +195,6 @@ const TicketsList = ({
                 >
                   {ticket.priority?.toUpperCase()}
                 </span>
-              </div>
-              
-              <div className="table-cell">
-                <span className="last-updated">{formatDate(ticket.updatedAt)}</span>
               </div>
                 <div className="table-cell actions-cell" onClick={(e) => e.stopPropagation()}>                <div className="action-buttons">
                   {ticket.status !== 'resolved' && ticket.status !== 'closed' && (

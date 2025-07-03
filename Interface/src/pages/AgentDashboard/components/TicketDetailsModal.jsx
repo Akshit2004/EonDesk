@@ -1,4 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { 
+  FaTimes, 
+  FaUser, 
+  FaCalendar, 
+  FaTag, 
+  FaPaperPlane, 
+  FaExclamationCircle,
+  FaClock,
+  FaCheckCircle,
+  FaSpinner
+} from 'react-icons/fa';
 import { getTicketMessages, addMessageToTicket, updateTicketStatus } from '../../../services/postgresAgentApi';
 import './TicketDetailsModal.css';
 
@@ -12,6 +23,8 @@ const TicketDetailsModal = ({
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [showAllMessages, setShowAllMessages] = useState(false);
+
   useEffect(() => {
     fetchMessages();
   }, [ticket.ticket_id]);
@@ -20,7 +33,7 @@ const TicketDetailsModal = ({
     try {
       const result = await getTicketMessages(ticket.ticket_id);
       if (result.success) {
-        setMessages(result.messages);
+        setMessages(result.messages || []);
       }
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -31,10 +44,12 @@ const TicketDetailsModal = ({
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || sending) return;
+    
     if (!currentUser) {
       console.error('No current user found. Cannot send message.');
       return;
     }
+
     setSending(true);
     try {
       const messageData = {
@@ -49,13 +64,14 @@ const TicketDetailsModal = ({
 
       await addMessageToTicket(ticket.ticket_id || ticket.id, messageData);
       setNewMessage('');
-      fetchMessages(); // Refresh messages
+      await fetchMessages(); // Refresh messages
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
       setSending(false);
     }
   };
+
   const handleStatusChange = async (newStatus) => {
     try {
       await onStatusUpdate(ticket.ticket_id || ticket.id, newStatus);
@@ -65,16 +81,37 @@ const TicketDetailsModal = ({
     }
   };
 
-  const getStatusColor = (status) => {
-    const colors = {
-      'open': '#f97316',
-      'inProgress': '#eab308',
-      'waiting_for_customer': '#3b82f6',
-      'waiting_for_agent': '#ef4444',
-      'resolved': '#22c55e',
-      'closed': '#6b7280'
-    };
-    return colors[status] || '#6b7280';
+  const getStatusClass = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'open': return 'status-open';
+      case 'inprogress':
+      case 'in_progress': return 'status-progress';
+      case 'resolved':
+      case 'closed': return 'status-resolved';
+      default: return 'status-open';
+    }
+  };
+
+  const getPriorityClass = (priority) => {
+    switch (priority?.toLowerCase()) {
+      case 'low': return 'priority-low';
+      case 'medium': return 'priority-medium';
+      case 'high': return 'priority-high';
+      case 'urgent': 
+      case 'critical': return 'priority-urgent';
+      default: return 'priority-medium';
+    }
+  };
+
+  const getPriorityIcon = (priority) => {
+    switch (priority?.toLowerCase()) {
+      case 'low': return FaCheckCircle;
+      case 'medium': return FaClock;
+      case 'high': return FaExclamationCircle;
+      case 'urgent':
+      case 'critical': return FaExclamationCircle;
+      default: return FaClock;
+    }
   };
 
   const formatDate = (date) => {
@@ -84,111 +121,163 @@ const TicketDetailsModal = ({
       day: 'numeric',
       year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      hour12: true
     });
+  };
+
+  const getRelativeTime = (date) => {
+    if (!date) return 'Unknown';
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - new Date(date)) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Just now';
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+    return `${Math.floor(diffInMinutes / 1440)}d ago`;
   };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="agent-ticket-modal" onClick={(e) => e.stopPropagation()}>
+        {/* Modern Header */}
         <div className="modal-header">
-          <div className="ticket-info">
-            <h2>Ticket #{ticket.ticketId || ticket.ticket_id || 'N/A'}</h2>
-            <span
-              className="status-badge"
-              style={{ backgroundColor: getStatusColor(ticket.status) }}
-            >
-              {ticket.status?.replace('_', ' ').toUpperCase()}
+          <div className="modal-title">
+            <h2>Ticket Details</h2>
+            <span className="ticket-id-badge">
+              #{ticket.ticketId || ticket.ticket_id || 'N/A'}
             </span>
           </div>
-          <button className="close-btn" type="button" tabIndex={0} aria-label="Close modal" onClick={(e) => { e.stopPropagation(); onClose(); }}>✕</button>
+          <button className="close-btn" onClick={onClose} aria-label="Close modal">
+            <FaTimes />
+          </button>
         </div>
 
-        <div className="modal-body">
-          <div className="ticket-details">
-            <div className="detail-row">
-              <span className="label">Customer:</span>
-              <span className="value">{ticket.customer_name} ({ticket.customer_email})</span>
-            </div>            <div className="detail-row">
-              <span className="label">Subject:</span>
-              <span className="value">{ticket.title}</span>
+        {/* Enhanced Ticket Information */}
+        <div className="ticket-info">
+          <div className="info-grid compact-info-grid">
+            <div className="info-item compact-info-item">
+              <FaTag className="info-icon" />
+              <span className="info-label">Subject</span>
+              <span className="info-value">{ticket.title || ticket.subject || 'No Subject'}</span>
             </div>
-            <div className="detail-row">
-              <span className="label">Priority:</span>
-              <span className="value priority" data-priority={ticket.priority}>
-                {ticket.priority?.toUpperCase()}
-              </span>
+            <div className="info-item compact-info-item">
+              <FaCalendar className="info-icon" />
+              <span className="info-label">Created</span>
+              <span className="info-value">{formatDate(ticket.created_at || ticket.createdAt)}</span>
+              <span className="info-label" style={{ fontSize: '0.8rem', marginTop: '4px' }}>{getRelativeTime(ticket.created_at || ticket.createdAt)}</span>
             </div>
-            <div className="detail-row">
-              <span className="label">Created:</span>
-              <span className="value">{formatDate(ticket.createdAt)}</span>
-            </div>
-          </div>
-
-          <div className="messages-section">
-            <h3>Conversation</h3>
-            <div className="messages-container">
-              {/* Debug: Show currentUser info for troubleshooting */}
-              <pre style={{ background: '#f8f8f8', color: '#333', fontSize: '0.8em', padding: '0.5em', borderRadius: '4px' }}>
-                currentUser: {JSON.stringify(currentUser, null, 2)}
-              </pre>
-              {loading ? (
-                <div className="loading">Loading messages...</div>
-              ) : messages.length === 0 ? (
-                <div className="no-messages">No messages yet</div>
-              ) : (
-                messages.map((message, index) => (
-                  <div 
-                    key={index} 
-                    className={`message ${message.sender_type === 'agent' ? 'agent-message' : 'customer-message'}`}
-                  >
-                    <div className="message-header">
-                      <span className="sender">{message.sender_name}</span>
-                      <span className="timestamp">{formatDate(message.timestamp)}</span>
-                    </div>
-                    <div className="message-content">{message.content}</div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          {currentUser ? (
-            <form onSubmit={handleSendMessage} className="message-form">
-              <textarea
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Type your response..."
-                rows={3}
-                disabled={sending}
-              />
-              <div className="form-actions">
-                <button type="submit" disabled={!newMessage.trim() || sending}>
-                  {sending ? 'Sending...' : 'Send Message'}
-                </button>
+            <div className="info-item compact_info_item">
+              <div className={`status-badge ${getStatusClass(ticket.status)}`}>
+                {ticket.status?.replace('_', ' ').toUpperCase() || 'OPEN'}
               </div>
-            </form>
-          ) : (
-            <div className="no-current-user-warning" style={{ color: 'red', marginTop: '1rem' }}>
-              You must be logged in as an agent to send messages.
+            </div>
+            <div className="info-item compact-info-item">
+              {React.createElement(getPriorityIcon(ticket.priority), { 
+                className: "info-icon",
+                style: { background: 'transparent', padding: 0 }
+              })}
+              <div className={`priority-badge ${getPriorityClass(ticket.priority)}`}>
+                {ticket.priority?.toUpperCase() || 'MEDIUM'} PRIORITY
+              </div>
+            </div>
+          </div>
+          
+          {ticket.description && (
+            <div className="ticket-description">
+              <h4>📝 Description</h4>
+              <p>{ticket.description}</p>
             </div>
           )}
         </div>
 
-        <div className="modal-footer">
-          <div className="status-actions">
-            <label>Update Status:</label>
-            <select
-              value={ticket.status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-            >
-              <option value="open">Open</option>
-              <option value="inProgress">In Progress</option>
-              <option value="waiting_for_customer">Waiting for Customer</option>
-              <option value="resolved">Resolved</option>
-              <option value="closed">Closed</option>
-            </select>
-          </div>        </div>
+        {/* Enhanced Messages Section */}
+        <div className="messages-section">
+          <h3>Conversation History</h3>
+          <div className="messages-container">
+            {loading ? (
+              <div className="loading-messages">
+                <div className="loading-spinner"></div>
+                <p>Loading conversation...</p>
+              </div>
+            ) : messages.length === 0 ? (
+              <div className="no-messages">
+                <p>No messages yet. Start the conversation!</p>
+              </div>
+            ) : (
+              <>
+                {(showAllMessages ? messages : messages.slice(-5)).map((message, index) => (
+                  <div
+                    key={`${message.id || index}-${message.timestamp}`}
+                    className={`message ${message.sender_type === 'agent' ? 'agent-message' : 'customer-message'}`}
+                  >
+                    <div className="message-header">
+                      <div className="message-sender">
+                        <FaUser className="sender-icon" />
+                        <span className="sender-name">
+                          {message.sender_name || 
+                           (message.sender_type === 'agent' ? 'Support Agent' : 'Customer')}
+                        </span>
+                      </div>
+                      <span className="message-timestamp">
+                        {getRelativeTime(message.timestamp || message.created_at)}
+                      </span>
+                    </div>
+                    <div className="message-content">{message.content}</div>
+                  </div>
+                ))}
+                
+                {messages.length > 5 && (
+                  <button 
+                    className="show-all-btn" 
+                    onClick={() => setShowAllMessages(!showAllMessages)}
+                  >
+                    {showAllMessages 
+                      ? '📁 Show recent messages only' 
+                      : `📂 Show all ${messages.length} messages`
+                    }
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Enhanced Reply Form */}
+        <form onSubmit={handleSendMessage} className="reply-form">
+          <div className="form-header">
+            <h4>Reply to Customer</h4>
+          </div>
+          <div className="form-content">
+            <textarea
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your professional response here..."
+              rows={4}
+              disabled={sending}
+              className="message-textarea"
+            />
+            <div className="form-actions">
+              <button 
+                type="submit" 
+                disabled={!newMessage.trim() || sending}
+                className="send-btn"
+              >
+                {sending ? (
+                  <>
+                    <FaSpinner className="spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <FaPaperPlane />
+                    Send Response
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );

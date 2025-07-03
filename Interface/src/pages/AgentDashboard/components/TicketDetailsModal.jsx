@@ -170,44 +170,6 @@ const TicketDetailsModal = ({
           </button>
         </div>
 
-        {/* Enhanced Ticket Information */}
-        <div className="ticket-info">
-          <div className="info-grid compact-info-grid">
-            <div className="info-item compact-info-item">
-              <FaTag className="info-icon" />
-              <span className="info-label">Subject</span>
-              <span className="info-value">{ticket.title || ticket.subject || 'No Subject'}</span>
-            </div>
-            <div className="info-item compact-info-item">
-              <FaCalendar className="info-icon" />
-              <span className="info-label">Created</span>
-              <span className="info-value">{formatDate(ticket.created_at || ticket.createdAt)}</span>
-              <span className="info-label" style={{ fontSize: '0.8rem', marginTop: '4px' }}>{getRelativeTime(ticket.created_at || ticket.createdAt)}</span>
-            </div>
-            <div className="info-item compact_info_item">
-              <div className={`status-badge ${getStatusClass(ticket.status)}`}>
-                {ticket.status?.replace('_', ' ').toUpperCase() || 'OPEN'}
-              </div>
-            </div>
-            <div className="info-item compact-info-item">
-              {React.createElement(getPriorityIcon(ticket.priority), { 
-                className: "info-icon",
-                style: { background: 'transparent', padding: 0 }
-              })}
-              <div className={`priority-badge ${getPriorityClass(ticket.priority)}`}>
-                {ticket.priority?.toUpperCase() || 'MEDIUM'} PRIORITY
-              </div>
-            </div>
-          </div>
-          
-          {ticket.description && (
-            <div className="ticket-description">
-              <h4>📝 Description</h4>
-              <p>{ticket.description}</p>
-            </div>
-          )}
-        </div>
-
         {/* Enhanced Messages Section */}
         <div className="messages-section">
           <h3>Conversation History</h3>

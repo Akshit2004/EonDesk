@@ -116,46 +116,6 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
           </button>
         </div>
 
-        {/* Ticket Info */}
-        <div className="ticket-info">
-          <div className="info-grid">
-            <div className="info-item">
-              <FaTag className="info-icon" />
-              <div>
-                <span className="info-label">Subject</span>
-                <span className="info-value">{ticket.title || ticket.subject || 'No Subject'}</span>
-              </div>
-            </div>
-            
-            <div className="info-item">
-              <FaCalendar className="info-icon" />
-              <div>
-                <span className="info-label">Created</span>
-                <span className="info-value">{formatDate(ticket.created_at)}</span>
-              </div>
-            </div>
-            
-            <div className="info-item">
-              <span className={`status-badge ${getStatusClass(ticket.status)}`}>
-                {ticket.status || 'Open'}
-              </span>
-            </div>
-            
-            <div className="info-item">
-              <span className={`priority-badge ${getPriorityClass(ticket.priority)}`}>
-                {ticket.priority || 'Medium'} Priority
-              </span>
-            </div>
-          </div>
-          
-          {ticket.description && (
-            <div className="ticket-description">
-              <h4>Description</h4>
-              <p>{ticket.description}</p>
-            </div>
-          )}
-        </div>
-
         {/* Messages */}
         <div className="messages-section">
           <h3>Conversation</h3>

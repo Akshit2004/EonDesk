@@ -126,7 +126,6 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
 
         {/* Messages */}
         <div className="messages-section">
-          <h3>Conversation</h3>
           <div className="messages-container" ref={messagesContainerRef}>
             {loading ? (
               <div className="loading-messages">

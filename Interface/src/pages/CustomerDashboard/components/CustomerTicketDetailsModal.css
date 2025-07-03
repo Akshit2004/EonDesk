@@ -85,6 +85,7 @@
   min-height: 60px;
   max-height: 90px;
   overflow: hidden;
+  background: #e5eaf1 !important;
 }
 
 .info-grid {
@@ -214,6 +215,7 @@
   flex-direction: column;
   min-height: 0;
   max-height: 100%;
+  background: #e5eaf1 !important;
 }
 
 .messages-section h3 {
@@ -313,8 +315,9 @@
 /* Reply Form */
 .reply-form {
   border-top: 1px solid #e5e7eb;
-  background: #f8fafc;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
   padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+  background: #e5eaf1 !important;
 }
 
 .form-header {

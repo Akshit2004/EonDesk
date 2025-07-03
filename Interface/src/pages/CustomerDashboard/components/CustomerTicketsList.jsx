@@ -85,7 +85,7 @@ const CustomerTicketsList = ({
         
         <div className="table-body">
           {tickets.map((ticket) => (
-            <div key={ticket.ticket_id} className="table-row">
+            <div key={ticket.ticket_id} className="table-row" onClick={() => onTicketClick(ticket)} style={{ cursor: 'pointer' }}>
               <div className="table-cell ticket-id">
                 <span className="ticket-id-badge">
                   {ticket.ticket_id}
@@ -124,7 +124,7 @@ const CustomerTicketsList = ({
               <div className="table-cell ticket-actions">
                 <button
                   className="action-btn view-btn"
-                  onClick={() => onTicketClick(ticket)}
+                  onClick={e => { e.stopPropagation(); onTicketClick(ticket); }}
                   title="View Details"
                 >
                   <FaEye />

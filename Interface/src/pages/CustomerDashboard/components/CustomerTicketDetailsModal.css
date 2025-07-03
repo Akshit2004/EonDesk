@@ -306,6 +306,8 @@
 .message-content {
   color: #374151;
   line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 /* Reply Form */
@@ -324,42 +326,74 @@
   padding: 0.5rem 0 0.5rem 0;
 }
 
+.reply-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
 .message-textarea {
   width: 100%;
   border: 2px solid #e5e7eb;
   border-radius: 8px;
-  padding: 0.75rem;
+  padding: 0.75rem 5.5rem 0.75rem 0.75rem; /* right padding for buttons */
   font-size: 0.875rem;
   resize: vertical;
   min-height: 48px;
   max-height: 80px;
   transition: border-color 0.2s;
+  box-sizing: border-box;
 }
 
-.message-textarea:focus {
-  outline: none;
-  border-color: #3b82f6;
-}
-
-.form-actions {
+.reply-actions-inside {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
   display: flex;
-  justify-content: flex-end;
-  margin-top: 0.5rem;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
 }
 
-/* Send Button */
+.attachment-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+  position: relative;
+}
+
+.attachment-btn:hover {
+  background: #e0e7ef;
+  color: #1d4ed8;
+}
+
+.attachment-btn input[type="file"] {
+  display: none;
+}
+
 .send-btn {
   background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: 7px 12px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-size: 1.1rem;
   transition: all 0.2s;
+  min-width: unset;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
 }
 
 .send-btn:hover:not(:disabled) {
@@ -371,6 +405,14 @@
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+}
+
+/* Attached Files List */
+.attached-files-list {
+  margin-top: 6px;
+  font-size: 0.92rem;
+  color: #2563eb;
+  word-break: break-all;
 }
 
 /* Show All Button */

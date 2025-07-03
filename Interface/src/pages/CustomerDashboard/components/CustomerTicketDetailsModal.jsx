@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaTimes, FaUser, FaCalendar, FaTag, FaPaperPlane } from 'react-icons/fa';
+import { FaTimes, FaUser, FaCalendar, FaTag, FaPaperPlane, FaPaperclip } from 'react-icons/fa';
 import { uploadAttachments, getAttachmentUrl, isAllowedFileType } from '../../../services/fileUploadHelper';
 import './CustomerTicketDetailsModal.css';
 
@@ -182,38 +182,41 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
             <h4>Reply to Ticket</h4>
           </div>
           <div className="form-content">
-            <textarea
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message here..."
-              rows={4}
-              disabled={sending}
-              className="message-textarea"
-            />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
-              <input
-                type="file"
-                onChange={handleAttachmentChange}
-                disabled={sending || uploading}
-                style={{ fontSize: '0.95rem' }}
-                multiple
+            <div className="reply-input-wrapper">
+              <textarea
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Type your message here..."
+                rows={4}
+                disabled={sending}
+                className="message-textarea"
               />
-              {attachments.length > 0 && (
-                <span style={{ fontSize: '0.95rem', color: '#2563eb' }}>
-                  {attachments.map(f => f.name).join(', ')}
-                </span>
-              )}
+              <div className="reply-actions-inside">
+                <label className="attachment-btn" title="Attach file">
+                  <FaPaperclip />
+                  <input
+                    type="file"
+                    onChange={handleAttachmentChange}
+                    disabled={sending || uploading}
+                    multiple
+                    style={{ display: 'none' }}
+                  />
+                </label>
+                <button 
+                  type="submit" 
+                  disabled={(!newMessage.trim() && attachments.length === 0) || sending}
+                  className="send-btn"
+                  title="Send"
+                >
+                  <FaPaperPlane />
+                </button>
+              </div>
             </div>
-            <div className="form-actions">
-              <button 
-                type="submit" 
-                disabled={(!newMessage.trim() && attachments.length === 0) || sending}
-                className="send-btn"
-              >
-                <FaPaperPlane />
-                {sending ? 'Sending...' : 'Send Message'}
-              </button>
-            </div>
+            {attachments.length > 0 && (
+              <div className="attached-files-list">
+                {attachments.map(f => f.name).join(', ')}
+              </div>
+            )}
           </div>
         </form>
       </div>

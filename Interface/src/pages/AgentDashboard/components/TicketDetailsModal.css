@@ -435,7 +435,7 @@
 }
 
 .agent-message {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  background: #dadada !important;
   border-left: 4px solid #3b82f6;
   margin: 8px;
   border-radius: 16px;
@@ -443,7 +443,7 @@
 }
 
 .customer-message {
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  background: #dadada !important;
   border-left: 4px solid #6b7280;
   margin: 8px;
   border-radius: 16px;

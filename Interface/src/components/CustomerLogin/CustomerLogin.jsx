@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaLock, FaShieldAlt } from 'react-icons/fa';
 import './CustomerLogin.css';
-import eonLogo from './eonLogo';
 
 const CustomerLogin = ({ onLogin }) => {
   const [customer_no, setcustomer_no] = useState('');
@@ -47,9 +46,7 @@ const CustomerLogin = ({ onLogin }) => {
       <div className="customer-login-page-center">
         <div className="customer-login-modal customer-login-page-form">
           <div className="customer-login-branding">
-            <div className="customer-login-logo">
-              <img src={eonLogo} alt="Eon Logo" style={{ height: 48, width: 48 }} />
-            </div>
+            <div className="customer-login-logo">EON</div>
             <div className="customer-login-subtitle">Professional Support Portal</div>
           </div>
           

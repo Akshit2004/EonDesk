@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  FaTachometerAlt, 
-  FaTicketAlt, 
-  FaSignOutAlt, 
-  FaUser, 
+import {  
+  FaTicketAlt,
   FaClock, 
   FaCheckCircle,
   FaExclamationTriangle,

@@ -3,7 +3,7 @@ const API_BASE = 'http://localhost:3001';
 
 export async function createTicketPG(ticketData) {
   try {
-    const ticket_id = `TKT-${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 5)}`.toUpperCase();
+    const ticket_id = `EON-TKT-${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 5)}`.toUpperCase();
       const payload = {
       ticket_id,
       title: ticketData.title || ticketData.subject,

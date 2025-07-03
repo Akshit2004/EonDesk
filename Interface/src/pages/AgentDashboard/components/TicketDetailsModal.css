@@ -493,6 +493,7 @@
   color: #1e293b;
   line-height: 1.6;
   white-space: pre-wrap;
+  word-break: break-word;
   font-size: 0.95rem;
 }
 
@@ -549,7 +550,7 @@
 
 .message-textarea {
   width: 100%;
-  padding: 4px 8px !important;
+  padding: 4px 5.5rem 4px 8px !important; /* right padding for buttons */
   border: 2px solid #d1d5db;
   border-radius: 16px;
   resize: vertical;
@@ -559,6 +560,7 @@
   background: white;
   transition: all 0.3s ease;
   min-height: 32px !important;
+  box-sizing: border-box;
 }
 
 .message-textarea:focus {
@@ -583,30 +585,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 10px !important;
+  padding: 7px 12px !important;
   background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   color: white;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.9rem !important;
+  font-size: 1.1rem !important;
   transition: all 0.3s ease;
-  min-width: 70px !important;
+  min-width: unset !important;
   justify-content: center;
-}
-
-.send-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px -8px rgba(59, 130, 246, 0.4);
-}
-
-.send-btn:disabled {
-  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
 }
 
 /* Ensure black text in reply to customer textarea and button */
@@ -905,4 +895,50 @@
 .show-all-btn:hover {
   background: #e2e8f0 !important;
   color: #1a202c !important;
+}
+
+.reply-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.reply-actions-inside {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+
+.attachment-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+  position: relative;
+}
+
+.attachment-btn:hover {
+  background: #e0e7ef;
+  color: #1d4ed8;
+}
+
+.attachment-btn input[type="file"] {
+  display: none;
+}
+
+.attached-files-list {
+  margin-top: 6px;
+  font-size: 0.92rem;
+  color: #2563eb;
+  word-break: break-all;
 }

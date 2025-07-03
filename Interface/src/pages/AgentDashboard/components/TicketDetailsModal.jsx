@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   FaTimes, 
   FaUser, 
@@ -8,7 +8,8 @@ import {
   FaExclamationCircle,
   FaClock,
   FaCheckCircle,
-  FaSpinner
+  FaSpinner,
+  FaPaperclip
 } from 'react-icons/fa';
 import { getTicketMessages, addMessageToTicket, updateTicketStatus } from '../../../services/postgresAgentApi';
 import { uploadAttachments, getAttachmentUrl, isAllowedFileType } from '../../../services/fileUploadHelper';
@@ -24,13 +25,20 @@ const TicketDetailsModal = ({
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [showAllMessages, setShowAllMessages] = useState(false);
   const [attachments, setAttachments] = useState([]);
   const [uploading, setUploading] = useState(false);
+
+  const messagesContainerRef = useRef(null);
 
   useEffect(() => {
     fetchMessages();
   }, [ticket.ticket_id]);
+
+  useEffect(() => {
+    if (!loading && messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [loading, messages]);
 
   const fetchMessages = async () => {
     try {
@@ -173,7 +181,7 @@ const TicketDetailsModal = ({
         {/* Enhanced Messages Section */}
         <div className="messages-section">
           <h3>Conversation History</h3>
-          <div className="messages-container">
+          <div className="messages-container" ref={messagesContainerRef}>
             {loading ? (
               <div className="loading-messages">
                 <div className="loading-spinner"></div>
@@ -184,55 +192,41 @@ const TicketDetailsModal = ({
                 <p>No messages yet. Start the conversation!</p>
               </div>
             ) : (
-              <>
-                {(showAllMessages ? messages : messages.slice(-5)).map((message, index) => (
-                  <div
-                    key={`${message.id || index}-${message.timestamp}`}
-                    className={`message ${message.sender_type === 'agent' ? 'agent-message' : 'customer-message'}`}
-                  >
-                    <div className="message-header">
-                      <div className="message-sender">
-                        <FaUser className="sender-icon" />
-                        <span className="sender-name">
-                          {message.sender_name || 
-                           (message.sender_type === 'agent' ? 'Support Agent' : 'Customer')}
-                        </span>
-                      </div>
-                      <span className="message-timestamp">
-                        {getRelativeTime(message.timestamp || message.created_at)}
+              messages.map((message, index) => (
+                <div
+                  key={`${message.id || index}-${message.timestamp}`}
+                  className={`message ${message.sender_type === 'agent' ? 'agent-message' : 'customer-message'}`}
+                >
+                  <div className="message-header">
+                    <div className="message-sender">
+                      <FaUser className="sender-icon" />
+                      <span className="sender-name">
+                        {message.sender_name || 
+                         (message.sender_type === 'agent' ? 'Support Agent' : 'Customer')}
                       </span>
                     </div>
-                    <div className="message-content">{message.content}</div>
-                    {message.attachments && Array.isArray(message.attachments) && message.attachments.length > 0 && (
-                      <div className="message-attachments">
-                        {message.attachments.map((file, idx) => (
-                          <a
-                            key={idx}
-                            href={getAttachmentUrl(file.filename || file.path?.split('/').pop())}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="attachment-link"
-                          >
-                            {file.originalname || file.filename || 'Attachment'}
-                          </a>
-                        ))}
-                      </div>
-                    )}
+                    <span className="message-timestamp">
+                      {getRelativeTime(message.timestamp || message.created_at)}
+                    </span>
                   </div>
-                ))}
-                
-                {messages.length > 5 && (
-                  <button 
-                    className="show-all-btn" 
-                    onClick={() => setShowAllMessages(!showAllMessages)}
-                  >
-                    {showAllMessages 
-                      ? '📁 Show recent messages only' 
-                      : `📂 Show all ${messages.length} messages`
-                    }
-                  </button>
-                )}
-              </>
+                  <div className="message-content">{message.content}</div>
+                  {message.attachments && Array.isArray(message.attachments) && message.attachments.length > 0 && (
+                    <div className="message-attachments">
+                      {message.attachments.map((file, idx) => (
+                        <a
+                          key={idx}
+                          href={getAttachmentUrl(file.filename || file.path?.split('/').pop())}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="attachment-link"
+                        >
+                          {file.originalname || file.filename || 'Attachment'}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))
             )}
           </div>
         </div>
@@ -243,45 +237,41 @@ const TicketDetailsModal = ({
             <h4>Reply to Customer</h4>
           </div>
           <div className="form-content">
-            <textarea
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your professional response here..."
-              rows={4}
-              disabled={sending}
-              className="message-textarea"
-            />
-            <input
-              type="file"
-              onChange={handleAttachmentChange}
-              disabled={sending || uploading}
-              style={{ fontSize: '0.95rem' }}
-              multiple
-            />
-            {attachments.length > 0 && (
-              <span style={{ fontSize: '0.95rem', color: '#2563eb' }}>
-                {attachments.map(f => f.name).join(', ')}
-              </span>
-            )}
-            <div className="form-actions">
-              <button 
-                type="submit" 
-                disabled={!newMessage.trim() && attachments.length === 0 || sending}
-                className="send-btn"
-              >
-                {sending ? (
-                  <>
-                    <FaSpinner className="spin" />
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <FaPaperPlane />
-                    Send Response
-                  </>
-                )}
-              </button>
+            <div className="reply-input-wrapper">
+              <textarea
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Type your professional response here..."
+                rows={4}
+                disabled={sending}
+                className="message-textarea"
+              />
+              <div className="reply-actions-inside">
+                <label className="attachment-btn" title="Attach file">
+                  <FaPaperclip />
+                  <input
+                    type="file"
+                    onChange={handleAttachmentChange}
+                    disabled={sending || uploading}
+                    multiple
+                    style={{ display: 'none' }}
+                  />
+                </label>
+                <button 
+                  type="submit" 
+                  disabled={(!newMessage.trim() && attachments.length === 0) || sending}
+                  className="send-btn"
+                  title="Send"
+                >
+                  {sending ? <FaSpinner className="spin" /> : <FaPaperPlane />}
+                </button>
+              </div>
             </div>
+            {attachments.length > 0 && (
+              <div className="attached-files-list">
+                {attachments.map(f => f.name).join(', ')}
+              </div>
+            )}
           </div>
         </form>
       </div>

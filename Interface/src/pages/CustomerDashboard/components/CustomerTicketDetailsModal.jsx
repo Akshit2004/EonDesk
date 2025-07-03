@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaTimes, FaUser, FaCalendar, FaTag, FaPaperPlane, FaPaperclip } from 'react-icons/fa';
 import { uploadAttachments, getAttachmentUrl, isAllowedFileType } from '../../../services/fileUploadHelper';
 import './CustomerTicketDetailsModal.css';
@@ -8,15 +8,23 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showAllMessages, setShowAllMessages] = useState(false);
   const [attachments, setAttachments] = useState([]);
   const [uploading, setUploading] = useState(false);
 
-  React.useEffect(() => {
+  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+
+  useEffect(() => {
     if (ticket?.ticket_id) {
       fetchMessages();
     }
   }, [ticket]);
+
+  useEffect(() => {
+    if (!loading && messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [loading, messages]);
 
   const fetchMessages = async () => {
     try {
@@ -119,7 +127,7 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
         {/* Messages */}
         <div className="messages-section">
           <h3>Conversation</h3>
-          <div className="messages-container">
+          <div className="messages-container" ref={messagesContainerRef}>
             {loading ? (
               <div className="loading-messages">
                 <div className="loading-spinner"></div>
@@ -130,7 +138,7 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
                 <p>No messages yet. Start the conversation!</p>
               </div>
             ) : (
-              (showAllMessages ? messages : messages.slice(-5)).map((message, index) => (
+              messages.map((message, index) => (
                 <div
                   key={index}
                   className={`message ${message.sender_type === 'customer' ? 'customer-message' : 'agent-message'}`}
@@ -162,16 +170,6 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
                   )}
                 </div>
               ))
-            )}
-            {messages.length > 5 && !showAllMessages && !loading && (
-              <button className="show-all-btn" onClick={() => setShowAllMessages(true)}>
-                Show all messages ({messages.length})
-              </button>
-            )}
-            {messages.length > 5 && showAllMessages && !loading && (
-              <button className="show-all-btn" onClick={() => setShowAllMessages(false)}>
-                Show only recent 5
-              </button>
             )}
           </div>
         </div>

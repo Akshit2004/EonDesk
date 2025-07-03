@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaTimes, FaUser, FaCalendar, FaTag, FaPaperPlane } from 'react-icons/fa';
+import { uploadAttachments, getAttachmentUrl, isAllowedFileType } from '../../../services/fileUploadHelper';
 import './CustomerTicketDetailsModal.css';
 
 const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
@@ -8,7 +9,8 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAllMessages, setShowAllMessages] = useState(false);
-  const [attachment, setAttachment] = useState(null);
+  const [attachments, setAttachments] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   React.useEffect(() => {
     if (ticket?.ticket_id) {
@@ -31,49 +33,46 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
   };
 
   const handleAttachmentChange = (e) => {
-    setAttachment(e.target.files[0]);
+    const files = Array.from(e.target.files);
+    // Filter allowed types
+    const allowed = files.filter(isAllowedFileType);
+    setAttachments(allowed);
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim() && !attachment) return;
-
+    if (!newMessage.trim() && attachments.length === 0) return;
     setSending(true);
+    let uploadedFiles = [];
     try {
-      let response;
-      if (attachment) {
-        const formData = new FormData();
-        formData.append('content', newMessage);
-        formData.append('sender_type', 'customer');
-        formData.append('sender_name', `Customer ${customerNo}`);
-        formData.append('customer_no', customerNo);
-        formData.append('attachment', attachment);
-        response = await fetch(`http://localhost:3001/tickets/${ticket.ticket_id}/messages`, {
-          method: 'POST',
-          body: formData
-        });
-      } else {
-        response = await fetch(`http://localhost:3001/tickets/${ticket.ticket_id}/messages`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            content: newMessage,
-            sender_type: 'customer',
-            sender_name: `Customer ${customerNo}`,
-            customer_no: customerNo
-          })
-        });
+      if (attachments.length > 0) {
+        setUploading(true);
+        const uploadRes = await uploadAttachments(ticket.ticket_id, attachments);
+        uploadedFiles = uploadRes.attachments || [];
+        setUploading(false);
       }
+      const response = await fetch(`http://localhost:3001/tickets/${ticket.ticket_id}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: newMessage,
+          sender_type: 'customer',
+          sender_name: `Customer ${customerNo}`,
+          customer_no: customerNo,
+          attachments: uploadedFiles
+        })
+      });
       if (response.ok) {
         const newMsg = await response.json();
         setMessages(prev => [...prev, newMsg]);
         setNewMessage('');
-        setAttachment(null);
+        setAttachments([]);
       }
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
       setSending(false);
+      setUploading(false);
     }
   };
 
@@ -186,6 +185,21 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
                     <span className="message-timestamp">{formatDate(message.timestamp)}</span>
                   </div>
                   <div className="message-content">{message.content}</div>
+                  {message.attachments && Array.isArray(message.attachments) && message.attachments.length > 0 && (
+                    <div className="message-attachments">
+                      {message.attachments.map((file, idx) => (
+                        <a
+                          key={idx}
+                          href={getAttachmentUrl(file.filename || file.path?.split('/').pop())}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="attachment-link"
+                        >
+                          {file.originalname || file.filename || 'Attachment'}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))
             )}
@@ -220,15 +234,20 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
               <input
                 type="file"
                 onChange={handleAttachmentChange}
-                disabled={sending}
+                disabled={sending || uploading}
                 style={{ fontSize: '0.95rem' }}
+                multiple
               />
-              {attachment && <span style={{ fontSize: '0.95rem', color: '#2563eb' }}>{attachment.name}</span>}
+              {attachments.length > 0 && (
+                <span style={{ fontSize: '0.95rem', color: '#2563eb' }}>
+                  {attachments.map(f => f.name).join(', ')}
+                </span>
+              )}
             </div>
             <div className="form-actions">
               <button 
                 type="submit" 
-                disabled={(!newMessage.trim() && !attachment) || sending}
+                disabled={(!newMessage.trim() && attachments.length === 0) || sending}
                 className="send-btn"
               >
                 <FaPaperPlane />

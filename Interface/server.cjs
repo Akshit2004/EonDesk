@@ -1,6 +1,8 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
 const app = express();
 const port = 3001;
 
@@ -13,6 +15,41 @@ const pool = new Pool({
   database: 'support',
   password: 'Akshit@123', // replace with your postgres password
   port: 5432,
+});
+
+// Set up storage engine for multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'uploads'));
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  }
+});
+
+// File filter for allowed types (pdf, excel, images, etc.)
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = [
+    'application/pdf',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'text/csv'
+  ];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Invalid file type. Only PDF, Excel, images, and CSV are allowed.'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
 // Test database connection and create sample data
@@ -150,6 +187,28 @@ app.post('/tickets/:ticket_id/messages', async (req, res) => {
   }
 });
 
+// Endpoint to upload attachments for a message
+app.post('/tickets/:ticket_id/messages/upload', upload.array('attachments', 5), async (req, res) => {
+  // Accept up to 5 files per message
+  try {
+    const files = req.files;
+    if (!files || files.length === 0) {
+      return res.status(400).json({ error: 'No files uploaded' });
+    }
+    // Return file info to frontend for further message creation
+    const fileInfos = files.map(file => ({
+      originalname: file.originalname,
+      filename: file.filename,
+      path: file.path,
+      mimetype: file.mimetype,
+      size: file.size
+    }));
+    res.json({ attachments: fileInfos });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // User registration
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
@@ -224,6 +283,9 @@ app.get('/tickets/customer/:customer_no', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Serve uploaded files statically
+app.use('/uploads', express.static(require('path').join(__dirname, 'uploads')));
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

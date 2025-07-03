@@ -79,7 +79,6 @@ function AgentLogin({ onLoginSuccess }) {
                 <Shield size={36} />
               </div>
               <div className="header-text">
-                <h2 className="login-title">EON Support</h2>
                 <p className="login-subtitle">Professional Agent Portal</p>
               </div>
             </div>

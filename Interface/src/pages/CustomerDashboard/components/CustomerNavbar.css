@@ -50,7 +50,6 @@
 .brand-logo {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -242,6 +241,13 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
+}
+
+.eon-logo {
+  height: 56px;
+  width: auto;
+  margin-right: 10px;
+  vertical-align: middle;
 }
 
 /* Mobile responsiveness */

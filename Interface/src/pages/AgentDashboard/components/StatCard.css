@@ -157,8 +157,9 @@
 }
 
 .stat-card-blue .stat-value {
-  color: #6366f1;
-  background: linear-gradient(90deg, #6366f1 0%, #3b82f6 100%);
+  /* Changed from blue to red gradient for Resolved card */
+  color: #dc2626;
+  background: linear-gradient(90deg, #679b36 0%, #21e907 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -186,6 +187,16 @@
 .stat-card-green .stat-value {
   color: #10b981;
   background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+}
+
+.stat-card-purple .stat-value {
+  /* Red gradient for Resolved card */
+  color: #dc2626;
+  background: linear-gradient(90deg, #f87171 0%, #dc2626 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

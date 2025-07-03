@@ -52,14 +52,12 @@
 .brand-logo {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
   font-size: 1rem;
-  color: white;
   letter-spacing: -0.025em;
 }
 
@@ -345,4 +343,11 @@
   background: #f1f5f9;
   color: #dc2626;
   transform: translateX(4px);
+}
+
+.eon-logo {
+  height: 36px;
+  width: auto;
+  margin-right: 10px;
+  vertical-align: middle;
 }

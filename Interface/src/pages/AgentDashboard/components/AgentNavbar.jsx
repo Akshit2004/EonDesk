@@ -18,7 +18,9 @@ const AgentNavbar = ({ agentName, onLogout }) => {
             {showMobileMenu ? <FaTimes /> : <FaBars />}
           </button>
           <div className="navbar-brand">
-            <div className="brand-logo">EON</div>
+            <div className="brand-logo">
+              <img src="/eon_logo_trans.png" alt="EON Logo" className="eon-logo" />
+            </div>
             <div className="brand-text">
               <span className="brand-name">Support Portal</span>
               <span className="brand-subtitle">Agent Dashboard</span>

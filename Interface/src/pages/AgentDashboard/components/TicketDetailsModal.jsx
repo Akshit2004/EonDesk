@@ -180,7 +180,6 @@ const TicketDetailsModal = ({
 
         {/* Enhanced Messages Section */}
         <div className="messages-section">
-          <h3>Conversation History</h3>
           <div className="messages-container" ref={messagesContainerRef}>
             {loading ? (
               <div className="loading-messages">

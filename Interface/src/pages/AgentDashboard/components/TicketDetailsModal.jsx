@@ -232,6 +232,26 @@ const TicketDetailsModal = ({
         </div>
 
         {/* Enhanced Reply Form */}
+        {!currentUser && (
+          <div className="not-logged-in-warning" style={{
+            color: '#e53e3e',
+            background: 'linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%)',
+            border: '1px solid #fc8181',
+            borderRadius: 10,
+            padding: '0.75rem 1rem',
+            marginBottom: '1.5rem',
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            textAlign: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            justifyContent: 'center',
+          }}>
+            <FaExclamationCircle style={{ marginRight: 8 }} />
+            You are not logged in, try to login again.
+          </div>
+        )}
         <form onSubmit={handleSendMessage} className="reply-form">
           <div className="form-header">
             <h4>Reply to Customer</h4>
@@ -243,7 +263,7 @@ const TicketDetailsModal = ({
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type your professional response here..."
                 rows={4}
-                disabled={sending}
+                disabled={sending || !currentUser}
                 className="message-textarea"
               />
               <div className="reply-actions-inside">
@@ -252,14 +272,14 @@ const TicketDetailsModal = ({
                   <input
                     type="file"
                     onChange={handleAttachmentChange}
-                    disabled={sending || uploading}
+                    disabled={sending || uploading || !currentUser}
                     multiple
                     style={{ display: 'none' }}
                   />
                 </label>
                 <button 
                   type="submit" 
-                  disabled={(!newMessage.trim() && attachments.length === 0) || sending}
+                  disabled={(!newMessage.trim() && attachments.length === 0) || sending || !currentUser}
                   className="send-btn"
                   title="Send"
                 >

@@ -122,11 +122,14 @@
   resize: vertical;
   min-height: 120px;
   font-family: inherit;
+  background: #fff;
+  color: #111;
 }
 
 .form-select {
   cursor: pointer;
   background: white;
+  color: #111;
 }
 
 /* Error Message */

@@ -11,7 +11,7 @@ import {
   FaPlus,
   FaSearch,
   FaFilter,
-  FaEye
+  FaSyncAlt
 } from 'react-icons/fa';
 import CustomerSidebar from './components/CustomerSidebar';
 import CustomerNavbar from './components/CustomerNavbar';
@@ -180,12 +180,21 @@ export default function CustomerDashboard() {
               <div className="customer-tickets-section">
                 <div className="tickets-header">
                   <h2 className="section-title">My Support Tickets</h2>
-                  <button 
-                    className="create-ticket-btn"
-                    onClick={() => setShowCreateModal(true)}
-                  >
-                    <FaPlus /> Create New Ticket
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button 
+                      className="create-ticket-btn"
+                      onClick={() => setShowCreateModal(true)}
+                    >
+                      <FaPlus /> Create New Ticket
+                    </button>
+                    <button
+                      className="create-ticket-btn"
+                      onClick={() => fetchTickets(customerNo)}
+                      title="Refresh ticket list"
+                    >
+                      <FaSyncAlt /> Refresh
+                    </button>
+                  </div>
                 </div>
 
                 {/* Filters */}

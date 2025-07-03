@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { FaTimes, FaTicketAlt } from 'react-icons/fa';
 import { createTicketPG } from '../../../services/postgresTicketApi';
+import { sendTicketConfirmationEmail } from '../../../services/emailService';
 import './CreateTicketModal.css';
 
 const CreateTicketModal = ({ onClose, onTicketCreated, customerNo, customerName }) => {
   const [formData, setFormData] = useState({
+    name: '',
+    email: '',
     title: '',
     description: '',
     category: 'general',
@@ -39,7 +42,7 @@ const CreateTicketModal = ({ onClose, onTicketCreated, customerNo, customerName 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.title.trim() || !formData.description.trim()) {
+    if (!formData.name.trim() || !formData.email.trim() || !formData.title.trim() || !formData.description.trim()) {
       setError('Please fill in all required fields.');
       return;
     }
@@ -49,15 +52,23 @@ const CreateTicketModal = ({ onClose, onTicketCreated, customerNo, customerName 
 
     try {
       const ticketData = {
-        ...formData,
         customer_no: customerNo,
-        name: customerName,
-        email: `${customerNo}@customer.com` // You might want to get this from somewhere else
+        customer_name: formData.name,
+        customer_email: formData.email,
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        priority: formData.priority
       };
 
       const result = await createTicketPG(ticketData);
       
       if (result && !result.error) {
+        // Send confirmation email after successful ticket creation
+        await sendTicketConfirmationEmail({
+          ...ticketData,
+          ticket_id: result.ticket_id || result.id || undefined
+        });
         onTicketCreated(result);
       } else {
         setError(result.error || 'Failed to create ticket');
@@ -87,6 +98,35 @@ const CreateTicketModal = ({ onClose, onTicketCreated, customerNo, customerName 
         {/* Form */}
         <form onSubmit={handleSubmit} className="ticket-form">
           <div className="form-content">
+            {/* Name and Email side by side */}
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  placeholder="Your full name"
+                  className="form-input"
+                  disabled={loading}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  placeholder="you@example.com"
+                  className="form-input"
+                  disabled={loading}
+                />
+              </div>
+            </div>
             {/* Title */}
             <div className="form-group">
               <label className="form-label">

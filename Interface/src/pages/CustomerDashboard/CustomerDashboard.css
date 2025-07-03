@@ -123,6 +123,8 @@
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s;
+  color: #111;
+  background: #fff;
 }
 
 .search-input:focus {
@@ -177,6 +179,121 @@
   cursor: pointer;
 }
 
+/* Advanced Filters Styles */
+.basic-filters-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.toggle-advanced-btn {
+  padding: 0.5rem 1rem;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.toggle-advanced-btn:hover {
+  background: #e5e7eb;
+}
+
+.advanced-filters-panel {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filters-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: flex-end;
+}
+
+.filter-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.filter-label svg {
+  margin-right: 0.5rem;
+}
+
+.filter-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+  background: #fff;
+  color: #111;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
+}
+
+.checkbox-filter {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+}
+
+.filter-checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #3b82f6;
+}
+
+.clear-filters-btn {
+  padding: 0.5rem 1rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.clear-filters-btn:hover {
+  background: #dc2626;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .customer-dashboard-main {
@@ -207,6 +324,20 @@
   
   .customer-stats-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .basic-filters-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filters-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .advanced-filters-panel {
+    padding: 1rem;
   }
 }
 

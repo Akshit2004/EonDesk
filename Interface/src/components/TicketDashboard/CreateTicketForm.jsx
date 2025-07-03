@@ -8,6 +8,7 @@ const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTi
   const [formData, setFormData] = useState({
     name: initialData?.name || currentUser?.name || '',
     email: initialData?.email || currentUser?.email || '',
+    customer_no: initialData?.customer_no || '',
     title: initialData?.title || '',
     category: initialData?.category || 'general',
     priority: initialData?.priority || 'medium',
@@ -20,6 +21,7 @@ const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTi
       setFormData({
         name: initialData.name || currentUser?.name || '',
         email: initialData.email || currentUser?.email || '',
+        customer_no: initialData.customer_no || '',
         title: initialData.title || '',
         category: initialData.category || 'general',
         priority: initialData.priority || 'medium',
@@ -56,8 +58,8 @@ const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTi
     console.log('DEBUG: handleSubmit called');
     e.preventDefault();
     
-    if (!formData.name.trim() || !formData.email.trim()) {
-      setError('Name and email are required');
+    if (!formData.name.trim() || !formData.email.trim() || !formData.customer_no.trim()) {
+      setError('Name, email, and customer number are required');
       return;
     }
 
@@ -67,6 +69,7 @@ const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTi
     try {      const ticketData = {
         name: formData.name.trim(),
         email: formData.email.trim(),
+        customer_no: formData.customer_no.trim(),
         title: formData.title.trim(),
         category: formData.category,
         priority: formData.priority,
@@ -134,6 +137,7 @@ const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTi
         setFormData({
           name: currentUser?.name || '',
           email: currentUser?.email || '',
+          customer_no: '',
           title: '',
           category: 'general',
           priority: 'medium',
@@ -191,6 +195,19 @@ const CreateTicketForm = ({ onTicketCreated, currentUser, initialData, isEmailTi
               onChange={handleChange}
               required
               placeholder="Enter your email address"
+              disabled={loading}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="customer_no">Customer Number *</label>
+            <input
+              type="text"
+              id="customer_no"
+              name="customer_no"
+              value={formData.customer_no}
+              onChange={handleChange}
+              required
+              placeholder="Enter customer number"
               disabled={loading}
             />
           </div>

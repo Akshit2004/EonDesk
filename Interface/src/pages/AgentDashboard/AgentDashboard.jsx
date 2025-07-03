@@ -277,8 +277,8 @@ const AgentDashboard = () => {
       )}
 
       {showCreateModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <button className="modal-close" onClick={() => setShowCreateModal(false)}>&times;</button>
               <h2>Create New Ticket</h2>

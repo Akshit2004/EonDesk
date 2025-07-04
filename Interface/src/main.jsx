@@ -5,7 +5,6 @@ import { initializeEmailJS } from './services/emailService'
 import './index.css'
 import App from './App.jsx'
 
-// Initialize EmailJS
 initializeEmailJS();
 
 createRoot(document.getElementById('root')).render(

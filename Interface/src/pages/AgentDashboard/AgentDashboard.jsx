@@ -36,8 +36,7 @@ const AgentDashboard = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('open');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [ticketsPerPage] = useState(10);
+  const [visibleCount, setVisibleCount] = useState(5);
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
@@ -57,6 +56,10 @@ const AgentDashboard = () => {
   useEffect(() => {
     fetchTickets();
   }, []);
+
+  useEffect(() => {
+    setVisibleCount(5); // Reset visibleCount when tickets change (e.g., after filtering)
+  }, [tickets, searchTerm, statusFilter, priorityFilter, categoryFilter, sortBy, dateFromFilter, dateToFilter, lastUpdatedFromFilter, lastUpdatedToFilter, agentResponseFilter, attachmentFilter]);
 
   const fetchTickets = async () => {
     setLoading(true);
@@ -203,9 +206,7 @@ const AgentDashboard = () => {
   });
 
   // Pagination
-  const totalPages = Math.ceil(sortedTickets.length / ticketsPerPage);
-  const startIndex = (currentPage - 1) * ticketsPerPage;
-  const currentTickets = sortedTickets.slice(startIndex, startIndex + ticketsPerPage);
+  const currentTickets = sortedTickets.slice(0, visibleCount);
 
   // Get agent name
   const agentName = user?.displayName || user?.email || 'Agent';
@@ -504,18 +505,23 @@ const AgentDashboard = () => {
                     <button onClick={() => fetchTickets()}>Retry</button>
                   </div>
                 ) : (
-                  <TicketsList 
-                    tickets={currentTickets}
-                    onTicketClick={handleTicketClick}
-                    onStatusUpdate={handleStatusUpdate}
-                    currentUser={user}
-                    totalTickets={sortedTickets.length}
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                    ticketsPerPage={ticketsPerPage}
-                    loading={loading}
-                  />
+                  <>
+                    <TicketsList 
+                      tickets={currentTickets}
+                      onTicketClick={handleTicketClick}
+                      onStatusUpdate={handleStatusUpdate}
+                      currentUser={user}
+                      totalTickets={sortedTickets.length}
+                      loading={loading}
+                    />
+                    {visibleCount < sortedTickets.length && (
+                      <div style={{ textAlign: 'center', margin: '1rem 0' }}>
+                        <button className="load-more-btn" onClick={() => setVisibleCount(v => Math.min(v + 20, sortedTickets.length))}>
+                          Load More
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </>

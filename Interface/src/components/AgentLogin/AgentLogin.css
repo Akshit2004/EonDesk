@@ -113,15 +113,11 @@
 .header-icon {
   width: 72px;
   height: 72px;
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 
-    0 10px 30px rgba(37, 99, 235, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.1);
   position: relative;
 }
 
@@ -129,7 +125,6 @@
   content: '';
   position: absolute;
   inset: 2px;
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   border-radius: 18px;
   z-index: -1;
 }

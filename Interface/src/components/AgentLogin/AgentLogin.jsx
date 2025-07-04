@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Eye, EyeOff, Lock, Loader2, Shield, User } from 'lucide-react'
+import { Eye, EyeOff, Lock, Loader2, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { usePostgresAuth } from '../../contexts/PostgresAuthContext'
 import './AgentLogin.css'
@@ -76,7 +76,7 @@ function AgentLogin({ onLoginSuccess }) {
           <div className="login-header">
             <div className="header-content">
               <div className="header-icon">
-                <Shield size={36} />
+                <img src="/eon_logo_trans.png" alt="Eon Logo" style={{ height: 48, width: 48, objectFit: 'contain' }} />
               </div>
               <div className="header-text">
                 <p className="login-subtitle">Professional Agent Portal</p>
@@ -155,7 +155,6 @@ function AgentLogin({ onLoginSuccess }) {
                   </>
                 ) : (
                   <>
-                    <Shield size={18} />
                     <span>Sign In</span>
                   </>
                 )}

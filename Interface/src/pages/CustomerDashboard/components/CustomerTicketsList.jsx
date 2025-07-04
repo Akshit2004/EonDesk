@@ -80,7 +80,6 @@ const CustomerTicketsList = ({
           <div className="header-cell">Status</div>
           <div className="header-cell">Priority</div>
           <div className="header-cell">Created</div>
-          <div className="header-cell">Actions</div>
         </div>
         
         <div className="table-body">
@@ -119,16 +118,6 @@ const CustomerTicketsList = ({
               
               <div className="table-cell ticket-date">
                 {formatDate(ticket.created_at)}
-              </div>
-              
-              <div className="table-cell ticket-actions">
-                <button
-                  className="action-btn view-btn"
-                  onClick={e => { e.stopPropagation(); onTicketClick(ticket); }}
-                  title="View Details"
-                >
-                  <FaEye />
-                </button>
               </div>
             </div>
           ))}

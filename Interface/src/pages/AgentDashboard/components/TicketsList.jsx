@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './TicketsList.css';
+import TicketStatusPriorityModal from './TicketStatusPriorityModal';
 
 const TicketsList = ({ 
   tickets, 
   onTicketClick, 
-  onStatusUpdate, 
   currentUser,
   totalTickets,
-  loading
+  loading,
+  onStatusPriorityUpdate // optional prop for updating status/priority
 }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTicket, setModalTicket] = useState(null);
+
   const getStatusColor = (status) => {
     const colors = {
       'open': '#f97316',
@@ -45,6 +49,23 @@ const TicketsList = ({
     if (!text) return '';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
   };
+
+  const handleOpenModal = (ticket) => {
+    setModalTicket(ticket);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setModalTicket(null);
+  };
+
+  const handleSaveModal = (changes) => {
+    if (onStatusPriorityUpdate && modalTicket) {
+      onStatusPriorityUpdate(modalTicket, changes);
+    }
+  };
+
   if (tickets.length === 0) {
     return (
       <div className="tickets-empty">
@@ -68,7 +89,6 @@ const TicketsList = ({
           <div className="header-cell">Subject</div>
           <div className="header-cell">Status</div>
           <div className="header-cell">Priority</div>
-          <div className="header-cell">Actions</div>
         </div>
         <div className="table-body">
           {tickets.map((ticket) => (
@@ -93,6 +113,8 @@ const TicketsList = ({
                 <span 
                   className="status-badge"
                   style={{ backgroundColor: getStatusColor(ticket.status) }}
+                  onClick={e => { e.stopPropagation(); handleOpenModal(ticket); }}
+                  title="Click to edit status and priority"
                 >
                   {ticket.status?.replace('_', ' ').toUpperCase()}
                 </span>
@@ -100,32 +122,23 @@ const TicketsList = ({
               <div className="table-cell">
                 <span 
                   className="priority-badge"
-                  style={{ color: getPriorityColor(ticket.priority) }}
+                  style={{ color: getPriorityColor(ticket.priority), cursor: 'pointer' }}
+                  onClick={e => { e.stopPropagation(); handleOpenModal(ticket); }}
+                  title="Click to edit status and priority"
                 >
                   {ticket.priority?.toUpperCase()}
                 </span>
-              </div>
-              <div className="table-cell actions-cell" onClick={(e) => e.stopPropagation()}>
-                <div className="action-buttons">
-                  {ticket.status !== 'resolved' && ticket.status !== 'closed' && (
-                    <select
-                      className="status-select"
-                      value={ticket.status}
-                      onChange={(e) => onStatusUpdate(ticket.ticket_id || ticket.id, e.target.value)}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <option value="open">Open</option>
-                      <option value="inProgress">In Progress</option>
-                      <option value="waiting_for_customer">Waiting for Customer</option>
-                      <option value="resolved">Resolved</option>
-                    </select>
-                  )}
-                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
+      <TicketStatusPriorityModal
+        isOpen={modalOpen}
+        onClose={handleCloseModal}
+        ticket={modalTicket || {}}
+        onSave={handleSaveModal}
+      />
     </div>
   );
 };

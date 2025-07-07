@@ -3,6 +3,8 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+require('dotenv').config();
+
 const app = express();
 const port = 3001;
 
@@ -10,11 +12,12 @@ app.use(express.json());
 app.use(cors());
 
 const pool = new Pool({
-  user: 'support_09g6_user',
-  host: 'dpg-d1lqklbe5dus7381uo7g-a.oregon-postgres.render.com',
-  database: 'support_09g6',
-  password: 'dU1y70gmIhLzTkfKOaLJELTcF7XEHCLL',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL || 'postgresql://support_09g6_user:dU1y70gmIhLzTkfKOaLJELTcF7XEHCLL@dpg-d1lqklbe5dus7381uo7g-a.oregon-postgres.render.com/support_09g6',
+  ssl: {
+    rejectUnauthorized: false
+  },
+  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
 });
 
 // Set up storage engine for multer

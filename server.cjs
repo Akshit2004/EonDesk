@@ -55,44 +55,12 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
-// Test database connection and create sample data
-pool.connect(async (err, client, release) => {
+// Test database connection to Render
+pool.connect((err, client, release) => {
   if (err) {
-    console.error('Error acquiring client', err.stack);
+    console.error('Error connecting to Render database:', err.message);
   } else {
-    console.log('Connected to PostgreSQL database');
-    
-    // Create some sample data if tables are empty
-    try {
-      const ticketCheck = await client.query('SELECT COUNT(*) FROM ticket');
-      const messageCheck = await client.query('SELECT COUNT(*) FROM message');
-      
-      if (parseInt(ticketCheck.rows[0].count) === 0) {
-        console.log('Creating sample ticket data...');
-        await client.query(`
-          INSERT INTO ticket (ticket_id, title, category, priority, status, created_by, customer_name, customer_email, assigned_agent, assigned_agent_name, created_at, updated_at)
-          VALUES 
-            ('TKT-MC5ZWMHS-P4GUB', 'Sample Support Issue', 'technical', 'medium', 'open', 'customer@example.com', 'John Doe', 'customer@example.com', NULL, NULL, NOW(), NOW()),
-            ('TKT-SAMPLE-ABCDE', 'Another Test Issue', 'general', 'low', 'open', 'user@test.com', 'Jane Smith', 'user@test.com', NULL, NULL, NOW(), NOW())
-        `);
-      }
-      
-      if (parseInt(messageCheck.rows[0].count) === 0) {
-        console.log('Creating sample message data...');
-        await client.query(`
-          INSERT INTO message (ticket_id, content, sender_id, sender_type, sender_name, message_type, timestamp, attachments, read_by, reply_to)
-          VALUES 
-            ('TKT-MC5ZWMHS-P4GUB', 'This is the initial message for the ticket. I am having issues with the system.', 'customer@example.com', 'customer', 'John Doe', 'public', NOW(), '[]', '[]', NULL),
-            ('TKT-MC5ZWMHS-P4GUB', 'Thank you for contacting support. We are looking into your issue.', 'agent@company.com', 'agent', 'Support Agent', 'public', NOW(), '[]', '[]', NULL),
-            ('TKT-SAMPLE-ABCDE', 'I need help with general setup.', 'user@test.com', 'customer', 'Jane Smith', 'public', NOW(), '[]', '[]', NULL)
-        `);
-      }
-      
-      console.log('Sample data setup complete');
-    } catch (sampleError) {
-      console.log('Sample data creation skipped (tables might already have data):', sampleError.message);
-    }
-    
+    console.log('Connected to Render PostgreSQL database');
     release();
   }
 });

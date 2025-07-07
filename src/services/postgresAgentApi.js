@@ -1,5 +1,5 @@
 // PostgreSQL agent dashboard API service
-const API_BASE = 'http://localhost:3001';
+const API_BASE = 'https://eondesk.onrender.com';
 
 export async function getAllTicketsForAgent() {
   try {

@@ -1,6 +1,6 @@
 // API for tickets and messages using Express backend
 
-const API_BASE = 'http://localhost:3001';
+const API_BASE = 'https://eondesk.onrender.com';
 
 export async function getTicketById(ticketId) {
   try {

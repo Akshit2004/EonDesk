@@ -73,7 +73,7 @@ export default function CustomerDashboard() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(`http://localhost:3001/tickets/customer/${customerNumber}`);
+      const response = await fetch(`https://eondesk.onrender.com/tickets/customer/${customerNumber}`);
       if (!response.ok) throw new Error('Failed to fetch tickets');
       const data = await response.json();
       setTickets(data);

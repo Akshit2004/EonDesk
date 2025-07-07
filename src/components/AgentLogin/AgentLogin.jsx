@@ -163,7 +163,13 @@ function AgentLogin({ onLoginSuccess }) {
 
             <div className="login-footer">
               <div className="footer-links">
-                <button className="link-button">Contact Admin</button>
+                <a
+                  href="mailto:admin@company.com"
+                  className="link-button"
+                  style={{ textDecoration: 'none' }}
+                >
+                  Contact Admin
+                </a>
               </div>
               <p className="footer-text">
                 Secure authentication powered by PostgreSQL

@@ -6,10 +6,13 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://eon-desk.vercel.app', 'https://eondesk.vercel.app'],
+  credentials: true
+}));
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://support_09g6_user:dU1y70gmIhLzTkfKOaLJELTcF7XEHCLL@dpg-d1lqklbe5dus7381uo7g-a.oregon-postgres.render.com/support_09g6',
@@ -63,6 +66,15 @@ pool.connect((err, client, release) => {
     console.log('Connected to Render PostgreSQL database');
     release();
   }
+});
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Eon Support Interface API is running',
+    status: 'OK',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Get all tickets

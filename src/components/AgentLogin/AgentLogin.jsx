@@ -2,26 +2,8 @@ import { useState } from 'react'
 import { Eye, EyeOff, Lock, Loader2, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { usePostgresAuth } from '../../contexts/PostgresAuthContext'
+import { fetchWithFallback } from '../../services/apiBase';
 import './AgentLogin.css'
-
-const API_BASES = [
-  import.meta.env.VITE_API_BASE || process.env.VITE_API_BASE || 'http://localhost:3001',
-  'http://localhost/php-backend'
-];
-
-async function fetchWithFallback(path, options) {
-  let lastError;
-  for (const base of API_BASES) {
-    try {
-      const res = await fetch(`${base}${path}`, options);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res;
-    } catch (err) {
-      lastError = err;
-    }
-  }
-  throw lastError;
-}
 
 function AgentLogin({ onLoginSuccess }) {
   const [formData, setFormData] = useState({

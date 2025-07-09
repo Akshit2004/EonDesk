@@ -21,31 +21,13 @@ import StatCard from '../AgentDashboard/components/StatCard';
 import TicketsList from './components/CustomerTicketsList';
 import TicketDetailsModal from './components/CustomerTicketDetailsModal';
 import CreateTicketModal from './components/CreateTicketModal';
+import { fetchWithFallback } from '../../services/apiBase';
 import './CustomerDashboard.css';
 import './components/CustomerSidebar.css';
 import './components/CustomerNavbar.css';
 import './components/CustomerTicketsList.css';
 import './components/CustomerTicketDetailsModal.css';
 import './components/CreateTicketModal.css';
-
-const API_BASES = [
-  import.meta.env.VITE_API_BASE || process.env.VITE_API_BASE || 'http://localhost:3001',
-  'http://localhost/php-backend'
-];
-
-async function fetchWithFallback(path, options) {
-  let lastError;
-  for (const base of API_BASES) {
-    try {
-      const res = await fetch(`${base}${path}`, options);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res;
-    } catch (err) {
-      lastError = err;
-    }
-  }
-  throw lastError;
-}
 
 export default function CustomerDashboard() {
   const [customerNo, setCustomerNo] = useState('');

@@ -2,25 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaLock, FaShieldAlt } from 'react-icons/fa';
 import './CustomerLogin.css';
-
-const API_BASES = [
-  import.meta.env.VITE_API_BASE || process.env.VITE_API_BASE || 'http://localhost:3001',
-  'http://localhost/php-backend'
-];
-
-async function fetchWithFallback(path, options) {
-  let lastError;
-  for (const base of API_BASES) {
-    try {
-      const res = await fetch(`${base}${path}`, options);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res;
-    } catch (err) {
-      lastError = err;
-    }
-  }
-  throw lastError;
-}
+import { fetchWithFallback } from '../../services/apiBase';
 
 const CustomerLogin = ({ onLogin }) => {
   const [customer_no, setcustomer_no] = useState('');

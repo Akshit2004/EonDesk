@@ -513,6 +513,7 @@ const AgentDashboard = () => {
                       currentUser={user}
                       totalTickets={sortedTickets.length}
                       loading={loading}
+                      searchTerm={searchTerm} // pass searchTerm for highlighting
                     />
                     {visibleCount < sortedTickets.length && (
                       <div style={{ textAlign: 'center', margin: '1rem 0' }}>

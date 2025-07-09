@@ -28,7 +28,7 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`https://eondesk.onrender.com/tickets/${ticket.ticket_id}/messages`);
+      const response = await fetch(`http://localhost/php-backend/tickets/${ticket.ticket_id}/messages`);
       if (response.ok) {
         const data = await response.json();
         setMessages(data);
@@ -59,7 +59,7 @@ const CustomerTicketDetailsModal = ({ ticket, onClose, customerNo }) => {
         uploadedFiles = uploadRes.attachments || [];
         setUploading(false);
       }
-      const response = await fetch(`https://eondesk.onrender.com/tickets/${ticket.ticket_id}/messages`, {
+      const response = await fetch(`http://localhost/php-backend/tickets/${ticket.ticket_id}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

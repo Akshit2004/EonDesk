@@ -73,7 +73,7 @@ export default function CustomerDashboard() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(`https://eondesk.onrender.com/tickets/customer/${customerNumber}`);
+      const response = await fetch(`http://localhost/php-backend/tickets/customer/${customerNumber}`);
       if (!response.ok) throw new Error('Failed to fetch tickets');
       const data = await response.json();
       setTickets(data);
@@ -506,6 +506,7 @@ export default function CustomerDashboard() {
                       totalPages={totalPages}
                       onPageChange={setCurrentPage}
                       loading={loading}
+                      searchTerm={searchTerm} // pass searchTerm for highlighting
                     />
                     {visibleCount < sortedTickets.length && (
                       <div style={{ textAlign: 'center', margin: '1rem 0' }}>

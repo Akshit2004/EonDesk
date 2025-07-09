@@ -37,7 +37,7 @@ function AgentLogin({ onLoginSuccess }) {
       }
 
       // Authenticate with backend
-      const response = await fetch('https://eondesk.onrender.com/login', {
+      const response = await fetch('http://localhost/php-backend/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email, password: formData.password })

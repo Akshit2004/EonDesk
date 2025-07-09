@@ -19,7 +19,7 @@ const CustomerLogin = ({ onLogin }) => {
     setError('');
     setLoading(true);
     try {
-      const response = await fetch('https://eondesk.onrender.com/customer-login', {
+      const response = await fetch('http://localhost/php-backend/customer-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customer_no, password })

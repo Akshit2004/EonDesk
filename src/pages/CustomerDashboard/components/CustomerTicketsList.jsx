@@ -8,7 +8,8 @@ const CustomerTicketsList = ({
   currentPage, 
   totalPages, 
   onPageChange, 
-  loading 
+  loading,
+  searchTerm // <-- new prop
 }) => {
   const getStatusIcon = (status) => {
     switch (status?.toLowerCase()) {
@@ -52,6 +53,15 @@ const CustomerTicketsList = ({
     });
   };
 
+  // Helper to highlight search term in text
+  const highlightText = (text, term) => {
+    if (!term || !text) return text;
+    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.split(regex).map((part, i) =>
+      regex.test(part) ? <span key={i} style={{ background: 'yellow', color: 'black' }}>{part}</span> : part
+    );
+  };
+
   if (loading) {
     return (
       <div className="tickets-loading">
@@ -87,17 +97,17 @@ const CustomerTicketsList = ({
             <div key={ticket.ticket_id} className="table-row" onClick={() => onTicketClick(ticket)} style={{ cursor: 'pointer' }}>
               <div className="table-cell ticket-id">
                 <span className="ticket-id-badge">
-                  {ticket.ticket_id}
+                  {highlightText(ticket.ticket_id, searchTerm)}
                 </span>
               </div>
               
               <div className="table-cell ticket-subject">
                 <div className="subject-content">
                   <h4 className="subject-title">
-                    {ticket.title || ticket.subject || 'No Subject'}
+                    {highlightText(ticket.title || ticket.subject || 'No Subject', searchTerm)}
                   </h4>
                   <p className="subject-description">
-                    {ticket.description?.substring(0, 80)}
+                    {highlightText(ticket.description?.substring(0, 80), searchTerm)}
                     {ticket.description?.length > 80 ? '...' : ''}
                   </p>
                 </div>

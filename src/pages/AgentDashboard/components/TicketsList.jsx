@@ -8,7 +8,8 @@ const TicketsList = ({
   currentUser,
   totalTickets,
   loading,
-  onStatusPriorityUpdate // optional prop for updating status/priority
+  onStatusPriorityUpdate, // optional prop for updating status/priority
+  searchTerm // new prop for search term
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTicket, setModalTicket] = useState(null);
@@ -48,6 +49,14 @@ const TicketsList = ({
   const truncateText = (text, maxLength = 60) => {
     if (!text) return '';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  };
+
+  const highlightText = (text, term) => {
+    if (!term || !text) return text;
+    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.split(regex).map((part, i) =>
+      regex.test(part) ? <span key={i} style={{ background: 'yellow', color: 'black' }}>{part}</span> : part
+    );
   };
 
   const handleOpenModal = (ticket) => {
@@ -98,16 +107,16 @@ const TicketsList = ({
               onClick={() => onTicketClick(ticket)}
             >
               <div className="table-cell">
-                <span className="ticket-id">{ticket.ticketId || ticket.ticket_id || 'N/A'}</span>
+                <span className="ticket-id">{highlightText(ticket.ticketId || ticket.ticket_id || 'N/A', searchTerm)}</span>
               </div>
               <div className="table-cell">
                 <div className="customer-info">
-                  <span className="customer-name">{ticket.customer_name}</span>
-                  <span className="customer-email">{ticket.customer_email}</span>
+                  <span className="customer-name">{highlightText(ticket.customer_name, searchTerm)}</span>
+                  <span className="customer-email">{highlightText(ticket.customer_email, searchTerm)}</span>
                 </div>
               </div>
               <div className="table-cell">
-                <span className="ticket-title">{ticket.title}</span>
+                <span className="ticket-title">{highlightText(ticket.title, searchTerm)}</span>
               </div>
               <div className="table-cell">
                 <span 

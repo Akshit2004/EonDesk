@@ -3,24 +3,18 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
-require('dotenv').config();
-
 const app = express();
-const port = process.env.PORT || 3001;
+const port = 3001;
 
 app.use(express.json());
-app.use(cors({
-  origin: ['http://localhost:5173', 'https://eon-desk.vercel.app', 'https://eondesk.vercel.app'],
-  credentials: true
-}));
+app.use(cors());
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://support_09g6_user:dU1y70gmIhLzTkfKOaLJELTcF7XEHCLL@dpg-d1lqklbe5dus7381uo7g-a.oregon-postgres.render.com/support_09g6',
-  ssl: {
-    rejectUnauthorized: false
-  },
-  connectionTimeoutMillis: 10000,
-  idleTimeoutMillis: 30000,
+  user: 'postgres', // your postgres username
+  host: 'localhost',
+  database: 'support',
+  password: 'Akshit@123', // replace with your postgres password
+  port: 5432,
 });
 
 // Set up storage engine for multer
@@ -58,23 +52,46 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
-// Test database connection to Render
-pool.connect((err, client, release) => {
+// Test database connection and create sample data
+pool.connect(async (err, client, release) => {
   if (err) {
-    console.error('Error connecting to Render database:', err.message);
+    console.error('Error acquiring client', err.stack);
   } else {
-    console.log('Connected to Render PostgreSQL database');
+    console.log('Connected to PostgreSQL database');
+    
+    // Create some sample data if tables are empty
+    try {
+      const ticketCheck = await client.query('SELECT COUNT(*) FROM ticket');
+      const messageCheck = await client.query('SELECT COUNT(*) FROM message');
+      
+      if (parseInt(ticketCheck.rows[0].count) === 0) {
+        console.log('Creating sample ticket data...');
+        await client.query(`
+          INSERT INTO ticket (ticket_id, title, category, priority, status, created_by, customer_name, customer_email, assigned_agent, assigned_agent_name, created_at, updated_at)
+          VALUES 
+            ('TKT-MC5ZWMHS-P4GUB', 'Sample Support Issue', 'technical', 'medium', 'open', 'customer@example.com', 'John Doe', 'customer@example.com', NULL, NULL, NOW(), NOW()),
+            ('TKT-SAMPLE-ABCDE', 'Another Test Issue', 'general', 'low', 'open', 'user@test.com', 'Jane Smith', 'user@test.com', NULL, NULL, NOW(), NOW())
+        `);
+      }
+      
+      if (parseInt(messageCheck.rows[0].count) === 0) {
+        console.log('Creating sample message data...');
+        await client.query(`
+          INSERT INTO message (ticket_id, content, sender_id, sender_type, sender_name, message_type, timestamp, attachments, read_by, reply_to)
+          VALUES 
+            ('TKT-MC5ZWMHS-P4GUB', 'This is the initial message for the ticket. I am having issues with the system.', 'customer@example.com', 'customer', 'John Doe', 'public', NOW(), '[]', '[]', NULL),
+            ('TKT-MC5ZWMHS-P4GUB', 'Thank you for contacting support. We are looking into your issue.', 'agent@company.com', 'agent', 'Support Agent', 'public', NOW(), '[]', '[]', NULL),
+            ('TKT-SAMPLE-ABCDE', 'I need help with general setup.', 'user@test.com', 'customer', 'Jane Smith', 'public', NOW(), '[]', '[]', NULL)
+        `);
+      }
+      
+      console.log('Sample data setup complete');
+    } catch (sampleError) {
+      console.log('Sample data creation skipped (tables might already have data):', sampleError.message);
+    }
+    
     release();
   }
-});
-
-// Root route
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'Eon Support Interface API is running',
-    status: 'OK',
-    timestamp: new Date().toISOString()
-  });
 });
 
 // Get all tickets

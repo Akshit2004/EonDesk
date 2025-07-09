@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { PostgresAuthProvider } from './contexts/PostgresAuthContext.jsx'
-import { initializeEmailJS } from './services/emailService.js'
+import { PostgresAuthProvider } from './contexts/PostgresAuthContext'
+import { initializeEmailJS } from './services/emailService'
 import './index.css'
 import App from './App.jsx'
 

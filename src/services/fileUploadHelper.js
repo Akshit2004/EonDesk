@@ -6,7 +6,7 @@ export async function uploadAttachments(ticketId, files) {
   for (let file of files) {
     formData.append('attachments', file);
   }
-  const response = await fetch(`https://eondesk.onrender.com/tickets/${ticketId}/messages/upload`, {
+  const response = await fetch(`http://localhost/php-backend/tickets/${ticketId}/messages/upload`, {
     method: 'POST',
     body: formData
   });
@@ -18,7 +18,7 @@ export async function uploadAttachments(ticketId, files) {
 
 // Helper to get the public URL for an uploaded attachment
 export function getAttachmentUrl(filename) {
-  return `https://eondesk.onrender.com/uploads/${filename}`;
+  return `http://localhost/php-backend/uploads/${filename}`;
 }
 
 // Helper to check allowed file types (for frontend validation)

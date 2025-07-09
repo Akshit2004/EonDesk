@@ -3,6 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaLock, FaShieldAlt } from 'react-icons/fa';
 import './CustomerLogin.css';
 
+const API_BASES = [
+  import.meta.env.VITE_API_BASE || process.env.VITE_API_BASE || 'http://localhost:3001',
+  'http://localhost/php-backend'
+];
+
+async function fetchWithFallback(path, options) {
+  let lastError;
+  for (const base of API_BASES) {
+    try {
+      const res = await fetch(`${base}${path}`, options);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError;
+}
+
 const CustomerLogin = ({ onLogin }) => {
   const [customer_no, setcustomer_no] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +38,8 @@ const CustomerLogin = ({ onLogin }) => {
     setError('');
     setLoading(true);
     try {
-      const response = await fetch('http://localhost/php-backend/customer-login', {
+      // Authenticate with backend (Node or PHP)
+      const response = await fetchWithFallback('/customer-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customer_no, password })
@@ -28,7 +48,7 @@ const CustomerLogin = ({ onLogin }) => {
       if (!response.ok) {
         throw new Error(data.error || 'Login failed');
       }
-      if (onLogin) onLogin(data.user);
+      if (onLogin) onLogin(data.user || data.customer);
       setcustomer_no('');
       setPassword('');
       // Store customer number in localStorage on successful login

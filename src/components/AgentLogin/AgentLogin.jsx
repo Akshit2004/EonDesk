@@ -4,6 +4,25 @@ import { useNavigate } from 'react-router-dom'
 import { usePostgresAuth } from '../../contexts/PostgresAuthContext'
 import './AgentLogin.css'
 
+const API_BASES = [
+  import.meta.env.VITE_API_BASE || process.env.VITE_API_BASE || 'http://localhost:3001',
+  'http://localhost/php-backend'
+];
+
+async function fetchWithFallback(path, options) {
+  let lastError;
+  for (const base of API_BASES) {
+    try {
+      const res = await fetch(`${base}${path}`, options);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError;
+}
+
 function AgentLogin({ onLoginSuccess }) {
   const [formData, setFormData] = useState({
     email: '',
@@ -36,8 +55,8 @@ function AgentLogin({ onLoginSuccess }) {
         throw new Error('Please fill in all fields')
       }
 
-      // Authenticate with backend
-      const response = await fetch('http://localhost/php-backend/login', {
+      // Authenticate with backend (Node or PHP)
+      const response = await fetchWithFallback('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email, password: formData.password })

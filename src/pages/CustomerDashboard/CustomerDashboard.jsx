@@ -28,6 +28,25 @@ import './components/CustomerTicketsList.css';
 import './components/CustomerTicketDetailsModal.css';
 import './components/CreateTicketModal.css';
 
+const API_BASES = [
+  import.meta.env.VITE_API_BASE || process.env.VITE_API_BASE || 'http://localhost:3001',
+  'http://localhost/php-backend'
+];
+
+async function fetchWithFallback(path, options) {
+  let lastError;
+  for (const base of API_BASES) {
+    try {
+      const res = await fetch(`${base}${path}`, options);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError;
+}
+
 export default function CustomerDashboard() {
   const [customerNo, setCustomerNo] = useState('');
   const [customerName, setCustomerName] = useState('');
@@ -73,7 +92,7 @@ export default function CustomerDashboard() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(`http://localhost/php-backend/tickets/customer/${customerNumber}`);
+      const response = await fetchWithFallback(`/tickets/customer/${customerNumber}`);
       if (!response.ok) throw new Error('Failed to fetch tickets');
       const data = await response.json();
       setTickets(data);

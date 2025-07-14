@@ -10,7 +10,13 @@ const port = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://eon-desk.vercel.app', 'https://eondesk.vercel.app'],
+  origin: [
+    'http://localhost:5173',
+    'https://eon-desk.vercel.app',
+    'https://eondesk.vercel.app',
+    'https://serbridge.vercel.app',
+    'https://serbridge.vercel.app/agent'
+  ],
   credentials: true
 }));
 

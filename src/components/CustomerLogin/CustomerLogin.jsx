@@ -46,9 +46,7 @@ const CustomerLogin = ({ onLogin }) => {
       <div className="customer-login-page-center">
         <div className="customer-login-modal customer-login-page-form">
           <div className="customer-login-branding">
-            <div className="customer-login-logo">
-              <img src="/eon_logo_trans.png" alt="Eon Logo" className="customer-login-eon-logo" />
-            </div>
+            {/* Logo removed as per rebranding */}
             <div className="customer-login-subtitle">Professional Support Portal</div>
           </div>
           

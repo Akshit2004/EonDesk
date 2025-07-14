@@ -19,10 +19,16 @@ const CustomerNavbar = ({ customerName, onLogout }) => {
           </button>
           <div className="navbar-brand">
             <div className="brand-logo">
-              <img src="/eon_logo_trans.png" alt="EON Logo" className="eon-logo" />
+              {/* Simple vector icon instead of logo image */}
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="20" r="18" stroke="#4f46e5" strokeWidth="3" fill="#f3f4f6" />
+                <path d="M12 28C14 24 26 24 28 28" stroke="#4f46e5" strokeWidth="2.5" strokeLinecap="round"/>
+                <circle cx="16" cy="17" r="2.5" fill="#4f46e5" />
+                <circle cx="24" cy="17" r="2.5" fill="#4f46e5" />
+              </svg>
             </div>
             <div className="brand-text">
-              <span className="brand-name">Support Portal</span>
+              <span className="brand-name">ServiceBridge</span>
               <span className="brand-subtitle">Customer Dashboard</span>
             </div>
           </div>

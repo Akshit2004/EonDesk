@@ -75,9 +75,7 @@ function AgentLogin({ onLoginSuccess }) {
         <div className="login-modal login-page-form">
           <div className="login-header">
             <div className="header-content">
-              <div className="header-icon">
-                <img src="/eon_logo_trans.png" alt="Eon Logo" style={{ height: 48, width: 48, objectFit: 'contain' }} />
-              </div>
+              {/* Logo removed as per rebranding */}
               <div className="header-text">
                 <p className="login-subtitle">Professional Agent Portal</p>
               </div>

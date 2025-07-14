@@ -1,4 +1,4 @@
-# 🎯 Eon Support Interface
+# 🎯 ServiceBridge
 
 ## 📖 Table of Contents
 - [Project Overview](#project-overview)
@@ -15,7 +15,7 @@
 
 ## 🚀 Project Overview
 
-The **Eon Support Interface** is a comprehensive customer support ticketing system that provides a complete solution for managing customer inquiries, support tickets, and communication between customers and support agents. The application features separate dashboards for customers and agents, real-time messaging, file attachments, email integration, and automated notifications.
+The **ServiceBridge** is a comprehensive customer support ticketing system that provides a complete solution for managing customer inquiries, support tickets, and communication between customers and support agents. The application features separate dashboards for customers and agents, real-time messaging, file attachments, email integration, and automated notifications.
 
 ### Key Capabilities
 - **Dual Interface**: Separate dashboards for customers and support agents
@@ -174,7 +174,7 @@ CREATE TABLE ticket (
 ```
 
 **Fields Description**:
-- `ticket_id`: Unique identifier (EON-TKT-XXXXX format)
+- `ticket_id`: Unique identifier (SB-TKT-XXXXX format)
 - `title`: Ticket subject/title
 - `category`: technical, billing, general, feature, bug
 - `priority`: low, medium, high, urgent
@@ -580,7 +580,7 @@ VITE_GMAIL_REFRESH_TOKEN=your_refresh_token
 
 ## 📞 Support
 
-For technical support or questions about this documentation, please contact the development team or create a ticket through the support interface.
+For technical support or questions about this documentation, please contact the development team or create a ticket through the ServiceBridge interface.
 
 **Last Updated**: January 2025
 **Version**: 1.0.0

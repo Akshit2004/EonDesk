@@ -185,7 +185,7 @@ export const createTicketConfirmationTemplate = (ticketData) => {
         </div>
         
         <div class="footer">
-            <p>This is an automated message from EON Support System</p>
+            <p>This is an automated message from ServiceBridge Support System</p>
             <p>Support Email: s78841441@gmail.com</p>
             <p>Please do not reply directly to this email</p>
         </div>
